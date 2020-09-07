@@ -1,0 +1,4 @@
+export enum GymClassStatus {
+    PLACES_AVAILABLE = 'PLACES_AVAILABLE',
+    FULLY_BOOKED = 'FULLY_BOOKED',
+}
