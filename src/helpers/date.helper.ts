@@ -11,7 +11,8 @@ export class DateHelper {
         return date.toISOString()
     }
 
-    getEpochDateFrom(date: Date): number {
+    getEpochDate(dateObject: IDateObject): number {
+        const date = new Date(dateObject.year, dateObject.month, dateObject.day, dateObject.hours, dateObject.minutes);
         return date.getTime();
     }
 

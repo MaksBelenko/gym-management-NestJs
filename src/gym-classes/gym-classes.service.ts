@@ -7,9 +7,20 @@ import { UtcDateObject } from '../shared/date-object.model';
 export class GymClassesService {
     private gymClasses: GymClass[] = [
         {
+            id: '123',
             name: 'test name',
             description: 'test description',
             status: GymClassStatus.PLACES_AVAILABLE,
+            trainer: 'Belenko M.',
+            startDate: new UtcDateObject().toIsoString(),
+            finishDate: new UtcDateObject().toIsoString(),
+        },
+
+        {
+            id: '111',
+            name: '111 name',
+            description: 'test description 111',
+            status: GymClassStatus.FULLY_BOOKED,
             trainer: 'Belenko M.',
             startDate: new UtcDateObject().toIsoString(),
             finishDate: new UtcDateObject().toIsoString(),

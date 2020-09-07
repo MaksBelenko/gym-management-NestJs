@@ -29,4 +29,9 @@ export class UtcDateObject implements IDateObject {
         const dateHelper = new DateHelper();
         return dateHelper.getIsoDate(this);
     }
+
+    toEpochTime(): number {
+        const dateHelper = new DateHelper();
+        return dateHelper.getEpochDate(this);
+    }
 }
