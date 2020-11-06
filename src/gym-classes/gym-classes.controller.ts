@@ -1,6 +1,6 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { GymClassesService } from './gym-classes.service';
-import { GymClass } from './gym-class.model';
+import { GymClass } from '../Models/gym-class.model';
 
 @Controller('gym-classes')
 export class GymClassesController {

@@ -4,6 +4,6 @@ import { TrainersModule } from './trainers/trainers.module';
 import { GymSessionsModule } from './gym-sessions/gym-sessions.module';
 
 @Module({
-  imports: [GymClassesModule, TrainersModule, GymSessionsModule],
+    imports: [GymClassesModule, TrainersModule, GymSessionsModule],
 })
 export class AppModule {}
