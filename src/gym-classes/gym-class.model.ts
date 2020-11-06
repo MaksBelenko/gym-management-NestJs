@@ -1,6 +1,6 @@
 import { GymClassStatus } from './gymclass-status.enum';
 
-export interface GymClass {
+export class GymClass {
     id: string;
     name: string;
     description: string;
