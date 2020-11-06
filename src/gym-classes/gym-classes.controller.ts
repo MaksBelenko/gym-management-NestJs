@@ -7,40 +7,39 @@ import {
     Patch,
     Post,
     Query,
+    UseInterceptors,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
 import { GymClassesService } from './gym-classes.service';
-import { GymClass } from '../Models/gym-class.model';
 import { CreateGymClassDto } from '../DTOs/create-gym-class.dro';
 import { GetFilteredGymClassesDto } from '../DTOs/get-filtered-gym-classes.dto';
+import { GymClass } from './gym-class.entity';
+import { TransformInterceptor } from '../Interceptors/transform.interceptor';
 
 @Controller('gym-classes')
+@UseInterceptors(TransformInterceptor)
 export class GymClassesController {
     constructor(private gymClassesService: GymClassesService) {}
 
     @Get()
-    getClasses(@Query(ValidationPipe) filterDto: GetFilteredGymClassesDto): GymClass[] {
-        if (Object.keys(filterDto).length) {
-            return this.gymClassesService.getTasksWithFilters(filterDto);
-        } else {
-            return this.gymClassesService.getAllGymClasses();
-        }
+    getClasses(@Query(ValidationPipe) filterDto: GetFilteredGymClassesDto): Promise<GymClass[]> {
+        return this.gymClassesService.getGymClasses(filterDto);
     }
 
     @Get('/:id')
-    getGymClassById(@Param('id') id: string): GymClass {
+    getGymClassById(@Param('id') id: string): Promise<GymClass> {
         return this.gymClassesService.getGymClassById(id);
     }
 
     @Post()
     @UsePipes(ValidationPipe)
-    createGymClass(@Body() createClassDto: CreateGymClassDto): GymClass {
+    createGymClass(@Body() createClassDto: CreateGymClassDto): Promise<GymClass> {
         return this.gymClassesService.createGymClass(createClassDto);
     }
 
     @Delete('/:id')
-    deleteGymClassById(@Param('id') id: string): GymClass {
+    async deleteGymClassById(@Param('id') id: string): Promise<void> {
         return this.gymClassesService.deleteGymClassById(id);
     }
 

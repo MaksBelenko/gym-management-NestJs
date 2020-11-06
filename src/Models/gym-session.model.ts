@@ -1,5 +1,4 @@
 import { Trainer } from './trainer.model';
-import { GymClass } from './gym-class.model';
 import { GymSessionStatus } from '../gym-classes/gymsession-status.enum';
 
 export class GymSession {
@@ -7,7 +6,7 @@ export class GymSession {
     name: string;
     description: string;
     status: GymSessionStatus;
-    gymClass: GymClass;
+    // gymClass: GymClass;
     trainer: Trainer;
     startDate: string;
     finishDate: string;

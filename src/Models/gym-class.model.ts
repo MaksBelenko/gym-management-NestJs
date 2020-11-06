@@ -1,7 +1,7 @@
 
-export class GymClass {
-    id: string;
-    name: string;
-    description: string;
-    imageUrl?: string;
-}
+// export class GymClass {
+//     id: string;
+//     name: string;
+//     description: string;
+//     imageUrl?: string;
+// }

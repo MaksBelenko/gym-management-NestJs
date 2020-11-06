@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
+import { ResponseTimeInterceptor } from './Interceptors/response-time.interceptor';
 import * as config from 'config';
 
 async function bootstrap() {
@@ -10,6 +11,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     app.setGlobalPrefix('/api');
+    // app.useGlobalInterceptors(new ResponseTimeInterceptor());
 
     const port = process.env.PORT || serverConfig.port;
     await app.listen(port);
