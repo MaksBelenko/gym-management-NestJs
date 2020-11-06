@@ -1,6 +1,6 @@
 import { Trainer } from './trainer.model';
 import { GymClass } from './gym-class.model';
-import { GymSessionStatus } from '../gym-classes/gymclass-status.enum';
+import { GymSessionStatus } from '../gym-classes/gymsession-status.enum';
 
 export class GymSession {
     id: string;
