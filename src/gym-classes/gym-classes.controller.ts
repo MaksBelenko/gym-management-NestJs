@@ -12,8 +12,8 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { GymClassesService } from './gym-classes.service';
-import { CreateGymClassDto } from '../DTOs/create-gym-class.dro';
-import { GetFilteredGymClassesDto } from '../DTOs/get-filtered-gym-classes.dto';
+import { CreateGymClassDto } from './dto/create-gym-class.dro';
+import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
 

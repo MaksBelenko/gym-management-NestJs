@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { GymClass } from './gym-class.entity';
-import { CreateGymClassDto } from '../DTOs/create-gym-class.dro';
-import { GetFilteredGymClassesDto } from '../DTOs/get-filtered-gym-classes.dto';
+import { CreateGymClassDto } from './dto/create-gym-class.dro';
+import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 
 @EntityRepository(GymClass)
 export class GymClassRepository extends Repository<GymClass> {

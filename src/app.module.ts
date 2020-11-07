@@ -10,6 +10,7 @@ import { typeOrmConfig } from './config/typeorm.config';
         TypeOrmModule.forRoot(typeOrmConfig),
         GymClassesModule, 
         TrainersModule, 
-        GymSessionsModule],
+        GymSessionsModule
+    ],
 })
 export class AppModule {}
