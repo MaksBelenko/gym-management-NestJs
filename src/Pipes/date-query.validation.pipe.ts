@@ -7,15 +7,12 @@ import { GetFilteredGymClassesDto } from '../gym-classes/dto/get-filtered-gym-cl
 
 export class DateQueryValidationPipe implements PipeTransform {
     transform(value: any) {
+        const { start, end } = value;
 
-        if (value as GetFilteredGymClassesDto) {
-            const { start, end } = value;
-            if (new Date(start) >= new Date(end)) {
-                throw new BadRequestException(`\"start\" date should be more than \"end\" date; Requested start = ${start}, end = ${end}`);
-            }
-            return value;
+        if (new Date(start) >= new Date(end)) {
+            throw new BadRequestException(`\"start\" date should be more than \"end\" date; Requested start = ${start}, end = ${end}`);
         }
 
-        throw new InternalServerErrorException(`Error parsing start and end date`);
+        return value;
     }
 }

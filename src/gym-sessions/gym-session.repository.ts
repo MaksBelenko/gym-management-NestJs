@@ -5,6 +5,8 @@ import { GymClass } from "src/gym-classes/gym-class.entity";
 import { GymSessionStatus } from "src/gym-classes/gymsession-status.enum";
 import { DateHelper } from '../helpers/date.helper';
 import { GetSessionsFilterDto } from './dto/get-sessions-filter.dto';
+import { UpdateSessionDto } from "./dto/update-session.dto";
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(GymSession)
 export class GymSessionRepository extends Repository<GymSession> {
@@ -13,6 +15,9 @@ export class GymSessionRepository extends Repository<GymSession> {
         const { start, end } = filterDto;
 
         const query = this.createQueryBuilder('gymSession');
+
+        // eager only works for 'find' method => left join is required
+        query.leftJoinAndSelect('gymSession.gymClass', 'gymClass')
 
         if (start) {
             query.andWhere('gymSession.startDate >= :start', { start });
@@ -46,5 +51,30 @@ export class GymSessionRepository extends Repository<GymSession> {
         newSession.finishDate = new Date(finishDate);
 
         return newSession;
+    }
+
+
+    async updateSession(sessionId: string, updateSessionDto: UpdateSessionDto, gymClass: GymClass): Promise<GymSession> {
+        const session = await this.findOne(sessionId);
+
+        if (!session) {
+            throw new NotFoundException(`Gym session with id = ${sessionId} not found`);
+        }
+
+        const dateHelper = new DateHelper();
+        const { startDate, finishDate, status } = updateSessionDto;
+
+        if (gymClass) session.gymClass = gymClass;
+        if (status) session.status = status;
+        if (startDate) session.startDate = dateHelper.convertToUtc(startDate);
+        if (finishDate) session.finishDate = dateHelper.convertToUtc(finishDate);
+
+        await session.save();
+
+        // Set to return the current UTC ISO date
+        if (startDate) session.startDate = new Date(startDate);
+        if (finishDate) session.finishDate = new Date(finishDate);
+
+        return session;
     }
 }
