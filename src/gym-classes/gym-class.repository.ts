@@ -15,7 +15,7 @@ export class GymClassRepository extends Repository<GymClass> {
         // }
 
         if (search) {
-            query.andWhere('gymClass.name LIKE :search OR gymClass.description LIKE :search', { search: `%${search}%` }) // "%%" <- partial search
+            query.andWhere('LOWER(gymClass.name) LIKE :search OR gymClass.description LIKE :search', { search: `%${search.toLowerCase()}%` }) // "%%" <- partial search
         }
 
         const fetchedClasses = await query.getMany();

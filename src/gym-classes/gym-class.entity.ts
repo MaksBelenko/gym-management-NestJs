@@ -15,6 +15,6 @@ export class GymClass extends BaseEntity {
     @Column()
     imageUrl?: string;
 
-    @OneToMany(type => GymSession, session => session.gymClass, { eager: true })
+    @OneToMany(type => GymSession, session => session.gymClass, { eager: false })
     sessions: GymSession[];
 }

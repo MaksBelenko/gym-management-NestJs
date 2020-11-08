@@ -12,7 +12,7 @@ export class Trainer extends BaseEntity {
     @Column()
     description: string;
 
-    // @OneToMany(type => GymSession, gymSession => gymSession.trainer, { eager: true })
+    // @OneToMany(type => GymSession, gymSession => gymSession.trainer, { eager: false })
     // gymSessions: GymSession[];
     
     // photoUrl: string;

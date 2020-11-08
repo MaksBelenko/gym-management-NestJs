@@ -2,6 +2,13 @@ import { IDateObject } from '../shared/date-object.model';
 
 export class DateHelper {
     
+    convertToUtc(isoDateString: string): Date {
+        const date = new Date(isoDateString);
+        const numberUTC = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+                                    date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+        return new Date(numberUTC);
+    }
+
     getUtcDate(date: Date): string {
         return date.toUTCString();
     }

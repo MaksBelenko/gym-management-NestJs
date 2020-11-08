@@ -11,15 +11,15 @@ export class GymSession extends BaseEntity {
     @Column()
     status: GymSessionStatus;
 
-    @ManyToOne(type => GymClass, gymClass => gymClass.sessions, { eager: false })
+    @ManyToOne(type => GymClass, gymClass => gymClass.sessions, { eager: true })
     gymClass: GymClass;
 
-    // @ManyToOne(type => Trainer, trainer => trainer.gymSessions, { eager: false })
+    // @ManyToOne(type => Trainer, trainer => trainer.gymSessions, { eager: true })
     // trainer: Trainer;
     
     @Column()    
-    startDate: string;
+    startDate: Date;
     
     @Column()
-    finishDate: string;
+    finishDate: Date;
 }
