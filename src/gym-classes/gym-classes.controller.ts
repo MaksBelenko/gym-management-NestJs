@@ -12,7 +12,7 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { GymClassesService } from './gym-classes.service';
-import { CreateGymClassDto } from './dto/create-gym-class.dro';
+import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';

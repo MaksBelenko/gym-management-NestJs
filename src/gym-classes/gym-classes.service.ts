@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GymSessionStatus } from './gymsession-status.enum';
 import { UtcDateObject } from '../shared/date-object.model';
-import { CreateGymClassDto } from './dto/create-gym-class.dro';
+import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClassRepository } from './gym-class.repository';
 import { InjectRepository } from '@nestjs/typeorm';
