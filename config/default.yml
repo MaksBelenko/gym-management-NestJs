@@ -1,2 +1,13 @@
 server: 
   port: 3000
+
+db:
+  type: 'postgres'
+  port: 5432
+  database: 'gym-management'
+
+refreshjwt: 
+  expiresIn: '365d'
+
+accessjwt:
+  expiresIn: '5m'

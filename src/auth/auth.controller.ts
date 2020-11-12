@@ -6,8 +6,6 @@ import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { TokensResponseDto } from './dto/tokens-response.dto';
-import { JwtRefreshStrategy as RefreshJwtStrategy } from './passport-strategies/jwt-refresh.strategy';
-import { JwtAccessStrategy } from './passport-strategies/jwt-access.strategy';
 import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
 
 @Controller('/auth')
@@ -29,7 +27,7 @@ export class AuthController {
     }
 
     @Post('/test')
-    @UseGuards(RefreshJwtGuard)
+    @UseGuards(AccessJwtGuard)
     test(@GetUser() user: User) {
         console.log(user);
     }

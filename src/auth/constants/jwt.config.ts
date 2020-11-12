@@ -1,11 +1,16 @@
+import * as config from 'config';
+
+const refreshConf = config.get('refreshjwt');
+const accessConf = config.get('accessjwt')
+
 export const accessJwtConfig: JwtConfig = {
-    secret: 'CHANGE_SECRET_ACESS',
-    expiresIn: '5m'
+    secret: process.env.JWT_ACCESS_SECRET || accessConf.secret,
+    expiresIn: accessConf.expiresIn
 }
 
 export const refreshJwtConfig: JwtConfig = {
-    secret: 'CHANGE_SECRET_REFRESH',
-    expiresIn: '365d'
+    secret: process.env.JWT_REFRESH_SECRET || refreshConf.secret,
+    expiresIn: refreshConf.expiresIn
 }
 
 export class JwtConfig {

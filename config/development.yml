@@ -1,0 +1,11 @@
+db:
+  host: 'localhost'
+  username: 'postgres'
+  password: 'postrgres'
+  synchronize: true
+
+refreshjwt: 
+  secret: 'Development_Access_Tokent_Secret'
+
+accessjwt:
+  secret: 'Development_Refresh_Tokent_Secret'
