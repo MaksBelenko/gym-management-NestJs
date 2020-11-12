@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, InternalServerErrorException, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard, AccessJwtGuard, RefreshJwtGuard } from './auth-guards/jwt.authguard';
@@ -8,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { JwtRefreshStrategy as RefreshJwtStrategy } from './passport-strategies/jwt-refresh.strategy';
 import { JwtAccessStrategy } from './passport-strategies/jwt-access.strategy';
+import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
 
 @Controller('/auth')
 export class AuthController {
@@ -17,6 +18,7 @@ export class AuthController {
     ) {} 
 
     @Post('/signup')
+    @UseFilters(new QueryFailedExceptionFilter())
     signUp(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<void> {
         return this.authService.signUp(authCredentialsDto);
     }

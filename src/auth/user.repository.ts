@@ -8,30 +8,31 @@ import { AuthCredentialsDto } from './dto/auth-credential.dto';
 export class UserRepository extends Repository<User> {
     
     async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-        const { username, password } = authCredentialsDto;
+        const { fullName, email, password } = authCredentialsDto;
 
         const user = new User();
-        user.username = username;
+        user.fullName = fullName;
+        user.email = email;
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(password, user.salt);
 
-        try {
+        // try {
             await user.save();
-        } catch (error) {
-            if (error.code === '23505') {
-                throw new ConflictException('Username already exists');
-            } else {
-                throw new InternalServerErrorException();
-            }
-        }
+        // } catch (error) {
+        //     if (error.code === '23505') {
+        //         throw new ConflictException('Username already exists');
+        //     } else {
+        //         throw new InternalServerErrorException();
+        //     }
+        // }
     }
 
     async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<string> {
-        const { username, password } = authCredentialsDto;
-        const user = await this.findOne({ username });
+        const { email, password } = authCredentialsDto;
+        const user = await this.findOne({ email });
 
         if (user && await this.validatePassword(user, password)) {
-            return user.username;
+            return user.email;
         } else {
             return null;
         }
@@ -41,8 +42,8 @@ export class UserRepository extends Repository<User> {
         return bcrypt.hash(password, salt);
     }
 
-    async validatePassword(user: User, passedPassword: string): Promise<boolean> {
-        const hashedPassword = await bcrypt.hash(passedPassword, user.salt);
+    async validatePassword(user: User, passwordToValidate: string): Promise<boolean> {
+        const hashedPassword = await bcrypt.hash(passwordToValidate, user.salt);
         return hashedPassword == user.password;
     }
 }

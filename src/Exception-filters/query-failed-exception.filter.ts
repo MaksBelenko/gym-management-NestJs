@@ -1,0 +1,36 @@
+import {
+    ArgumentsHost,
+    Catch,
+    ExceptionFilter,
+    ConflictException,
+    HttpStatus,
+} from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
+import { Request, Response } from 'express';
+import { Logger } from '@nestjs/common';
+
+@Catch(QueryFailedError)
+export class QueryFailedExceptionFilter implements ExceptionFilter {
+    logger = new Logger('QueryFailedExceptionFilter');
+
+    catch(exception: any, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
+
+        this.logger.error(`Exception details: ${exception.detail}`);
+
+        var status = HttpStatus.INTERNAL_SERVER_ERROR;
+        var message = 'Internal Server Error';
+
+        if (exception.code === '23505') {
+            status = HttpStatus.CONFLICT;
+            message = 'Duplicate key';
+        }
+
+        response.status(status).json({
+            statusCode: status,
+            message: message,
+        });
+    }
+}
