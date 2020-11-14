@@ -16,7 +16,7 @@ export class UtcDateObject implements IDateObject {
     public minutes: number;
 
     constructor(passedDate?: Date) {
-        var date = passedDate || new Date();
+        const date = passedDate || new Date();
         this.year = date.getUTCFullYear();
         this.month = date.getUTCMonth();
         this.day = date.getUTCDay();

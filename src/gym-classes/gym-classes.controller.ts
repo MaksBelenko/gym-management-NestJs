@@ -4,18 +4,21 @@ import {
     Delete,
     Get,
     Param,
-    Patch,
     Post,
     Query,
+    UploadedFile,
     UseInterceptors,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { GymClassesService } from './gym-classes.service';
 import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
+import { uploadImageFileFilter, editFileName } from '../shared/image-file.filter';
+import { diskStorage } from 'multer';
 
 @Controller('gym-classes')
 @UseInterceptors(TransformInterceptor)
@@ -43,13 +46,23 @@ export class GymClassesController {
         return this.gymClassesService.deleteGymClassById(id);
     }
 
-    // @Patch('/:id/status')
-    // changeGymClass(
-    //     @Param('id') id: string,
-    //     @Body('status') status: GymSessionStatus,
-    // ) {
 
-    // }
+    @Post('/upload')
+    @UseInterceptors(FileInterceptor('image', {
+        dest: './uploaded',
+        storage: diskStorage({
+            // destination: './uploads',
+            filename: editFileName,
+        }),
+        fileFilter: uploadImageFileFilter,
+        limits: {
+            fileSize: 10_485_760, // 10MB
+        }
+      }),
+    )
+    async uploadModel(@UploadedFile() imageFile, @Body() modelData: { name: string, image: any }) {
+        console.log(modelData);
+    }
 
     // @Get('download')
     // download(@Res() res) {

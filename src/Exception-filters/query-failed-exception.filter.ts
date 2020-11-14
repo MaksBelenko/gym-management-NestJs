@@ -2,7 +2,6 @@ import {
     ArgumentsHost,
     Catch,
     ExceptionFilter,
-    ConflictException,
     HttpStatus,
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
@@ -20,8 +19,8 @@ export class QueryFailedExceptionFilter implements ExceptionFilter {
 
         this.logger.error(`Exception details: ${exception.detail}`);
 
-        var status = HttpStatus.INTERNAL_SERVER_ERROR;
-        var message = 'Internal Server Error';
+        let status = HttpStatus.INTERNAL_SERVER_ERROR;
+        let message = 'Internal Server Error';
 
         if (exception.code === '23505') {
             status = HttpStatus.CONFLICT;

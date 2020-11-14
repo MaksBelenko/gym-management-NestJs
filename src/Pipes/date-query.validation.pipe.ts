@@ -1,6 +1,5 @@
 import {
-    BadRequestException,
-    InternalServerErrorException,
+    BadRequestException, 
     PipeTransform,
 } from '@nestjs/common';
 import { GetFilteredGymClassesDto } from '../gym-classes/dto/get-filtered-gym-classes.dto';

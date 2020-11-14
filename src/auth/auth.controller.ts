@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard, AccessJwtGuard, RefreshJwtGuard } from './auth-guards/jwt.authguard';
 import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
-import { AuthGuard } from '@nestjs/passport';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
 
