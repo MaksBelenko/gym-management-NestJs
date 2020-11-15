@@ -29,7 +29,10 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/typeorm": "^7.1.4",
     "@types/bcryptjs": "^2.4.2",
+    "@types/express": "^4.17.3",
+    "@types/node": "^13.9.1",
     "@types/passport-jwt": "^3.0.3",
+    "@types/sharp": "^0.26.1",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
@@ -41,10 +44,9 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "typeorm": "^0.2.29",
-    "@types/express": "^4.17.3",
-    "@types/node": "^13.9.1",
+    "sharp": "^0.26.2",
     "ts-node": "9.0.0",
+    "typeorm": "^0.2.29",
     "typescript": "^3.7.4"
   },
   "devDependencies": {

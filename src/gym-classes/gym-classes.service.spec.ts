@@ -2,9 +2,13 @@ import { Test } from '@nestjs/testing';
 import { GymClassesService } from './gym-classes.service';
 import { GymClassRepository } from './gym-class.repository';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
+import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
 
 const mockGymClassRepository = () => ({
     getGymClasses: jest.fn(),
+});
+const mockImageProcessingService = () = ({
+    resizeImage: jest.fn(),
 });
 
 describe('GymClassesService', () => {
@@ -19,11 +23,16 @@ describe('GymClassesService', () => {
                     provide: GymClassRepository,
                     useFactory: mockGymClassRepository,
                 },
+                {
+                    provide: ImageProcessingService,
+                    useFactory: mockImageProcessingService,
+                }
             ],
         }).compile();
 
         gymClassService = await module.get(GymClassesService);
         gymClassRepository = module.get(GymClassRepository);
+
     });
 
     describe('getGymClasses', () => {

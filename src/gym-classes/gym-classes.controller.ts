@@ -17,8 +17,7 @@ import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
-import { uploadImageFileFilter, editFileName } from '../shared/image-file.filter';
-import { diskStorage } from 'multer';
+import { imageMulterOptions } from '../shared/image-file.filter';
 
 @Controller('gym-classes')
 @UseInterceptors(TransformInterceptor)
@@ -26,7 +25,9 @@ export class GymClassesController {
     constructor(private gymClassesService: GymClassesService) {}
 
     @Get()
-    getClasses(@Query(ValidationPipe) filterDto: GetFilteredGymClassesDto): Promise<GymClass[]> {
+    getClasses(
+        @Query(ValidationPipe) filterDto: GetFilteredGymClassesDto,
+    ): Promise<GymClass[]> {
         return this.gymClassesService.getGymClasses(filterDto);
     }
 
@@ -37,7 +38,9 @@ export class GymClassesController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    createGymClass(@Body() createClassDto: CreateGymClassDto): Promise<GymClass> {
+    createGymClass(
+        @Body() createClassDto: CreateGymClassDto,
+    ): Promise<GymClass> {
         return this.gymClassesService.createGymClass(createClassDto);
     }
 
@@ -46,22 +49,13 @@ export class GymClassesController {
         return this.gymClassesService.deleteGymClassById(id);
     }
 
-
     @Post('/upload')
-    @UseInterceptors(FileInterceptor('image', {
-        dest: './uploaded',
-        storage: diskStorage({
-            // destination: './uploads',
-            filename: editFileName,
-        }),
-        fileFilter: uploadImageFileFilter,
-        limits: {
-            fileSize: 10_485_760, // 10MB
-        }
-      }),
-    )
-    async uploadModel(@UploadedFile() imageFile, @Body() modelData: { name: string, image: any }) {
-        console.log(modelData);
+    @UseInterceptors(FileInterceptor('image', imageMulterOptions))
+    async uploadModel(
+        @UploadedFile() imageFile: Express.Multer.File,
+        @Body() modelData: { name: string; image: any },
+    ): Promise<void> {
+        return this.gymClassesService.uploadImage(imageFile, modelData);
     }
 
     // @Get('download')

@@ -1,16 +1,17 @@
 import * as config from 'config';
+import { appConfig } from '../../enviroment.consts';
 
 const refreshConf = config.get('refreshjwt');
 const accessConf = config.get('accessjwt')
 
 export const accessJwtConfig: JwtConfig = {
-    secret: process.env.JWT_ACCESS_SECRET || accessConf.secret,
-    expiresIn: accessConf.expiresIn
+    secret: appConfig.jwt.accessToken.secret,
+    expiresIn: appConfig.jwt.accessToken.expiresIn,
 }
 
 export const refreshJwtConfig: JwtConfig = {
-    secret: process.env.JWT_REFRESH_SECRET || refreshConf.secret,
-    expiresIn: refreshConf.expiresIn
+    secret: appConfig.jwt.refreshToken.secret,
+    expiresIn: appConfig.jwt.refreshToken.expiresIn,
 }
 
 export class JwtConfig {

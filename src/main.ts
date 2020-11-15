@@ -2,10 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { ResponseTimeInterceptor } from './Interceptors/response-time.interceptor';
-import * as config from 'config';
+import { appConfig } from './enviroment.consts';
 
 async function bootstrap() {
-    const serverConfig = config.get('server');
     const logger = new Logger('bootstrap');
 
     const app = await NestFactory.create(AppModule);
@@ -13,7 +12,7 @@ async function bootstrap() {
     app.setGlobalPrefix('/api');
     // app.useGlobalInterceptors(new ResponseTimeInterceptor());
 
-    const port = process.env.PORT || serverConfig.port;
+    const port = appConfig.serverPort;
     await app.listen(port);
     logger.log(`Application started listening on port ${port}`);
 }

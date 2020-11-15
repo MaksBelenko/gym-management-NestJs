@@ -12,12 +12,7 @@ import { JwtRefreshStrategy } from './passport-strategies/jwt-refresh.strategy';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }), 
-    JwtModule.register({
-      // secret: jwtConstants.secret,
-      // signOptions: {
-      //   expiresIn: jwtConstants.expiresIn,
-      // }
-    }),
+    JwtModule.register({}),
     TypeOrmModule.forFeature([UserRepository])
   ],
   controllers: [AuthController],

@@ -5,13 +5,16 @@ import { GymSessionsModule } from './gym-sessions/gym-sessions.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
+import { ImageProcessingModule } from './Global-Modules/image-processing/image-processing.module';
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(typeOrmConfig),
         GymClassesModule, 
         TrainersModule, 
-        GymSessionsModule, AuthModule
+        GymSessionsModule, 
+        AuthModule,
+        ImageProcessingModule,
     ],
 })
 export class AppModule {}
