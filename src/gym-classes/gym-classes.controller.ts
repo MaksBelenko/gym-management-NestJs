@@ -6,6 +6,7 @@ import {
     Param,
     Post,
     Query,
+    Res,
     UploadedFile,
     UseInterceptors,
     UsePipes,
@@ -18,6 +19,7 @@ import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
 import { imageMulterOptions } from '../shared/image-file.filter';
+import { Response } from 'express';
 
 @Controller('gym-classes')
 @UseInterceptors(TransformInterceptor)
@@ -56,6 +58,14 @@ export class GymClassesController {
         @Body() modelData: { name: string },
     ): Promise<void> {
         return this.gymClassesService.uploadImage(imageFile, modelData);
+    }
+
+    @Get('/image/download')
+    async getPrivateFile(
+        @Res() res: Response,
+    ) {
+        const file = await this.gymClassesService.downloadImage();
+        file.stream.pipe(res);
     }
 
     // @Get('download')

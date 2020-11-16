@@ -1,11 +1,11 @@
 import { Body, Controller, InternalServerErrorException, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard, AccessJwtGuard, RefreshJwtGuard } from './auth-guards/jwt.authguard';
 import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
+import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
 
 @Controller('/auth')
 export class AuthController {

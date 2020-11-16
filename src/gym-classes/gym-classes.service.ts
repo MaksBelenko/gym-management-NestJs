@@ -53,18 +53,21 @@ export class GymClassesService {
         console.log(modelData);
 
         if (imageFile) {
-            const thumnailSizes = [100, 200];
-
+            const thumnailSizes = [100, 200, 1024];
             const thumbBuffers = await this.imageProcessingService.resizeImage(
                 imageFile,
                 thumnailSizes,
             );
             const uploadResult = await this.awsService.uploadImage(
                 modelData.name,
-                thumbBuffers[0],
+                thumbBuffers[2],
             );
 
             console.log(uploadResult);
         }
+    }
+
+    async downloadImage() {
+        return this.awsService.getPrivateFile();
     }
 }
