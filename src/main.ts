@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { ResponseTimeInterceptor } from './Interceptors/response-time.interceptor';
 import { appConfig } from './enviroment.consts';
+import { config as awsConfig } from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
     const logger = new Logger('bootstrap');
@@ -12,7 +14,15 @@ async function bootstrap() {
     app.setGlobalPrefix('/api');
     // app.useGlobalInterceptors(new ResponseTimeInterceptor());
 
-    const port = appConfig.serverPort;
+    const configService = app.get(ConfigService);
+
+    awsConfig.update({
+        accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+        region: configService.get('AWS_REGION'),
+    });
+
+    const port = configService.get('PORT');
     await app.listen(port);
     logger.log(`Application started listening on port ${port}`);
 }

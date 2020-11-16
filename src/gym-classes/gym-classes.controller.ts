@@ -53,7 +53,7 @@ export class GymClassesController {
     @UseInterceptors(FileInterceptor('image', imageMulterOptions))
     async uploadModel(
         @UploadedFile() imageFile: Express.Multer.File,
-        @Body() modelData: { name: string; image: any },
+        @Body() modelData: { name: string },
     ): Promise<void> {
         return this.gymClassesService.uploadImage(imageFile, modelData);
     }
