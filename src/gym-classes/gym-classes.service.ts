@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { GymClass } from './gym-class.entity';
 import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
 import { AwsService } from '../Global-Modules/aws/aws.service';
+import { PhotoGymClassRepository } from './photo-gymclass.repository';
 
 @Injectable()
 export class GymClassesService {
@@ -14,6 +15,8 @@ export class GymClassesService {
         private imageProcessingService: ImageProcessingService,
         @InjectRepository(GymClassRepository)
         private gymClassRepository: GymClassRepository,
+        @InjectRepository(PhotoGymClassRepository)
+        private photoRepository: PhotoGymClassRepository,
     ) {}
 
     async getGymClasses(
@@ -53,17 +56,17 @@ export class GymClassesService {
         console.log(modelData);
 
         if (imageFile) {
-            const thumnailSizes = [100, 200, 1024];
             const thumbBuffers = await this.imageProcessingService.resizeImage(
                 imageFile,
-                thumnailSizes,
-            );
-            const uploadResult = await this.awsService.uploadImage(
-                modelData.name,
-                thumbBuffers[2],
             );
 
-            console.log(uploadResult);
+            const awsImageKeysDictionary = await this.awsService.uploadImages(
+                modelData.name,
+                thumbBuffers,
+            );
+
+            await this.photoRepository.saveAwsKeys(awsImageKeysDictionary);
+            // console.log(awsImageKeysData);
         }
     }
 
