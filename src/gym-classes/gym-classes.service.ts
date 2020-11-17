@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { GymClassRepository } from './gym-class.repository';
+import { PhotoGymClassRepository } from './photo-gymclass.repository';
 import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
-import { GymClassRepository } from './gym-class.repository';
-import { InjectRepository } from '@nestjs/typeorm';
 import { GymClass } from './gym-class.entity';
 import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
 import { AwsService } from '../Global-Modules/aws/aws.service';
-import { PhotoGymClassRepository } from './photo-gymclass.repository';
 
 @Injectable()
 export class GymClassesService {
@@ -60,7 +60,7 @@ export class GymClassesService {
                 imageFile,
             );
 
-            const awsImageKeysDictionary = await this.awsService.uploadImages(
+            const awsImageKeysDictionary = await this.awsService.uploadMultipleImages(
                 modelData.name,
                 thumbBuffers,
             );

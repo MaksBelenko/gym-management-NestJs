@@ -3,7 +3,7 @@ import * as sharp from 'sharp';
 import * as fs from 'fs';
 import * as util from 'util';
 import { ImageSize } from '../../shared/image-size.enum';
-import { ImageBuffers } from '../../shared/image-data.interface';
+import { ImageBuffers } from '../../shared/image-buffers.interface';
 
 @Injectable()
 export class ImageProcessingService {
@@ -29,7 +29,7 @@ export class ImageProcessingService {
                     .resize(size.numericSize, size.numericSize, {
                         fit: 'inside',
                     })
-                    .png()
+                    .png({ compressionLevel: 9, adaptiveFiltering: true, force: true })
                     .toBuffer();
 
                 imageBuffers.push({
@@ -39,7 +39,6 @@ export class ImageProcessingService {
             }),
         );
 
-        console.log(imageBuffers);
         return imageBuffers;
     }
 

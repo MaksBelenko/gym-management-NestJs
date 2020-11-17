@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { S3 } from 'aws-sdk';
-import { ImageBuffers } from '../../shared/image-data.interface';
-import { ImageSize } from '../../shared/image-size.enum';
+import { ImageBuffers } from '../../shared/image-buffers.interface';
 import { Dictionary } from 'lodash';
+import { ImageSize } from '../../shared/image-size.enum';
 
 @Injectable()
 export class AwsService {
@@ -12,32 +12,48 @@ export class AwsService {
 
     constructor(private configService: ConfigService) {}
 
-    async uploadImages(
+    async uploadMultipleImages(
         name: string,
         imageBuffers: ImageBuffers[],
     ): Promise<Dictionary<string>> {
-
-        let awsImageKeysData: { type: ImageSize, bucketImageKey: string }[] = []; 
-
-        var awsKeysDictionary: Dictionary<string> = {};
-
+        let awsKeysDictionary: Dictionary<string> = {};
         const imageUUID = uuidv4();
 
         await Promise.all(
             imageBuffers.map(async imageData => {
-                const uploadResult = await this.s3
-                    .upload({
-                        Bucket: this.configService.get('AWS_BUCKET_NAME'),
-                        Body: imageData.buffer,
-                        Key: `${name}-${imageData.type}-${imageUUID}.png`,
-                    })
-                    .promise();
+                const uploadResult = await this.uploadSingleImage(
+                    name,
+                    imageData.buffer,
+                    imageData.type,
+                    imageUUID,
+                );
 
                 awsKeysDictionary[imageData.type] = uploadResult.Key;
             }),
         );
 
         return awsKeysDictionary;
+    }
+
+    async uploadSingleImage(
+        name: string,
+        buffer: Buffer,
+        type?: ImageSize,
+        uuid?: string,
+    ): Promise<S3.ManagedUpload.SendData> {
+        const imageUUID = uuid ? uuid : uuidv4();
+
+        const keyName = type
+            ? `${name}-${type}-${imageUUID}.png`
+            : `${name}-${imageUUID}.png`;
+
+        return this.s3
+            .upload({
+                Bucket: this.configService.get('AWS_BUCKET_NAME'),
+                Body: buffer,
+                Key: keyName,
+            })
+            .promise();
     }
 
     async getPrivateFile() {
