@@ -7,6 +7,7 @@ import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
 import { AwsService } from '../Global-Modules/aws/aws.service';
+import { PhotoGymClass } from './photo-gymclass.entity';
 
 @Injectable()
 export class GymClassesService {
@@ -52,8 +53,7 @@ export class GymClassesService {
     async uploadImage(
         imageFile: Express.Multer.File,
         modelData: { name: string },
-    ): Promise<void> {
-        console.log(modelData);
+    ): Promise<PhotoGymClass> {
 
         if (imageFile) {
             const thumbBuffers = await this.imageProcessingService.resizeImage(
@@ -65,8 +65,11 @@ export class GymClassesService {
                 thumbBuffers,
             );
 
-            await this.photoRepository.saveAwsKeys(awsImageKeysDictionary);
-            // console.log(awsImageKeysData);
+            const photo = await this.photoRepository.saveAwsKeys(awsImageKeysDictionary);
+            return photo;
+
+        } else {
+            throw new NotFoundException(`No image passed as a parameter`)
         }
     }
 

@@ -20,6 +20,7 @@ import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
 import { imageMulterOptions } from '../shared/image-file.filter';
 import { Response } from 'express';
+import { PhotoGymClass } from './photo-gymclass.entity';
 
 @Controller('gym-classes')
 @UseInterceptors(TransformInterceptor)
@@ -56,7 +57,7 @@ export class GymClassesController {
     async uploadModel(
         @UploadedFile() imageFile: Express.Multer.File,
         @Body() modelData: { name: string },
-    ): Promise<void> {
+    ): Promise<PhotoGymClass> {
         return this.gymClassesService.uploadImage(imageFile, modelData);
     }
 

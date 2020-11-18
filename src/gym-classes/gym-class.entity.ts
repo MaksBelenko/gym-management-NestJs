@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GymSession } from '../gym-sessions/gym-session.entity';
+import { PhotoGymClass } from './photo-gymclass.entity';
 
 @Entity()
 export class GymClass extends BaseEntity {
@@ -17,4 +18,7 @@ export class GymClass extends BaseEntity {
 
     @OneToMany(type => GymSession, session => session.gymClass, { eager: false })
     sessions: GymSession[];
+
+    @OneToMany(type => PhotoGymClass, photo => photo.gymClass, { eager: true })
+    photos: PhotoGymClass[];
 }
