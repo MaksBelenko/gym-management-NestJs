@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { GymClass } from './gym-class.entity';
 
 @Entity()
 export class PhotoGymClass extends BaseEntity {
@@ -8,13 +9,16 @@ export class PhotoGymClass extends BaseEntity {
 
     @IsString()
     @Column()
-    smallImageKey: string;
+    small: string;
 
     @IsString()
     @Column()
-    mediumImageKey: string;
+    medium: string;
 
     @IsString()
     @Column()
-    largeImageKey: string;
+    large: string;
+
+    @ManyToOne(type => GymClass, gymClass => gymClass.photos, { eager: false })
+    gymClass: GymClass;
 }

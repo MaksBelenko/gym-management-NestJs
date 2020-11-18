@@ -26,7 +26,7 @@ const editFileName = (req, file, callback) => {
 };
 
 export const imageMulterOptions: MulterOptions = {
-    dest: './uploaded',
+    // dest: './uploaded',
     storage: diskStorage({
         // destination: './uploads',
         filename: editFileName,

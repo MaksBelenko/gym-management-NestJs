@@ -12,6 +12,11 @@ export class AwsService {
 
     constructor(private configService: ConfigService) {}
 
+    /**
+     * Uploading multiple images
+     * @param name Name to be used for the image
+     * @param imageBuffers Buffers of images
+     */
     async uploadMultipleImages(
         name: string,
         imageBuffers: ImageBuffers[],
@@ -35,6 +40,7 @@ export class AwsService {
         return awsKeysDictionary;
     }
 
+
     async uploadSingleImage(
         name: string,
         buffer: Buffer,
@@ -56,14 +62,33 @@ export class AwsService {
             .promise();
     }
 
-    async getPrivateFile() {
+    /**
+     * Download an image from S3
+     * @param nameKey Name of the image to download
+     */
+    async downloadImage(nameKey: string) {
         const stream = await this.s3
             .getObject({
                 Bucket: this.configService.get('AWS_BUCKET_NAME'),
-                Key: 'helloooooo',
+                Key: nameKey,
             })
             .createReadStream();
 
         return { stream };
+    }
+
+
+    async deleteMultipleImages(nameKeys: string[]): Promise<void> {
+        await Promise.all(nameKeys.map(async key => {
+            await this.deleteSingleImage(key);
+        }));
+    }
+
+    async deleteSingleImage(key: string): Promise<void> {
+        await this.s3.deleteObject({
+            Bucket: this.configService.get('AWS_BUCKET_NAME'),
+            Key: key,
+        })
+        .promise();
     }
 }

@@ -34,38 +34,46 @@ export class GymClassesController {
         return this.gymClassesService.getGymClasses(filterDto);
     }
 
+
     @Get('/:id')
     getGymClassById(@Param('id') id: string): Promise<GymClass> {
         return this.gymClassesService.getGymClassById(id);
     }
 
+
     @Post()
     @UsePipes(ValidationPipe)
+    @UseInterceptors(FileInterceptor('image', imageMulterOptions))
     createGymClass(
+        @UploadedFile() imageFile: Express.Multer.File,
         @Body() createClassDto: CreateGymClassDto,
     ): Promise<GymClass> {
-        return this.gymClassesService.createGymClass(createClassDto);
+        return this.gymClassesService.createGymClass(createClassDto, imageFile);
     }
+
 
     @Delete('/:id')
     async deleteGymClassById(@Param('id') id: string): Promise<void> {
         return this.gymClassesService.deleteGymClassById(id);
     }
 
-    @Post('/upload')
+
+    @Post('/image-upload/:id')
     @UseInterceptors(FileInterceptor('image', imageMulterOptions))
     async uploadModel(
+        @Param('id') id: string,
         @UploadedFile() imageFile: Express.Multer.File,
-        @Body() modelData: { name: string },
     ): Promise<PhotoGymClass> {
-        return this.gymClassesService.uploadImage(imageFile, modelData);
+        return this.gymClassesService.uploadAdditionalImage(id, imageFile);
     }
 
-    @Get('/image/download')
+
+    @Get('/image/:name')
     async getPrivateFile(
+        @Param('name') name: string,
         @Res() res: Response,
     ) {
-        const file = await this.gymClassesService.downloadImage();
+        const file = await this.gymClassesService.downloadImage(name);
         file.stream.pipe(res);
     }
 
