@@ -29,9 +29,18 @@ export class GymClassRepository extends Repository<GymClass> {
         const gymClass = new GymClass();
         gymClass.name = name;
         gymClass.description = description;
-        gymClass.imageUrl = 'testURL';
         await gymClass.save();
 
         return gymClass;
+    }
+
+    async getGymClassById(id: string): Promise<GymClass> {
+        const query = this.createQueryBuilder('gymClass');
+
+        // left join is need as many-to-many relationship
+        query.leftJoinAndSelect('gymClass.photos', 'photo')
+        query.andWhere('gymClass.id = :id', { id });
+
+        return query.getOne();
     }
 }

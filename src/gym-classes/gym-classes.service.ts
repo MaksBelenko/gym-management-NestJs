@@ -1,24 +1,25 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GymClassRepository } from './gym-class.repository';
-import { PhotoGymClassRepository } from './photo-gymclass.repository';
+import { PhotoRepository } from './photo.repository';
 import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
 import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
 import { AwsService } from '../Global-Modules/aws/aws.service';
-import { PhotoGymClass } from './photo-gymclass.entity';
+import { Photo } from './photo.entity';
 import { Dictionary } from 'lodash';
 
 @Injectable()
 export class GymClassesService {
+    
     constructor(
         private awsService: AwsService,
         private imageProcessingService: ImageProcessingService,
         @InjectRepository(GymClassRepository)
         private gymClassRepository: GymClassRepository,
-        @InjectRepository(PhotoGymClassRepository)
-        private photoRepository: PhotoGymClassRepository,
+        @InjectRepository(PhotoRepository)
+        private photoRepository: PhotoRepository,
     ) {}
 
     /**
@@ -34,7 +35,7 @@ export class GymClassesService {
 
 
     async getGymClassById(id: string): Promise<GymClass> {
-        const found = await this.gymClassRepository.findOne(id);
+        const found = await this.gymClassRepository.getGymClassById(id);
 
         if (!found) {
             throw new NotFoundException(
@@ -49,18 +50,8 @@ export class GymClassesService {
 
     async createGymClass(
         createClassDto: CreateGymClassDto,
-        imageFile: Express.Multer.File,
     ): Promise<GymClass> {
-        let gymClass = await this.gymClassRepository.createGymClass(createClassDto);
-
-        if (imageFile) {
-            const awsKeysDict = await this.processAndUploadImage(imageFile, createClassDto.name);
-            const photo = await this.photoRepository.saveAwsKeys(awsKeysDict, gymClass);
-
-            gymClass = await this.gymClassRepository.findOne(gymClass.id);
-        }
-
-        return gymClass;
+        return this.gymClassRepository.createGymClass(createClassDto);
     }
 
 
@@ -87,23 +78,26 @@ export class GymClassesService {
     async uploadAdditionalImage(
         id: string,
         imageFile: Express.Multer.File,
-    ): Promise<PhotoGymClass> {
+    ): Promise<Photo> {
 
-        const gymClass = await this.gymClassRepository.findOne(id)
-
-        if (imageFile && gymClass) {
-            const awsImageKeysDictionary = await this.processAndUploadImage(imageFile, gymClass.name);
-            const photo = await this.photoRepository.saveAwsKeys(
-                awsImageKeysDictionary,
-                gymClass,
-            );
-
-            delete photo.gymClass;
-
-            return photo;
+        if (!imageFile) {
+            throw new NotFoundException(`No image passed as a parameter`);
         }
 
-        throw new NotFoundException(`No image passed as a parameter`);
+        const gymClass = await this.gymClassRepository.getGymClassById(id);//findOne(id)
+
+        if (!gymClass) {
+            throw new NotFoundException(`Gym class with id ${id} not found`);
+        }
+
+        const awsImageKeysDictionary = await this.processAndUploadImage(imageFile, gymClass.name);
+        const photo = await this.photoRepository.saveAwsKeys(awsImageKeysDictionary);
+
+        gymClass.photos.push(photo);
+        await gymClass.save();
+
+        return photo;
+        
     }
 
 

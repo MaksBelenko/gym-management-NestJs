@@ -1,9 +1,8 @@
 import { IsString } from 'class-validator';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { GymClass } from './gym-class.entity';
 
 @Entity()
-export class PhotoGymClass extends BaseEntity {
+export class Photo extends BaseEntity {
     @PrimaryGeneratedColumn('uuid') //automatically generated and incremented
     id: string;
 
@@ -19,6 +18,6 @@ export class PhotoGymClass extends BaseEntity {
     @Column()
     large: string;
 
-    @ManyToOne(type => GymClass, gymClass => gymClass.photos, { eager: false })
-    gymClass: GymClass;
+    // @ManyToOne(type => GymClass, gymClass => gymClass.photos, { eager: false })
+    // gymClass: GymClass;
 }

@@ -1,24 +1,22 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { PhotoGymClass } from './photo-gymclass.entity';
+import { Photo } from './photo.entity';
 import { ImageSize } from '../shared/image-size.enum';
 import { Dictionary } from 'lodash';
-import { GymClass } from './gym-class.entity';
 
-@EntityRepository(PhotoGymClass)
-export class PhotoGymClassRepository extends Repository<PhotoGymClass> {
+@EntityRepository(Photo)
+export class PhotoRepository extends Repository<Photo> {
     
-    async saveAwsKeys(imageKeysDict: Dictionary<string>, gymClass?: GymClass): Promise<PhotoGymClass> {
+    async saveAwsKeys(imageKeysDict: Dictionary<string>): Promise<Photo> {
         
-        const photo = new PhotoGymClass();
+        const photo = new Photo();
         photo.small = imageKeysDict[ImageSize.SMALL];
         photo.medium = imageKeysDict[ImageSize.MEDIUM];
         photo.large = imageKeysDict[ImageSize.LARGE];
-        photo.gymClass = gymClass;
 
         return photo.save();
     }
 
-    getAllImagesNames(photos: PhotoGymClass[]): string[] {
+    getAllImagesNames(photos: Photo[]): string[] {
         let names: string[] = [];
 
         names.push.apply(names, photos.map(p => p.small));
@@ -28,7 +26,7 @@ export class PhotoGymClassRepository extends Repository<PhotoGymClass> {
         return names;
     }
 
-    async deletePhotos(photos: PhotoGymClass[]): Promise<void> {
+    async deletePhotos(photos: Photo[]): Promise<void> {
         const ids = photos.map(p => p.id);
 
         await Promise.all( ids.map(async (id) => {
