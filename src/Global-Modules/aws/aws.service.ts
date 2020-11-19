@@ -78,6 +78,10 @@ export class AwsService {
     }
 
 
+    /**
+     * Removes all the files from S3 with specified keys
+     * @param nameKeys Keys from S3
+     */
     async deleteMultipleImages(nameKeys: string[]): Promise<void> {
         await Promise.all(nameKeys.map(async key => {
             await this.deleteSingleImage(key);

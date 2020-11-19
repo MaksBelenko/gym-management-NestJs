@@ -57,7 +57,7 @@ export class GymClassesController {
     }
 
 
-    @Post('/upload/:id')
+    @Post('/image/upload/:id')
     @UseInterceptors(FileInterceptor('image', imageMulterOptions))
     async uploadModel(
         @Param('id', ParseUUIDPipe) id: string,
@@ -67,7 +67,7 @@ export class GymClassesController {
     }
 
 
-    @Get('/download/:name')
+    @Get('/image/download/:name')
     async getPrivateFile(
         @Param('name') name: string,
         @Res() res: Response,

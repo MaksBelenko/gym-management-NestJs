@@ -16,7 +16,7 @@ export class GymClass extends BaseEntity {
     @OneToMany(type => GymSession, session => session.gymClass, { eager: false })
     sessions: GymSession[];
 
-    @ManyToMany(type => Photo)
+    @ManyToMany(type => Photo)// , { cascade: true })
     @JoinTable()
     photos: Photo[];
 }

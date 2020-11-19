@@ -10,9 +10,7 @@ export class GymClassRepository extends Repository<GymClass> {
         const { search } = filterDto;
         const query = this.createQueryBuilder('gymClass');
 
-        // if (status) {
-        //     query.andWhere('gymClass.status = :status', {status: 'OPEN'});
-        // }
+        query.leftJoinAndSelect('gymClass.photos', 'photo');
 
         if (search) {
             query.andWhere('LOWER(gymClass.name) LIKE :search OR gymClass.description LIKE :search', { search: `%${search.toLowerCase()}%` }) // "%%" <- partial search

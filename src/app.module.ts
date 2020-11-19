@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ImageProcessingModule } from './Global-Modules/image-processing/image-processing.module';
 import { AwsModule } from './Global-Modules/aws/aws.module';
 import { ConfigModule } from '@nestjs/config';
+import { PhotosModule } from './photos/photos.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
         AuthModule,
         ImageProcessingModule,
         AwsModule,
+        PhotosModule,
     ],
 })
 export class AppModule {}

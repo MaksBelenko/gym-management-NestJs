@@ -19,6 +19,9 @@ export class GymSessionRepository extends Repository<GymSession> {
         // eager only works for 'find' method => left join is required
         query.leftJoinAndSelect('gymSession.gymClass', 'gymClass')
 
+
+        query.leftJoinAndSelect('gymClass.photos', 'photo')
+
         if (start) {
             query.andWhere('gymSession.startDate >= :start', { start });
             query.andWhere('gymSession.finishDate >= :start', { start });
