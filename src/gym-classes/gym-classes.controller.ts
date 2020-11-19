@@ -21,7 +21,7 @@ import { GymClass } from './gym-class.entity';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
 import { imageMulterOptions } from '../shared/image-file.filter';
 import { Response } from 'express';
-import { Photo } from './photo.entity';
+import { Photo } from '../Global-Modules/photos/photo.entity';
 
 @Controller('gym-classes')
 @UseInterceptors(TransformInterceptor)

@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Photo } from './photo.entity';
-import { ImageSize } from '../shared/image-size.enum';
 import { Dictionary } from 'lodash';
+import { Photo } from './photo.entity';
+import { ImageSize } from '../../shared/image-size.enum';
 
 @EntityRepository(Photo)
 export class PhotoRepository extends Repository<Photo> {

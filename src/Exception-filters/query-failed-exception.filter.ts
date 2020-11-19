@@ -27,6 +27,11 @@ export class QueryFailedExceptionFilter implements ExceptionFilter {
             message = 'Duplicate key';
         }
 
+        if (exception.code === '23503') {
+            status = HttpStatus.CONFLICT;
+            message = 'Something else references the object that you are trying to delete';
+        }
+
         response.status(status).json({
             statusCode: status,
             message: message,

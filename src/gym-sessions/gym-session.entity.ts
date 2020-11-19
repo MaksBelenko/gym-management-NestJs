@@ -1,4 +1,10 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Trainer } from '../trainers/trainer.entity';
 import { GymSessionStatus } from '../gym-classes/gymsession-status.enum';
 import { GymClass } from '../gym-classes/gym-class.entity';
@@ -11,15 +17,19 @@ export class GymSession extends BaseEntity {
     @Column()
     status: GymSessionStatus;
 
-    @ManyToOne(type => GymClass, gymClass => gymClass.sessions, { eager: true })
+    @ManyToOne(
+        type => GymClass,
+        gymClass => gymClass.sessions,
+        { eager: true },
+    )
     gymClass: GymClass;
 
     // @ManyToOne(type => Trainer, trainer => trainer.gymSessions, { eager: true })
     // trainer: Trainer;
-    
-    @Column()    
+
+    @Column()
     startDate: Date;
-    
+
     @Column()
     finishDate: Date;
 }

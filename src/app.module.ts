@@ -8,7 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ImageProcessingModule } from './Global-Modules/image-processing/image-processing.module';
 import { AwsModule } from './Global-Modules/aws/aws.module';
 import { ConfigModule } from '@nestjs/config';
-import { PhotosModule } from './photos/photos.module';
+import { PhotosModule } from './Global-Modules/photos/photos.module';
 
 @Module({
     imports: [
@@ -20,8 +20,6 @@ import { PhotosModule } from './photos/photos.module';
         TrainersModule, 
         GymSessionsModule, 
         AuthModule,
-        ImageProcessingModule,
-        AwsModule,
         PhotosModule,
     ],
 })

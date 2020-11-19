@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ImageProcessingService } from './image-processing.service';
 
-@Global()
+// @Global()
 @Module({
   providers: [ImageProcessingService],
   exports: [ImageProcessingService]

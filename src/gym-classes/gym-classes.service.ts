@@ -1,25 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { GymClassRepository } from './gym-class.repository';
-import { PhotoRepository } from './photo.repository';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
-import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
-import { AwsService } from '../Global-Modules/aws/aws.service';
-import { Photo } from './photo.entity';
+import { Photo } from '../Global-Modules/photos/photo.entity';
 import { Dictionary } from 'lodash';
+import { PhotosService } from '../Global-Modules/photos/photos.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { GymClassRepository } from './gym-class.repository';
 
 @Injectable()
 export class GymClassesService {
     
     constructor(
-        private awsService: AwsService,
-        private imageProcessingService: ImageProcessingService,
+        private photoService: PhotosService,
         @InjectRepository(GymClassRepository)
         private gymClassRepository: GymClassRepository,
-        @InjectRepository(PhotoRepository)
-        private photoRepository: PhotoRepository,
     ) {}
 
     /**
@@ -60,14 +55,8 @@ export class GymClassesService {
         if (!gymClassToDelete) {
             throw new NotFoundException(`Gym class with id ${id} not found`);
         }
-
-        const allImageNames = this.photoRepository.getAllImagesNames(gymClassToDelete.photos); 
-
-        if (allImageNames) {
-            await this.awsService.deleteMultipleImages(allImageNames);
-            await this.photoRepository.deletePhotos(gymClassToDelete.photos);
-        }
-
+        
+        await this.photoService.deletePhotos(gymClassToDelete.photos);
         await this.gymClassRepository.remove(gymClassToDelete);
     }
 
@@ -79,7 +68,7 @@ export class GymClassesService {
     ): Promise<Photo> {
 
         if (!imageFile) {
-            throw new NotFoundException(`No image passed as a parameter`);
+            throw new BadRequestException(`No image passed as a parameter`);
         }
 
         const gymClass = await this.gymClassRepository.getGymClassById(id);//findOne(id)
@@ -88,8 +77,7 @@ export class GymClassesService {
             throw new NotFoundException(`Gym class with id ${id} not found`);
         }
 
-        const awsImageKeysDictionary = await this.processAndUploadImage(imageFile, gymClass.name);
-        const photo = await this.photoRepository.saveAwsKeys(awsImageKeysDictionary);
+        const photo = await this.photoService.generatePhoto(gymClass.name, imageFile);
 
         gymClass.photos.push(photo);
         await gymClass.save();
@@ -99,24 +87,7 @@ export class GymClassesService {
     }
 
 
-
     async downloadImage(name: string) {
-        return this.awsService.downloadImage(name);
-    }
-
-    /**
-     * Resizes an image and uploads it to AWS S3 with thumbnails
-     * @param imageFile file to resize and upload to aws S3
-     * @param name name of the file
-     */
-    private async processAndUploadImage(
-        imageFile: Express.Multer.File,
-        name: string,
-    ): Promise<Dictionary<string>> {
-        const thumbBuffers = await this.imageProcessingService.resizeImage(
-            imageFile,
-        );
-
-        return this.awsService.uploadMultipleImages(name,thumbBuffers);
+        return this.photoService.downloadImage(name);
     }
 }

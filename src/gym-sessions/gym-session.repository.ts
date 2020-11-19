@@ -18,8 +18,7 @@ export class GymSessionRepository extends Repository<GymSession> {
 
         // eager only works for 'find' method => left join is required
         query.leftJoinAndSelect('gymSession.gymClass', 'gymClass')
-
-
+        // left join photos for gymClass
         query.leftJoinAndSelect('gymClass.photos', 'photo')
 
         if (start) {
