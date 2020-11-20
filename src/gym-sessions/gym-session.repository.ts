@@ -36,6 +36,20 @@ export class GymSessionRepository extends Repository<GymSession> {
     }
 
 
+    async getSessionById(id: string): Promise<GymSession> {
+        return this.findOne({
+            where: { id },
+            join: {
+                alias: 'gymSession',
+                leftJoinAndSelect: {
+                    gymClass: 'gymSession.gymClass',
+                    // photos: 'gymSession.gymClass.photo'
+                }
+            },
+        });
+    }
+
+
     async createSession(createSessionDto: CreateSessionDto, gymClass: GymClass): Promise<GymSession> {
         const { startDate, finishDate } = createSessionDto;
 

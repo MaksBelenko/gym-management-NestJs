@@ -32,13 +32,19 @@ export class GymClassRepository extends Repository<GymClass> {
         return gymClass;
     }
 
-    async getGymClassById(id: string): Promise<GymClass> {
+    async getGymClassById(id: string, includeSessions: boolean = false): Promise<GymClass> {
         const query = this.createQueryBuilder('gymClass');
 
         // left join is need as many-to-many relationship
-        query.leftJoinAndSelect('gymClass.photos', 'photo')
+        query.leftJoinAndSelect('gymClass.photos', 'photo');
+
+        if (includeSessions) {
+            query.leftJoinAndSelect('gymClass.sessions', 'session');
+        }
+
         query.andWhere('gymClass.id = :id', { id });
 
         return query.getOne();
     }
+    
 }

@@ -1,4 +1,13 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BaseEntity,
+    BeforeRemove,
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { GymSession } from '../gym-sessions/gym-session.entity';
 import { Photo } from '../Global-Modules/photos/photo.entity';
 
@@ -13,10 +22,23 @@ export class GymClass extends BaseEntity {
     @Column()
     description: string;
 
-    @OneToMany(type => GymSession, session => session.gymClass, { eager: false })
+    @OneToMany(
+        type => GymSession,
+        session => session.gymClass,
+        { eager: false },
+    )
     sessions: GymSession[];
 
-    @ManyToMany(type => Photo)// , { cascade: true })
+    @ManyToMany(type => Photo) // , { cascade: true })
     @JoinTable()
     photos: Photo[];
+
+    @BeforeRemove()
+    async deleteParentSessions() {
+        await Promise.all(
+            this.sessions.map(async session => {
+                await session.remove();
+            }),
+        );
+    }
 }

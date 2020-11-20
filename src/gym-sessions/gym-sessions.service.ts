@@ -30,8 +30,14 @@ export class GymSessionsService {
      * Gets Session by ID
      * @param id ID of the session to be retrieved
      */
-    async getSessionById(id: string) {
-        return this.sessionRepository.findOne(id);
+    async getSessionById(id: string): Promise<GymSession> {
+        const session = this.sessionRepository.getSessionById(id);
+
+        if (!session) {
+            throw new NotFoundException(`Gym session with id = ${id} not found`);
+        }
+
+        return session;
     }
 
     /**

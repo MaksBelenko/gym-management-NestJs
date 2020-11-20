@@ -50,7 +50,7 @@ export class GymClassesService {
 
 
     async deleteGymClassById(id: string): Promise<void> {
-        const gymClassToDelete = await this.gymClassRepository.getGymClassById(id);
+        const gymClassToDelete = await this.gymClassRepository.getGymClassById(id, true);
 
         if (!gymClassToDelete) {
             throw new NotFoundException(`Gym class with id ${id} not found`);
