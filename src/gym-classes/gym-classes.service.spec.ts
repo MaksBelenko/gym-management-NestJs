@@ -2,18 +2,19 @@ import { Test } from '@nestjs/testing';
 import { GymClassesService } from './gym-classes.service';
 import { GymClassRepository } from './gym-class.repository';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
-import { ImageProcessingService } from '../Global-Modules/image-processing/image-processing.service';
+import { PhotosService } from '../Global-Modules/photos/photos.service';
 
 const mockGymClassRepository = () => ({
     getGymClasses: jest.fn(),
+    getGymClassById: jest.fn(),
 });
-const mockImageProcessingService = () = ({
-    resizeImage: jest.fn(),
+const mockPhotoService = () => ({
 });
 
 describe('GymClassesService', () => {
     let gymClassService: GymClassesService;
     let gymClassRepository;
+    let photoService;
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
@@ -24,14 +25,15 @@ describe('GymClassesService', () => {
                     useFactory: mockGymClassRepository,
                 },
                 {
-                    provide: ImageProcessingService,
-                    useFactory: mockImageProcessingService,
+                    provide: PhotosService,
+                    useFactory: mockPhotoService,
                 }
             ],
         }).compile();
 
         gymClassService = await module.get(GymClassesService);
         gymClassRepository = module.get(GymClassRepository);
+        photoService = module.get(PhotosService);
 
     });
 
@@ -46,6 +48,24 @@ describe('GymClassesService', () => {
 
             expect(gymClassRepository.getGymClasses).toHaveBeenCalled();
             expect(result).toEqual('somevalue');
+        });
+    });
+
+    describe('getGymClassById', () => {
+        it('should get single gym class by id', async () => {
+            const mockGymClass = { name: 'Test name', description: 'Test description' };
+            gymClassRepository.getGymClassById.mockResolvedValue(mockGymClass);
+
+            const mockID = 'test_id';
+            const result = await gymClassService.getGymClassById(mockID);
+            expect(result).toEqual(mockGymClass);
+
+            expect(gymClassRepository.getGymClassById).toHaveBeenCalledWith(mockID);
+        });
+
+        it('throws as gym class with id not found ', () => {
+            gymClassRepository.getGymClassById.mockResolvedValue(null);
+            expect(gymClassService.getGymClassById('test_id')).rejects.toThrow();
         });
     });
 });
