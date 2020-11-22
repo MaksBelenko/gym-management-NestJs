@@ -25,6 +25,18 @@ export class TrainerRepository extends Repository<Trainer> {
     }
 
 
+    async getTrainerById(id: string): Promise<Trainer> {
+        const query = this.createQueryBuilder('trainer');
+
+        query.leftJoinAndSelect('trainer.photos', 'photo')
+        // query.leftJoinAndSelect('gymClass.sessions', 'session');
+
+        query.andWhere('trainer.id = :id', { id });
+
+        return query.getOne();
+    }
+
+
     async createTrainer(createTrainerDto: CreateTrainerDto): Promise<Trainer> {
         const { forename, surname, description, type } = createTrainerDto;
 

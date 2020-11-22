@@ -21,7 +21,6 @@ declare global {
   }
   
 String.capitalise = (s: string) => {
-    // let s = String(this)
     if (typeof s !== 'string') 
         return '';
     

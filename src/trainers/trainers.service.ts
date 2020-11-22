@@ -20,6 +20,11 @@ export class TrainersService {
     }
 
 
+    async getTrainerById(id: string): Promise<Trainer> {
+        return this.trainerRepository.getTrainerById(id);
+    }
+
+
     async createTrainer(createTrainerDto: CreateTrainerDto): Promise<Trainer> {
         return this.trainerRepository.createTrainer(createTrainerDto);
     }

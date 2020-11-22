@@ -1,5 +1,7 @@
-import { IsString, IsIn, IsNotEmpty, MinLength, IsOptional, IsEnum, Matches, Max, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, Matches, MaxLength } from 'class-validator';
 import { TrainerType } from '../trainer-type.enum';
+import { NameRegex } from '../../regex.constants';
+
 
 export class CreateTrainerDto {
 
@@ -10,11 +12,15 @@ export class CreateTrainerDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(30)
+    @Matches(NameRegex, 
+    { message: 'Forename should not contain any special characters, digits or new lines' })
     forename: string;
 
     @IsString()
     @IsNotEmpty()
     @MaxLength(30)
+    @Matches(NameRegex, 
+    { message: 'Surname should not contain any special characters or digits or new lines' })
     surname: string;
 
     @IsOptional()

@@ -21,6 +21,10 @@ export class TrainersController {
         return this.trainerService.getTrainers(filterDto);
     }
 
+    @Get('/:id')
+    getTrainerById(@Param('id', ParseUUIDPipe) id: string): Promise<Trainer> {
+        return this.trainerService.getTrainerById(id);
+    }
 
     @Post()
     createGymClass(
