@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsLowercase, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class AuthCredentialsDto {
 

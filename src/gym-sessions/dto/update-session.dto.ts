@@ -1,5 +1,5 @@
 import { IsDateString, IsIn, IsOptional } from "class-validator";
-import { GymSessionStatus } from '../../gym-classes/gymsession-status.enum';
+import { GymSessionStatus } from '../gymsession-status.enum';
 
 export class UpdateSessionDto {
 

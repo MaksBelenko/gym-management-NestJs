@@ -2,7 +2,7 @@ import { Between, EntityRepository, LessThan, MoreThanOrEqual, Repository } from
 import { GymSession } from './gym-session.entity';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { GymClass } from "src/gym-classes/gym-class.entity";
-import { GymSessionStatus } from "src/gym-classes/gymsession-status.enum";
+import { GymSessionStatus } from "src/gym-sessions/gymsession-status.enum";
 import { DateHelper } from '../helpers/date.helper';
 import { GetSessionsFilterDto } from './dto/get-sessions-filter.dto';
 import { UpdateSessionDto } from "./dto/update-session.dto";

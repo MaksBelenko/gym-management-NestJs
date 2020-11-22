@@ -12,19 +12,11 @@ export class UserRepository extends Repository<User> {
 
         const user = new User();
         user.fullName = fullName;
-        user.email = email;
+        user.email = email.toLowerCase();
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(password, user.salt);
 
-        // try {
-            await user.save();
-        // } catch (error) {
-        //     if (error.code === '23505') {
-        //         throw new ConflictException('Username already exists');
-        //     } else {
-        //         throw new InternalServerErrorException();
-        //     }
-        // }
+        await user.save();
     }
 
     async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<string> {

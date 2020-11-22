@@ -6,7 +6,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Trainer } from '../trainers/trainer.entity';
-import { GymSessionStatus } from '../gym-classes/gymsession-status.enum';
+import { GymSessionStatus } from './gymsession-status.enum';
 import { GymClass } from '../gym-classes/gym-class.entity';
 
 @Entity()
@@ -20,8 +20,8 @@ export class GymSession extends BaseEntity {
     @ManyToOne(type => GymClass, gymClass => gymClass.sessions)//, { eager: true })
     gymClass: GymClass;
 
-    // @ManyToOne(type => Trainer, trainer => trainer.gymSessions, { eager: true })
-    // trainer: Trainer;
+    @ManyToOne(type => Trainer, trainer => trainer.gymSessions)//, { eager: true })
+    trainer: Trainer;
 
     @Column()
     startDate: Date;
