@@ -2,7 +2,6 @@ import {
     BadRequestException, 
     PipeTransform,
 } from '@nestjs/common';
-import { GetFilteredGymClassesDto } from '../gym-classes/dto/get-filtered-gym-classes.dto';
 
 export class DateQueryValidationPipe implements PipeTransform {
     transform(value: any) {

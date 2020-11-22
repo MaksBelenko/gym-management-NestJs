@@ -17,7 +17,6 @@ import { CreateSessionDto } from './dto/create-session.dto';
 import { GetSessionsFilterDto } from './dto/get-sessions-filter.dto';
 import { DateQueryValidationPipe } from '../Pipes/date-query.validation.pipe';
 import { TransformInterceptor } from '../Interceptors/transform.interceptor';
-import { GymSessionStatus } from './gymsession-status.enum';
 import { UpdateSessionDto } from './dto/update-session.dto';
 
 @Controller('gym-sessions')

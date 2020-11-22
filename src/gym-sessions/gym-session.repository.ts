@@ -1,12 +1,12 @@
-import { Between, EntityRepository, LessThan, MoreThanOrEqual, Repository } from "typeorm";
+import { NotFoundException } from '@nestjs/common';
+import { EntityRepository, Repository } from 'typeorm';
 import { GymSession } from './gym-session.entity';
-import { CreateSessionDto } from './dto/create-session.dto';
-import { GymClass } from "src/gym-classes/gym-class.entity";
-import { GymSessionStatus } from "src/gym-sessions/gymsession-status.enum";
+import { GymClass } from 'src/gym-classes/gym-class.entity';
+import { GymSessionStatus } from 'src/gym-sessions/gymsession-status.enum';
 import { DateHelper } from '../helpers/date.helper';
 import { GetSessionsFilterDto } from './dto/get-sessions-filter.dto';
+import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from "./dto/update-session.dto";
-import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(GymSession)
 export class GymSessionRepository extends Repository<GymSession> {

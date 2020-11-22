@@ -1,8 +1,4 @@
-import * as config from 'config';
 import { appConfig } from '../../enviroment.consts';
-
-const refreshConf = config.get('refreshjwt');
-const accessConf = config.get('accessjwt')
 
 export const accessJwtConfig: JwtConfig = {
     secret: appConfig.jwt.accessToken.secret,

@@ -1,7 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Query, UploadedFile, UseInterceptors, ValidationPipe, Body } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Photo } from '../Global-Modules/photos/photo.entity';
-import { imageMulterOptions } from '../shared/image-file.filter';
+import { Controller, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe, Body } from '@nestjs/common';
 import { TrainersService } from './trainers.service';
 import { GetTrainersFilterDto } from './dto/get-trainers-filter.dto';
 import { Trainer } from './trainer.entity';

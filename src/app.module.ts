@@ -5,8 +5,6 @@ import { TrainersModule } from './trainers/trainers.module';
 import { GymSessionsModule } from './gym-sessions/gym-sessions.module';
 import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
-import { ImageProcessingModule } from './Global-Modules/image-processing/image-processing.module';
-import { AwsModule } from './Global-Modules/aws/aws.module';
 import { ConfigModule } from '@nestjs/config';
 import { PhotosModule } from './Global-Modules/photos/photos.module';
 

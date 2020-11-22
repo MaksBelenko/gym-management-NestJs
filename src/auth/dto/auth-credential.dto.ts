@@ -1,4 +1,4 @@
-import { IsEmail, IsLowercase, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import { EmailRegex } from '../../regex.constants';
 
 export class AuthCredentialsDto {

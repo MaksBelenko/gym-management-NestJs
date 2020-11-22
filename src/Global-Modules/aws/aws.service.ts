@@ -21,7 +21,7 @@ export class AwsService {
         name: string,
         imageBuffers: ImageBuffers[],
     ): Promise<Dictionary<string>> {
-        let awsKeysDictionary: Dictionary<string> = {};
+        const awsKeysDictionary: Dictionary<string> = {};
         const imageUUID = uuidv4();
 
         await Promise.all(

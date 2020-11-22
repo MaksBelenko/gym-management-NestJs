@@ -1,5 +1,5 @@
 import { IsString } from 'class-validator';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Photo extends BaseEntity {

@@ -17,11 +17,11 @@ export class PhotoRepository extends Repository<Photo> {
     }
 
     getAllImagesNames(photos: Photo[]): string[] {
-        let names: string[] = [];
+        const names: string[] = [];
 
-        names.push.apply(names, photos.map(p => p.small));
-        names.push.apply(names, photos.map(p => p.medium));
-        names.push.apply(names, photos.map(p => p.large));
+        names.push(...photos.map(p => p.small));
+        names.push(...photos.map(p => p.medium));
+        names.push(...photos.map(p => p.large));
 
         return names;
     }

@@ -19,7 +19,7 @@ export class ImageProcessingService {
      * @param file Image file to be resized
      */
     async resizeImage(file: Express.Multer.File): Promise<ImageBuffers[]> {
-        let imageBuffers: ImageBuffers[] = [];
+        const imageBuffers: ImageBuffers[] = [];
 
         const imageBuffer = await this.readFileAsync(file.path);
 

@@ -1,8 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
-import { ResponseTimeInterceptor } from './Interceptors/response-time.interceptor';
-import { appConfig } from './enviroment.consts';
 import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 

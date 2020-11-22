@@ -5,7 +5,7 @@ import {
     HttpStatus,
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Logger } from '@nestjs/common';
 
 @Catch(QueryFailedError)
@@ -15,7 +15,6 @@ export class QueryFailedExceptionFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
-        const request = ctx.getRequest<Request>();
 
         this.logger.error(`Exception details: ${exception.detail}`);
 

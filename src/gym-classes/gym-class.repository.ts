@@ -32,7 +32,7 @@ export class GymClassRepository extends Repository<GymClass> {
         return gymClass;
     }
 
-    async getGymClassById(id: string, includeSessions: boolean = false): Promise<GymClass> {
+    async getGymClassById(id: string, includeSessions = false): Promise<GymClass> {
         const query = this.createQueryBuilder('gymClass');
 
         // left join is need as many-to-many relationship

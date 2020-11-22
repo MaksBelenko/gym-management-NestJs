@@ -1,4 +1,4 @@
-import { Body, Controller, InternalServerErrorException, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './get-user.decorator';

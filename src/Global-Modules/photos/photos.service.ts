@@ -5,7 +5,6 @@ import { PhotoRepository } from './photo.repository';
 import { Photo } from './photo.entity';
 import { AwsService } from '../aws/aws.service';
 import { ImageProcessingService } from '../image-processing/image-processing.service';
-import { stringList } from 'aws-sdk/clients/datapipeline';
 
 @Injectable()
 export class PhotosService {
