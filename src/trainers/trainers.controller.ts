@@ -1,8 +1,9 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe, Body } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe, Body, Delete, Patch } from '@nestjs/common';
 import { TrainersService } from './trainers.service';
 import { GetTrainersFilterDto } from './dto/get-trainers-filter.dto';
 import { Trainer } from './trainer.entity';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
+import { UpdateTrainerDto } from './dto/update-trainer.dto';
 
 @Controller('trainers')
 export class TrainersController {
@@ -28,6 +29,21 @@ export class TrainersController {
         @Body(ValidationPipe) createTrainerDto: CreateTrainerDto,
     ): Promise<Trainer> {
         return this.trainerService.createTrainer(createTrainerDto);
+    }
+
+    @Delete('/:id')
+    async deleteTrainerById(
+        @Param('id', ParseUUIDPipe) id: string
+    ): Promise<void> {
+        return this.trainerService.deleteTrainerById(id);
+    }
+
+    @Patch('/:id')
+    async updateTrainer(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Body(ValidationPipe) updateDto: UpdateTrainerDto
+    ): Promise<Trainer> {
+        return this.trainerService.updateTrainer(id, updateDto);
     }
 
     // @Post('/image/upload/:id')

@@ -1,9 +1,10 @@
-import { IsDateString, IsIn, IsOptional } from "class-validator";
+import { IsDateString, IsEnum, IsIn, IsOptional, IsString } from "class-validator";
 import { GymSessionStatus } from '../gymsession-status.enum';
 
 export class UpdateSessionDto {
 
     @IsOptional()
+    @IsString()
     newGymClassId: string;
 
     @IsOptional()
@@ -16,6 +17,7 @@ export class UpdateSessionDto {
 
 
     @IsOptional()
-    @IsIn([GymSessionStatus.FULLY_BOOKED, GymSessionStatus.PLACES_AVAILABLE])
+    @IsEnum(GymSessionStatus)
+    // @IsIn([GymSessionStatus.FULLY_BOOKED, GymSessionStatus.PLACES_AVAILABLE])
     status: GymSessionStatus;
 }

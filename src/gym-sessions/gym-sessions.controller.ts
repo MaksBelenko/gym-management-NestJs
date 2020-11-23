@@ -52,7 +52,7 @@ export class GymSessionsController {
 
     @Patch('/:id')
     @UsePipes(ValidationPipe)
-    changeSessionStatus(
+    updateSession(
         @Param('id') id: string,
         @Body() updateSessionDto: UpdateSessionDto,
     ): Promise<GymSession> {

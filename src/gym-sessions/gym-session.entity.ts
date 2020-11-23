@@ -20,7 +20,7 @@ export class GymSession extends BaseEntity {
     @ManyToOne(type => GymClass, gymClass => gymClass.sessions)//, { eager: true })
     gymClass: GymClass;
 
-    @ManyToOne(type => Trainer, trainer => trainer.gymSessions)//, { eager: true })
+    @ManyToOne(type => Trainer, trainer => trainer.sessions)//, { eager: true })
     trainer: Trainer;
 
     @Column()

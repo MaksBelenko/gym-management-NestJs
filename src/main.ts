@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 
@@ -19,6 +19,12 @@ async function bootstrap() {
         secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
         region: configService.get('AWS_REGION'),
     });
+
+    // doesn't allow more fields than provided in DTO
+    app.useGlobalPipes(new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true
+    }));
 
     const port = configService.get('PORT');
     await app.listen(port);

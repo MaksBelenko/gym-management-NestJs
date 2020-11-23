@@ -14,7 +14,6 @@ export class AuthCredentialsDto {
     @IsString()
     @MinLength(8)
     @MaxLength(20)
-    @Matches(EmailRegex, 
-    { message: 'Weak password'})
+    @Matches(EmailRegex, { message: 'Weak password'})
     password: string;
 }

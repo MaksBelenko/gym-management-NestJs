@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, BeforeRemove, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GymSession } from '../gym-sessions/gym-session.entity';
 import { Photo } from '../Global-Modules/photos/photo.entity';
 import { TrainerType } from './trainer-type.enum';
@@ -27,6 +27,15 @@ export class Trainer extends BaseEntity {
     @JoinTable()
     photos: Photo[];
 
-    @OneToMany(type => GymSession, gymSession => gymSession.trainer)//, { eager: false })
-    gymSessions: GymSession[];
+    @OneToMany(type => GymSession, session => session.trainer)//, { eager: false })
+    sessions: GymSession[];
+
+    @BeforeRemove()
+    async deleteParentSessions() {
+        await Promise.all(
+            this.sessions.map(async session => {
+                await session.remove();
+            }),
+        );
+    }
 }
