@@ -1,6 +1,6 @@
 import { BaseEntity } from 'typeorm/repository/BaseEntity';
 import { IDto } from '../helpers/dto.interface';
-import { NotFoundException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
 declare module 'typeorm/repository/BaseEntity' {
     export interface BaseEntity {
@@ -20,10 +20,9 @@ BaseEntity.prototype.updateWithDto = function (this: BaseEntity, dto: IDto) {
 
         if (entityKeys.includes(key)) {
             entity[key] = value;
-        } 
-        // else {
-        //     throw new NotFoundException(`Property \"${key}\" not found`);
-        // }
+        } else {
+            throw new InternalServerErrorException(`Property \"${key}\" from update DTO is not found in entity`);
+        }
     }
   };
   
