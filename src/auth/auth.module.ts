@@ -7,12 +7,14 @@ import { AuthService } from './auth.service';
 import { UserRepository } from './user.repository';
 import { JwtAccessStrategy } from './passport-strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './passport-strategies/jwt-refresh.strategy';
+import { TokensModule } from '../Shared-Modules/tokens/tokens.module';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }), 
     JwtModule.register({}),
-    TypeOrmModule.forFeature([UserRepository])
+    TypeOrmModule.forFeature([UserRepository]),
+    TokensModule,
   ],
   controllers: [AuthController],
   providers: [

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Dictionary } from 'lodash';
 import { PhotoRepository } from './photo.repository';
@@ -35,6 +35,18 @@ export class PhotosService {
 
     async downloadImage(name: string) {
         return this.awsService.downloadImage(name);
+    }
+
+
+    async deletePhotoById(id: string): Promise<void> {
+        const photo = await this.photoRepository.findOne(id);
+
+        if (!photo) {
+            throw new NotFoundException(`Photo with id = ${id} not found`)
+        }
+
+        const photos: Photo[] = [photo];
+        await this.deletePhotos(photos);
     }
 
     /**

@@ -6,6 +6,8 @@ import { User } from './user.entity';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
 import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
+import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
+import { TokenRefreshDto } from './dto/token-refresh.dto';
 
 @Controller('/auth')
 export class AuthController {
@@ -16,14 +18,27 @@ export class AuthController {
 
     @Post('/signup')
     @UseFilters(new QueryFailedExceptionFilter())
-    signUp(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    signUp(
+        @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    ): Promise<TokensResponseDto> {
         return this.authService.signUp(authCredentialsDto);
     }
 
     @Post('/signin')
-    signIn(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<TokensResponseDto>  {
+    signIn(
+        @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    ): Promise<TokensResponseDto>  {
         return this.authService.signIn(authCredentialsDto);
     }
+
+    @Post('/refresh')
+    @UseGuards(RefreshJwtGuard)
+    refreshTokens(
+        @GetUser() user: User,
+        @Body(ValidationPipe) tokenRefreshDto: TokenRefreshDto,
+    ): Promise<TokensResponseDto> {
+        return this.authService.tokenRefresh(tokenRefreshDto);
+    } 
 
     @Post('/test')
     @UseGuards(AccessJwtGuard)

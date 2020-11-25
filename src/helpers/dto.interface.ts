@@ -1,3 +1,1 @@
-export interface IDto {
-    
-}
+export interface IDto {}

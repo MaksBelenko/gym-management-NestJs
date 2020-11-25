@@ -1,11 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PhotosService } from '../Global-Modules/photos/photos.service';
+import { PhotosService } from '../Shared-Modules/photos/photos.service';
 import { TrainerRepository } from './trainer.repository';
 import { GetTrainersFilterDto } from './dto/get-trainers-filter.dto';
 import { Trainer } from './trainer.entity';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
+import { Photo } from '../Shared-Modules/photos/photo.entity';
 
 @Injectable()
 export class TrainersService {
@@ -45,5 +46,35 @@ export class TrainersService {
 
     async updateTrainer(id: string, updateDto: UpdateTrainerDto): Promise<Trainer> {
         return this.trainerRepository.updateTrainer(id, updateDto);
+    }
+
+
+    async uploadAdditionalImage(
+        id: string,
+        imageFile: Express.Multer.File,
+    ): Promise<Photo> {
+
+        if (!imageFile) {
+            throw new BadRequestException(`No image passed as a parameter`);
+        }
+
+        const trainer = await this.trainerRepository.getTrainerById(id);//findOne(id)
+
+        if (!trainer) {
+            throw new NotFoundException(`Gym class with id ${id} not found`);
+        }
+
+        const name = trainer.forename + '_' + trainer.surname;
+        const photo = await this.photoService.generatePhoto(name, imageFile);
+
+        trainer.photos.push(photo);
+        await trainer.save();
+
+        return photo;   
+    }
+
+
+    async deletePhoto(imageId: string): Promise<void> {
+        await this.photoService.deletePhotoById(imageId);
     }
 }

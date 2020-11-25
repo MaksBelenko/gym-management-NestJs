@@ -9,7 +9,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { GymSession } from '../gym-sessions/gym-session.entity';
-import { Photo } from '../Global-Modules/photos/photo.entity';
+import { Photo } from '../Shared-Modules/photos/photo.entity';
 
 @Entity()
 export class GymClass extends BaseEntity {

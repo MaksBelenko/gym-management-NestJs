@@ -6,7 +6,8 @@ import { GymSessionsModule } from './gym-sessions/gym-sessions.module';
 import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { PhotosModule } from './Global-Modules/photos/photos.module';
+import { PhotosModule } from './Shared-Modules/photos/photos.module';
+import { TokensModule } from './Shared-Modules/tokens/tokens.module';
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { PhotosModule } from './Global-Modules/photos/photos.module';
         GymSessionsModule, 
         AuthModule,
         PhotosModule,
+        TokensModule,
     ],
 })
 export class AppModule {}
