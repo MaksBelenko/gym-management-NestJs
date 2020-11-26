@@ -6,5 +6,5 @@ export class TokenRefreshDto {
     @IsNotEmpty()
     @Matches(JwtRegex, 
         { message: 'Incorrect JWT'})
-    accessToken: string;
+    refreshToken: string;
 }

@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
 @Entity()
 // @Unique(['email'])
-export class User extends BaseEntity {
+export class JwtTokens extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -11,6 +11,7 @@ export class User extends BaseEntity {
     @Column()
     refreshToken: string;
 
-    // @Exclude()
+    @Column()
+    accessToken: string;
 
 }

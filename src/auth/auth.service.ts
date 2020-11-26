@@ -8,6 +8,7 @@ import { AuthCredentialsDto } from './dto/auth-credential.dto';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { TokensService } from '../Shared-Modules/tokens/tokens.service';
 import { TokenRefreshDto } from './dto/token-refresh.dto';
+import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
@@ -39,22 +40,8 @@ export class AuthService {
         return this.tokenService.generateAllTokens(payload);
     }
 
-    async tokenRefresh(tokenRefreshDto: TokenRefreshDto): Promise<TokensResponseDto> {
+    async tokenRefreshForUser(user: User): Promise<TokensResponseDto> {
         return new TokensResponseDto("test", "test");
     }
 
-
-    // private async generateAllTokens(payload: JwtPayload): Promise<TokensResponseDto> {
-    //     const accessToken = await this.generateToken(payload, accessJwtConfig);
-    //     const refreshToken = await this.generateToken(payload, refreshJwtConfig);
-
-    //     return new TokensResponseDto(accessToken, refreshToken);
-    // }
-
-    // private async generateToken(payload: JwtPayload, config: JwtConfig): Promise<string> {
-    //     return this.jwtService.sign(payload, {
-    //         secret: config.secret,
-    //         expiresIn: config.expiresIn
-    //     });
-    // }
 }

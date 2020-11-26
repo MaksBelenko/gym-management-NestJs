@@ -7,7 +7,7 @@ db:
   database: 'gym-management'
 
 refreshjwt: 
-  expiresIn: '365d'
+  expiresIn: '30d'
 
 accessjwt:
   expiresIn: '5m'

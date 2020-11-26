@@ -1,13 +1,12 @@
 import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
 import { AuthService } from './auth.service';
-import { GetUser } from './get-user.decorator';
+import { GetUser } from './decorators/get-user.decorator';
 import { User } from './user.entity';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
 import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
 import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
-import { TokenRefreshDto } from './dto/token-refresh.dto';
 
 @Controller('/auth')
 export class AuthController {
@@ -35,9 +34,8 @@ export class AuthController {
     @UseGuards(RefreshJwtGuard)
     refreshTokens(
         @GetUser() user: User,
-        @Body(ValidationPipe) tokenRefreshDto: TokenRefreshDto,
     ): Promise<TokensResponseDto> {
-        return this.authService.tokenRefresh(tokenRefreshDto);
+        return this.authService.tokenRefreshForUser(user);
     } 
 
     @Post('/test')
