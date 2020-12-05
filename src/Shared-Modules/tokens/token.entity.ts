@@ -14,4 +14,6 @@ export class JwtTokens extends BaseEntity {
     @Column()
     accessToken: string;
 
+    @Column()
+    expiresAt: number;  // epoch time
 }

@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PhotosModule } from './Shared-Modules/photos/photos.module';
 import { TokensModule } from './Shared-Modules/tokens/tokens.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { TokensModule } from './Shared-Modules/tokens/tokens.module';
             isGlobal: true
         }),
         TypeOrmModule.forRoot(typeOrmConfig),
+        ScheduleModule.forRoot(),
         GymClassesModule, 
         TrainersModule, 
         GymSessionsModule, 

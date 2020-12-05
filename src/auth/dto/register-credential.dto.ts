@@ -1,7 +1,7 @@
 import { IsEmail, IsString, Matches, MaxLength, MinLength } from "class-validator";
-import { EmailRegex } from '../../regex.constants';
+import { PasswordRegex, EmailRegex } from '../../regex.constants';
 
-export class AuthCredentialsDto {
+export class RegisterCredentialsDto {
 
     @IsString()
     @MinLength(3)
@@ -9,11 +9,12 @@ export class AuthCredentialsDto {
     fullName: string;
 
     @IsEmail()
+    @Matches(EmailRegex, { message: 'Email incorrectly formatted'})
     email: string;
 
     @IsString()
     @MinLength(8)
     @MaxLength(20)
-    @Matches(EmailRegex, { message: 'Weak password'})
+    @Matches(PasswordRegex, { message: 'Weak password'})
     password: string;
 }

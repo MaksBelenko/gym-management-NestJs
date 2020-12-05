@@ -1,5 +1,5 @@
 import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
-import { AuthCredentialsDto } from './dto/auth-credential.dto';
+import { RegisterCredentialsDto } from './dto/register-credential.dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorators/get-user.decorator';
 import { User } from './user.entity';
@@ -7,6 +7,7 @@ import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../Exception-filters/query-failed-exception.filter';
 import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
 import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
+import { LoginCredentialsDto } from './dto/login-credentials.dto';
 
 @Controller('/auth')
 export class AuthController {
@@ -17,17 +18,17 @@ export class AuthController {
 
     @Post('/signup')
     @UseFilters(new QueryFailedExceptionFilter())
-    signUp(
-        @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    register(
+        @Body(ValidationPipe) registerCredentialsDto: RegisterCredentialsDto,
     ): Promise<TokensResponseDto> {
-        return this.authService.signUp(authCredentialsDto);
+        return this.authService.register(registerCredentialsDto);
     }
 
     @Post('/signin')
-    signIn(
-        @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    login(
+        @Body(ValidationPipe) loginCredentialsDto: LoginCredentialsDto,
     ): Promise<TokensResponseDto>  {
-        return this.authService.signIn(authCredentialsDto);
+        return this.authService.login(loginCredentialsDto);
     }
 
     @Post('/refresh')

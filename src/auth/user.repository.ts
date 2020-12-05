@@ -1,20 +1,15 @@
 import { EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
-import { AuthCredentialsDto } from './dto/auth-credential.dto';
+import { RegisterCredentialsDto } from './dto/register-credential.dto';
 import { ConflictException } from '@nestjs/common';
+import { LoginCredentialsDto } from './dto/login-credentials.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
     
-    async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
-        const { fullName, email, password } = authCredentialsDto;
-
-        // const alreadyExistingUser = await this.findOne({ email });
-    
-        // if (alreadyExistingUser) {
-        //     throw new ConflictException(`User with email = ${email} already exists`);
-        // }
+    async register(registerCredentialsDto: RegisterCredentialsDto): Promise<User> {
+    const { fullName, email, password } = registerCredentialsDto;
 
         const user = new User();
         user.fullName = fullName;
@@ -25,15 +20,15 @@ export class UserRepository extends Repository<User> {
         return user.save();
     }
 
-    async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<string> {
-        const { email, password } = authCredentialsDto;
+    async validateUserPassword(loginCredentialsDto: LoginCredentialsDto): Promise<string> {
+        const { email, password } = loginCredentialsDto;
         const user = await this.findOne({ email });
 
         if (user && await this.validatePassword(user, password)) {
             return user.email;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     private hashPassword(password: string, salt: string): Promise<string> {
