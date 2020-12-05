@@ -8,6 +8,7 @@ import { UserRepository } from './user.repository';
 import { JwtAccessStrategy } from './passport-strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './passport-strategies/jwt-refresh.strategy';
 import { TokensModule } from '../Shared-Modules/tokens/tokens.module';
+import { RedisCacheModule } from '../Shared-Modules/redis-cache/redis-cache.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TokensModule } from '../Shared-Modules/tokens/tokens.module';
     JwtModule.register({}),
     TypeOrmModule.forFeature([UserRepository]),
     TokensModule,
+    RedisCacheModule,
   ],
   controllers: [AuthController],
   providers: [

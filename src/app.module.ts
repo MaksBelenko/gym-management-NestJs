@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PhotosModule } from './Shared-Modules/photos/photos.module';
 import { TokensModule } from './Shared-Modules/tokens/tokens.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RedisCacheModule } from './Shared-Modules/redis-cache/redis-cache.module';
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         AuthModule,
         PhotosModule,
         TokensModule,
+        RedisCacheModule,
     ],
 })
 export class AppModule {}

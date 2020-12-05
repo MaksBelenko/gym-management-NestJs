@@ -7,6 +7,7 @@ import { TokensResponseDto } from './dto/tokens-response.dto';
 import { TokensService } from '../Shared-Modules/tokens/tokens.service';
 import { User } from './user.entity';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
+import { RedisCacheService } from '../Shared-Modules/redis-cache/redis-cache.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
         @InjectRepository(UserRepository)
         private userRepository: UserRepository,
         private tokenService: TokensService,
+        private redisCacheService: RedisCacheService
     ) {}
 
 
@@ -38,8 +40,23 @@ export class AuthService {
         return this.tokenService.generateAllTokens(payload);
     }
 
-    async tokenRefreshForUser(user: User): Promise<TokensResponseDto> {
+    async tokenRefresh(refreshToken: string): Promise<TokensResponseDto> {
         return new TokensResponseDto("test", "test");
+    }
+
+
+
+
+
+    async checkRedis(value: { test: string }): Promise<any> {
+        return this.redisCacheService.set(value.test, {
+            revoked: true,
+            blocked: "yes",
+        });
+    }
+
+    async getRedis(value: string): Promise<any> {
+        return this.redisCacheService.get(value)
     }
 
 }
