@@ -14,7 +14,11 @@ export class RedisCacheService {
         return this.cache.get(key);
     }
 
-    async set(key: string, value: any): Promise<any> {
-        return this.cache.set(key, value, 60);
+    async set(key: string, value: any, ttl: number): Promise<any> {
+        return this.cache.set(key, value, { ttl });
+    }
+
+    async del(key: string): Promise<any> {
+        return this.cache.del(key);
     }
 }

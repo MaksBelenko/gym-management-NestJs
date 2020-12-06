@@ -9,6 +9,7 @@ import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
 import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { GetBearerToken } from './decorators/get-bearer-token.decorator';
+import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
 
 @Controller('/auth')
 export class AuthController {
@@ -32,32 +33,14 @@ export class AuthController {
         return this.authService.login(loginCredentialsDto);
     }
 
-    @Post('/refresh')
-    @UseGuards(RefreshJwtGuard)
-    refreshTokens(
-        // @GetUser() user: User,
-        @GetBearerToken() refreshToken: string,
+    @Post('/renew')
+    @UseGuards(RenewTokensGuard)
+    renewTokens(
+        @GetBearerToken() refreshObject: { refreshToken: string, email: string },
     ): Promise<TokensResponseDto> {
-        return this.authService.tokenRefresh(refreshToken);
+        return this.authService.renewTokens(refreshObject);
     } 
 
-
-
-
-
-    @Post('redis')
-    checkRedis(
-        @Body() value: { test: string },
-    ) {
-        return this.authService.checkRedis(value);
-    }
-
-    @Get('redis')
-    getRedis(
-        @Body('value') value: string,
-    ): Promise<any> {
-        return this.authService.getRedis(value);
-    }
 
 
 

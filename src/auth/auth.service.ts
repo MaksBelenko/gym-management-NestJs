@@ -40,8 +40,11 @@ export class AuthService {
         return this.tokenService.generateAllTokens(payload);
     }
 
-    async tokenRefresh(refreshToken: string): Promise<TokensResponseDto> {
-        return new TokensResponseDto("test", "test");
+    async renewTokens(refreshObject: { refreshToken: string, email: string }): Promise<TokensResponseDto> {
+        const { email } = refreshObject;
+        const payload: JwtPayload = { email };
+
+        return this.tokenService.renewTokens(payload, refreshObject.refreshToken);
     }
 
 
@@ -52,7 +55,7 @@ export class AuthService {
         return this.redisCacheService.set(value.test, {
             revoked: true,
             blocked: "yes",
-        });
+        }, 60);
     }
 
     async getRedis(value: string): Promise<any> {

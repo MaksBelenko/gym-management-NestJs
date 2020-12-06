@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,44 +8,49 @@ import { TokensResponseDto } from '../../auth/dto/tokens-response.dto';
 import { JwtTokensRepository } from './token.repository';
 import { appConfig } from '../../enviroment.consts';
 import * as moment from 'moment';
+import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 @Injectable()
 export class TokensService {
 
+    private oneDay: number = 60 * 60 * 24; // 1 day for Redis
+    private oneMinute: number = 60; // 60s for Redis
+
     private readonly logger = new Logger(TokensService.name);
 
     constructor (
+        private redisCacheService: RedisCacheService,
         private jwtService: JwtService,
         @InjectRepository(JwtTokensRepository)
         private tokenRepository: JwtTokensRepository,
     ) {}
 
 
-    // @Cron('*/30 * * * *')    // Every 30 mins
-    @Cron(CronExpression.EVERY_MINUTE)
-    async cleanupExpiredTokens() {
-        this.tokenRepository.deleteExpiredTokens();
+    async refreshTokenExists(bearerHeader: string): Promise<string> {
+        const receivedToken = this.getTokenFromBearerHeader(bearerHeader)
+        const value = this.redisCacheService.get(receivedToken);
+
+        return (value) ? receivedToken : null;
     }
 
+    async renewTokens(payload: JwtPayload, refreshToken: string): Promise<TokensResponseDto> {
+        const currentAccessToken = await this.redisCacheService.get(refreshToken);
+        
+        await this.redisCacheService.del(currentAccessToken.accessToken);
+        await this.redisCacheService.del(refreshToken);
 
-    async refreshTokenExists(bearerHeader: string): Promise<boolean> {
-        const receivedToken = bearerHeader.replace('Bearer ', '');
-
-        const token = await this.tokenRepository.findOne({
-            where: {
-                refreshToken: receivedToken,
-            }
-        });
-
-        return (token) ? true : false;
+        return this.generateAllTokens(payload);
     }
+
 
     async generateAllTokens(payload: JwtPayload): Promise<TokensResponseDto> {
         const accessToken = await this.generateToken(payload, accessJwtConfig);
         const refreshToken = await this.generateToken(payload, refreshJwtConfig);
 
         const tokensDto = new TokensResponseDto(accessToken, refreshToken);
-        await this.tokenRepository.saveTokens(tokensDto, this.getExpirationDateForRefreshToken());
+
+        await this.redisCacheService.set(accessToken, true , 10 * this.oneMinute);
+        await this.redisCacheService.set(refreshToken, { accessToken }, this.oneDay);
 
         return tokensDto;
     }
@@ -57,13 +62,12 @@ export class TokensService {
         });
     }
 
+    private getTokenFromBearerHeader(header: string): string {
+        if (header.includes('Bearer') == false) {
+           throw new UnauthorizedException(); 
+        }
 
-    private getExpirationDateForRefreshToken(): number {
-        const now = Date.now();
-
-        // TODO: Change expiration time to the same as in config
-        const expiryDate = moment(now).add(1, 'minutes').toDate();
-
-        return Math.floor(expiryDate.getTime()/1000.0); // epoch
+        return header.replace('Bearer ', '');
     }
+
 }

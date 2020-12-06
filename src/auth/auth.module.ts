@@ -9,6 +9,7 @@ import { JwtAccessStrategy } from './passport-strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './passport-strategies/jwt-refresh.strategy';
 import { TokensModule } from '../Shared-Modules/tokens/tokens.module';
 import { RedisCacheModule } from '../Shared-Modules/redis-cache/redis-cache.module';
+import { RenewTokensStrategy } from './passport-strategies/renew-tokens.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { RedisCacheModule } from '../Shared-Modules/redis-cache/redis-cache.modu
     AuthService,
     JwtAccessStrategy,
     JwtRefreshStrategy,
+    RenewTokensStrategy,
   ],
   exports: [
     JwtAccessStrategy,

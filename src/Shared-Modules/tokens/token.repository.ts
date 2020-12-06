@@ -6,17 +6,15 @@ import { TokensResponseDto } from '../../auth/dto/tokens-response.dto';
 export class JwtTokensRepository extends Repository<JwtTokens> {
 
 
-    async saveTokens(tokensDto: TokensResponseDto, expiresAt: number): Promise<void> {
-        const { accessToken, refreshToken } = tokensDto;
-
+    async saveToken(refreshToken: string, expiresAt: number): Promise<void> {
         const tokens = new JwtTokens();
-        tokens.accessToken = accessToken;
         tokens.refreshToken = refreshToken;
         tokens.expiresAt = expiresAt;
         
         await tokens.save();
     }
 
+    
     async deleteExpiredTokens(): Promise<void> {
 
         const datenow = Math.floor(Date.now()/1000.0);
