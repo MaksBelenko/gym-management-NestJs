@@ -39,8 +39,7 @@ export class AuthController {
         @GetBearerToken() refreshObject: { refreshToken: string, email: string },
     ): Promise<TokensResponseDto> {
         return this.authService.renewTokens(refreshObject);
-    } 
-
+    }
 
 
 

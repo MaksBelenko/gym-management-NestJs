@@ -10,6 +10,7 @@ import { PhotosModule } from './Shared-Modules/photos/photos.module';
 import { TokensModule } from './Shared-Modules/tokens/tokens.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RedisCacheModule } from './Shared-Modules/redis-cache/redis-cache.module';
+import { GoogleAuthController } from './auth/google-auth/google-auth.controller';
 
 @Module({
     imports: [
