@@ -10,12 +10,14 @@ import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { GetBearerToken } from './decorators/get-bearer-token.decorator';
 import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
+import { MailSenderService } from '../Shared-Modules/mail-sender/mail-sender.service';
 
 @Controller('/auth')
 export class AuthController {
 
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private mailSenderService: MailSenderService,
     ) {} 
 
     @Post('/signup')
@@ -42,6 +44,11 @@ export class AuthController {
     }
 
 
+
+    @Get('send-email')
+    sendEmail() {
+        this.mailSenderService.sendEmail()
+    }
 
     @Post('/test')
     @UseGuards(AccessJwtGuard)

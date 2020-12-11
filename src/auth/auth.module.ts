@@ -13,6 +13,7 @@ import { RenewTokensStrategy } from './passport-strategies/renew-tokens.strategy
 import { GoogleAuthController } from './google-auth/google-auth.controller';
 import { GoogleAuthService } from './google-auth/google-auth.service';
 import { GoogleStrategy } from './passport-strategies/google.strategy';
+import { MailSenderModule } from '../Shared-Modules/mail-sender/mail-sender.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GoogleStrategy } from './passport-strategies/google.strategy';
     JwtModule.register({}),
     TypeOrmModule.forFeature([UserRepository]),
     TokensModule,
+    MailSenderModule
   ],
   controllers: [
     AuthController,
