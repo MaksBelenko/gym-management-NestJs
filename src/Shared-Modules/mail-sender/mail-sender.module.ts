@@ -23,13 +23,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                     from:
                         `"${configService.get('MAIL_RESPONSE_NAME')}" <${configService.get('MAIL_RESPONSE_EMAIL')}>`,
                 },
-                template: {
-                    dir: __dirname + '/templates',
-                    adapter: new HandlebarsAdapter(),
-                    options: {
-                        strict: true,
-                    },
-                },
+                // template: {
+                //     dir: __dirname + '/templates',
+                //     adapter: new HandlebarsAdapter(),
+                //     options: {
+                //         strict: true,
+                //     },
+                // },
             }),
             inject: [ConfigService],
         }),

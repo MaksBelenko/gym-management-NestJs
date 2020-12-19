@@ -10,7 +10,7 @@ import { Logger } from '@nestjs/common';
 
 @Catch(QueryFailedError)
 export class QueryFailedExceptionFilter implements ExceptionFilter {
-    logger = new Logger('QueryFailedExceptionFilter');
+    logger = new Logger(QueryFailedExceptionFilter.name);
 
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();

@@ -47,7 +47,11 @@ export class AuthController {
 
     @Get('send-email')
     sendEmail() {
-        this.mailSenderService.sendEmail()
+        this.mailSenderService.sendEmail(
+            'maksim.belenko@gmail.com',
+            'Maksim Belenko', 
+            'https://google.com'
+        );
     }
 
     @Post('/test')
