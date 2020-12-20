@@ -46,13 +46,13 @@ export class TokensService {
 
         const tokensDto = new TokensResponseDto(accessToken, refreshToken);
 
-        await this.redisCacheService.set(accessToken, true , 10 * this.oneMinute);
-        await this.redisCacheService.set(refreshToken, { accessToken }, this.oneDay);
+        await this.redisCacheService.set(accessToken, true ,  this.oneMinute);
+        await this.redisCacheService.set(refreshToken, { accessToken }, 30 * this.oneDay);
 
         return tokensDto;
     }
 
-    private async generateToken(payload: JwtPayload, config: JwtConfig): Promise<string> {
+    async generateToken(payload: JwtPayload, config: JwtConfig): Promise<string> {
         return this.jwtService.sign(payload, {
             secret: config.secret,
             expiresIn: config.expiresIn

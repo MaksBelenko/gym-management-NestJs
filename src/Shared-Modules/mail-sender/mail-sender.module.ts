@@ -43,6 +43,17 @@ import { MailProcessor } from './mail.processor';
                     host: configService.get('REDIS_HOST'),
                     port: configService.get('REDIS_PORT'),
                 },
+                prefix: 'bull_',
+                limiter: {
+                    max: configService.get('MAIL_RATE_PER_SECOND'),
+                    duration: 1_000,
+                },
+                defaultJobOptions: {
+                    removeOnComplete: true,
+                    removeOnFail: true,
+                    attempts: 1,
+                    timeout: 10_000
+                }
             }),
         }),
     ],

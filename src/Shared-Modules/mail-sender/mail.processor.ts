@@ -82,26 +82,26 @@ export class MailProcessor {
         job: Job<PasswordResetData>,
     ): Promise<any> { 
 
-        try {
-            const { customerName, passwordResetUrl, email } = job.data;
+        // try {
+        //     const { customerName, passwordResetUrl, email } = job.data;
 
-            const result = await this.mailerService.sendMail({
-                template: 'password-reset',
-                context: {
-                    customerName,
-                    passwordResetUrl,
-                },
-                subject: `Запрос на изменение пароля`,
-                to: email,
-            });
-            return result;
-        } catch (error) {
-            this.logger.error(
-                `Failed to send confirmation email to '${job.data.email}'`,
-                error.stack,
-            );
-            throw error;
-        }
+        //     const result = await this.mailerService.sendMail({
+        //         template: 'password-reset',
+        //         context: {
+        //             customerName,
+        //             passwordResetUrl,
+        //         },
+        //         subject: `Запрос на изменение пароля`,
+        //         to: email,
+        //     });
+        //     return result;
+        // } catch (error) {
+        //     this.logger.error(
+        //         `Failed to send confirmation email to '${job.data.email}'`,
+        //         error.stack,
+        //     );
+        //     throw error;
+        // }
     }
     //#endregion
 }
