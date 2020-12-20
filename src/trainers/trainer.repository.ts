@@ -62,7 +62,7 @@ export class TrainerRepository extends Repository<Trainer> {
 
 
     async updateTrainer(id: string, updateDto: UpdateTrainerDto): Promise<Trainer> {
-        let foundTrainer = await this.findOne(id);
+        const foundTrainer = await this.findOne(id);
 
         if (!foundTrainer) {
             throw new NotFoundException(`Trainer with id = ${id} not found`);

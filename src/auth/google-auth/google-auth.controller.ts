@@ -4,7 +4,6 @@ import { GoogleAuthService } from './google-auth.service';
 import GoogleUser from '../Models/google-user.model';
 import { GetUser } from '../decorators/get-user.decorator';
 import { AuthService } from '../auth.service';
-import { RegisterCredentialsDto } from '../dto/register-credential.dto';
 
 @Controller('google')
 export class GoogleAuthController {

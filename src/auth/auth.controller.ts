@@ -47,13 +47,13 @@ export class AuthController {
 
     @Get('send-email')
     sendEmail() {
-        this.mailSenderService.sendTest('maksim.belenko@gmail.com', 'Maksim Belenko', '1234')
+        // this.mailSenderService.sendConfirmationEmail('maksim.belenko@gmail.com', 'Maksim Belenko', '1234')
 
-        // this.mailSenderService.sendEmail(
-        //     'maksim.belenko@gmail.com',
-        //     'Maksim Belenko', 
-        //     'https://google.com'
-        // );
+        this.mailSenderService.sendPasswordResetEmail(
+            'maksim.belenko@gmail.com',
+            'Maksim Belenko', 
+            'https://google.com'
+        );
     }
 
     @Post('/test')

@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { JwtTokens } from './token.entity';
-import { TokensResponseDto } from '../../auth/dto/tokens-response.dto';
 
 @EntityRepository(JwtTokens)
 export class JwtTokensRepository extends Repository<JwtTokens> {

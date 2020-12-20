@@ -1,10 +1,11 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-import { resetPasswordHtmlTemplate } from './mail-templates/reset-password.template';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { ConfirmationQueueData } from './confirm-data.interface';
+import { ConfirmationQueueData } from './interfaces/confirm-data.interface';
+import { PasswordResetData } from './interfaces/password-reset-data.interface';
+import { confirmationEmailQueueName, resetPasswordQueueName } from './email.consts';
 
 @Injectable()
 export class MailSenderService {
@@ -18,49 +19,30 @@ export class MailSenderService {
         private mailQueue: Queue,
     ) {}
 
-    async sendEmail(toEmail: string, customerName: string, passwordResetUrl: string): Promise<void> {
+    async sendPasswordResetEmail(toEmail: string, customerName: string, passwordResetUrl: string): Promise<void> {
 
         try {
-            await this.mailerService.sendMail({
-                to: toEmail, // list of receivers
-                from: `"${this.configService.get('MAIL_RESPONSE_NAME')}" <${this.configService.get('MAIL_RESPONSE_EMAIL')}>`, // sender address
-                subject: 'Запрос на изменение пароля', // Subject line
-                text: 'Password reset', // plaintext body
-                html: resetPasswordHtmlTemplate(customerName, passwordResetUrl), // HTML body content
-            });
+            const data: PasswordResetData = { email: toEmail, passwordResetUrl, customerName };
+            await this.mailQueue.add(resetPasswordQueueName, data);
 
-            this.logger.log(`Password reset email sent to customer named: ${customerName} email: ${toEmail} passwordResetUrl: ${passwordResetUrl}`) 
+            this.logger.log(`Added password reset email sending action to queue for ${customerName} (${toEmail}) and password reset URL ${passwordResetUrl}`)
 
         } catch (error) {
-            this.logger.error(`Error appeared when sending the email to ${customerName} (${toEmail}) with passwordResetUrl: ${passwordResetUrl}`)
+            this.logger.error(`Error queueing password reset email action to ${customerName} (${toEmail})`);
         }
     }
 
 
-    async sendTest(toEmail: string, customerName: string, confirmationCode: string): Promise<void> {
+    async sendConfirmationEmail(toEmail: string, customerName: string, confirmationCode: string): Promise<void> {
 
         try {
             const data: ConfirmationQueueData = { email: toEmail, confirmationCode };
-            await this.mailQueue.add('confirmation', data);
+            await this.mailQueue.add(confirmationEmailQueueName, data);
 
             this.logger.log(`Added confirmation email sending action to queue for ${toEmail} with confirmation code ${confirmationCode}`)
 
-          } catch (error) {
+        } catch (error) {
             this.logger.error(`Error queueing confirmation email to ${toEmail}`);
-          }
+        }
     }
-
-
-    // async sendConfirmationEmail(user: User, code: string): Promise<boolean> {
-    //     try {
-    //       await this.mailQueue.add('confirmation', {
-    //         user,
-    //         code,
-    //       })
-    //       return true
-    //     } catch (error) {
-    //       // this.logger.error(`Error queueing confirmation email to user ${user.email}`)
-    //       return false
-    //     }
-    //   }
 }

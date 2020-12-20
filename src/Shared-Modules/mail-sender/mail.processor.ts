@@ -8,8 +8,10 @@ import {
     Processor,
 } from '@nestjs/bull';
 import { Job } from 'bull';
-import { ConfirmationQueueData } from './confirm-data.interface';
+import { ConfirmationQueueData } from './interfaces/confirm-data.interface';
 import { plainToClass } from 'class-transformer';
+import { PasswordResetData } from './interfaces/password-reset-data.interface';
+import { confirmationEmailQueueName, resetPasswordQueueName } from './email.consts';
 
 @Processor('emails-queue')
 export class MailProcessor {
@@ -17,6 +19,8 @@ export class MailProcessor {
 
     constructor(private readonly mailerService: MailerService) {}
 
+
+    //#region Queue Events
     @OnQueueActive()
     onActive(job: Job) {
         this.logger.debug(
@@ -24,14 +28,12 @@ export class MailProcessor {
         );
     }
 
-    //#region Test region
     @OnQueueCompleted()
     onComplete(job: Job, result: any) {
         this.logger.debug(
             `Completed job ${job.id} of type ${job.name}. Result: ${JSON.stringify(result)}`,
         );
     }
-    //#endregion
 
     @OnQueueFailed()
     onError(job: Job<any>, error: any) {
@@ -41,7 +43,11 @@ export class MailProcessor {
         );
     }
 
-    @Process('confirmation')
+    //#endregion
+
+
+    //#region Queue Processes
+    @Process(confirmationEmailQueueName)
     async sendAccountConfirmationEmail(
         job: Job<ConfirmationQueueData>,
     ): Promise<any> {
@@ -49,10 +55,6 @@ export class MailProcessor {
 
         const url = `https://google.com`;
         // const url = `${config.get('server.origin')}/auth/${job.data.confirmationCode}/confirm`
-
-        // if (config.get<boolean>('mail.live')) {
-        //   return 'SENT MOCK CONFIRMATION EMAIL'
-        // }
 
         try {
             const result = await this.mailerService.sendMail({
@@ -62,7 +64,7 @@ export class MailProcessor {
                     email: job.data.email,
                     url: url,
                 },
-                subject: `Пожалуйста подтвердите Ваш имейл для аккаунта Energy Fitness`,
+                subject: `Подтвердите Ваш имейл для аккаунта Energy Fitness`,
                 to: job.data.email,
             });
             return result;
@@ -74,4 +76,32 @@ export class MailProcessor {
             throw error;
         }
     }
+
+    @Process(resetPasswordQueueName)
+    async sendPasswordResetEmail(
+        job: Job<PasswordResetData>,
+    ): Promise<any> { 
+
+        try {
+            const { customerName, passwordResetUrl, email } = job.data;
+
+            const result = await this.mailerService.sendMail({
+                template: 'password-reset',
+                context: {
+                    customerName,
+                    passwordResetUrl,
+                },
+                subject: `Запрос на изменение пароля`,
+                to: email,
+            });
+            return result;
+        } catch (error) {
+            this.logger.error(
+                `Failed to send confirmation email to '${job.data.email}'`,
+                error.stack,
+            );
+            throw error;
+        }
+    }
+    //#endregion
 }

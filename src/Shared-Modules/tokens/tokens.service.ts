@@ -1,20 +1,17 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { JwtConfig, accessJwtConfig, refreshJwtConfig } from '../../auth/constants/jwt.config';
 import { TokensResponseDto } from '../../auth/dto/tokens-response.dto';
 import { JwtTokensRepository } from './token.repository';
-import { appConfig } from '../../enviroment.consts';
-import * as moment from 'moment';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 @Injectable()
 export class TokensService {
 
     private oneDay: number = 60 * 60 * 24; // 1 day for Redis
-    private oneMinute: number = 60; // 60s for Redis
+    private oneMinute = 60; // 60s for Redis
 
     private readonly logger = new Logger(TokensService.name);
 
