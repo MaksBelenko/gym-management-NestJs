@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { BullModule, BullModuleOptions } from '@nestjs/bull';
 import { MailSenderService } from './mail-sender.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailProcessor } from './mail.processor';
 
 @Module({
     imports: [
@@ -20,21 +22,34 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                     },
                 },
                 defaults: {
-                    from:
-                        `"${configService.get('MAIL_RESPONSE_NAME')}" <${configService.get('MAIL_RESPONSE_EMAIL')}>`,
+                    from: `"${configService.get('MAIL_RESPONSE_NAME',)}" <${configService.get('MAIL_RESPONSE_EMAIL')}>`,
                 },
-                // template: {
-                //     dir: __dirname + '/templates',
-                //     adapter: new HandlebarsAdapter(),
-                //     options: {
-                //         strict: true,
-                //     },
-                // },
+                template: {
+                    dir: __dirname + '/mail-templates',
+                    adapter: new HandlebarsAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
             }),
             inject: [ConfigService],
         }),
+        BullModule.registerQueueAsync({
+            name: 'emails-queue',
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService): Promise<BullModuleOptions> => ({
+                redis: {
+                    host: configService.get('REDIS_HOST'),
+                    port: configService.get('REDIS_PORT'),
+                },
+            }),
+        }),
     ],
-    providers: [MailSenderService],
+    providers: [
+        MailSenderService,
+        MailProcessor,
+    ],
     exports: [MailSenderService],
 })
 export class MailSenderModule {}
