@@ -53,6 +53,8 @@ export class MailProcessor {
     ): Promise<any> {
         this.logger.log(`Sending confirmation email to '${job.data.email}...'`);
 
+        const { email, customerName, confirmationCode } = job.data;
+
         const url = `https://google.com`;
         // const url = `${config.get('server.origin')}/auth/${job.data.confirmationCode}/confirm`
 
@@ -61,11 +63,11 @@ export class MailProcessor {
                 template: 'confirmation',
                 context: {
                     //   ...plainToClass(User, job.data.user),
-                    email: job.data.email,
-                    url: url,
+                    customerName,
+                    confirmationCode,
                 },
-                subject: `Подтвердите Ваш имейл для аккаунта Energy Fitness`,
-                to: job.data.email,
+                subject: `Подтвердите Ваш электронный адрес для аккаунта Energy Fitness`,
+                to: email,
             });
             return result;
         } catch (error) {

@@ -1,6 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
-import { ConfigService } from '@nestjs/config';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { ConfirmationQueueData } from './interfaces/confirm-data.interface';
@@ -13,8 +11,6 @@ export class MailSenderService {
     private logger = new Logger(MailSenderService.name);
 
     constructor(
-        private readonly mailerService: MailerService,
-        private readonly configService: ConfigService,
         @InjectQueue('emails-queue')
         private mailQueue: Queue,
     ) {}
