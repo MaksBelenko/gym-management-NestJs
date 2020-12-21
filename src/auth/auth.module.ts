@@ -13,6 +13,7 @@ import { GoogleAuthController } from './google-auth/google-auth.controller';
 import { GoogleAuthService } from './google-auth/google-auth.service';
 import { GoogleStrategy } from './passport-strategies/google.strategy';
 import { MailSenderModule } from '../Shared-Modules/mail-sender/mail-sender.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { MailSenderModule } from '../Shared-Modules/mail-sender/mail-sender.modu
     JwtModule.register({}),
     TypeOrmModule.forFeature([UserRepository]),
     TokensModule,
-    MailSenderModule
+    MailSenderModule,
+    ConfigModule,
   ],
   controllers: [
     AuthController,

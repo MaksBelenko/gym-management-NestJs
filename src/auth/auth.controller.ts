@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RegisterCredentialsDto } from './dto/register-credential.dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorators/get-user.decorator';
@@ -10,14 +10,13 @@ import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { GetBearerToken } from './decorators/get-bearer-token.decorator';
 import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
-import { MailSenderService } from '../Shared-Modules/mail-sender/mail-sender.service';
+import { PasswordResetDto } from './dto/password-reset.dto';
 
 @Controller('/auth')
 export class AuthController {
 
     constructor(
         private authService: AuthService,
-        private mailSenderService: MailSenderService,
     ) {} 
 
     @Post('/signup')
@@ -35,7 +34,7 @@ export class AuthController {
         return this.authService.login(loginCredentialsDto);
     }
 
-    @Post('/renew')
+    @Post('/token-refresh')
     @UseGuards(RenewTokensGuard)
     renewTokens(
         @GetBearerToken() refreshObject: { refreshToken: string, email: string },
@@ -44,16 +43,38 @@ export class AuthController {
     }
 
 
+    @Post('/confirm-email')
+    confirmEmail() {
+
+    }
+
+
+    @Post('/password-reset-request')
+    requestPasswordChange(
+        @Body(ValidationPipe) passwordResetDto: PasswordResetDto,
+    ): Promise<void> {
+        return this.authService.requestPasswordChange(passwordResetDto);
+    }
+
+    @Post('/reset-password')
+    @UseGuards(AccessJwtGuard)
+    resetPassword(
+        @GetUser() user: User,
+        @Param('newPassword') newPassword: string,
+    ): Promise<void> {
+        return this.authService.resetPassword(user, newPassword);
+    }
+
 
     @Get('send-email')
     sendEmail() {
         // this.mailSenderService.sendConfirmationEmail('maksim.belenko@gmail.com', 'Maksim Belenko', '1234')
 
-        this.mailSenderService.sendPasswordResetEmail(
-            'maksim.belenko@gmail.com',
-            'Maksim Belenko', 
-            'https://google.com'
-        );
+        // this.mailSenderService.sendPasswordResetEmail(
+        //     'maksim.belenko@gmail.com',
+        //     'Maksim Belenko', 
+        //     'https://google.com'
+        // );
     }
 
     @Post('/test')

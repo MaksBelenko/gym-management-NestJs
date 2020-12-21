@@ -3,8 +3,8 @@ import * as config from 'config';
 const serverConfig = config.get('server');
 const refreshConfig = config.get('refreshjwt');
 const accessConfig = config.get('accessjwt');
+const passwordResetJwt = config.get('passwordResetJwt');
 const dbConfig = config.get('db');
-
 export const appConfig = {
     serverPort: process.env.PORT || serverConfig.port,
     jwt: {
@@ -15,6 +15,10 @@ export const appConfig = {
         refreshToken: {
             secret: process.env.JWT_REFRESH_SECRET || refreshConfig.secret,
             expiresIn: refreshConfig.expiresIn
+        },
+        passwordResetToken: {
+            secret: process.env.JWT_PASSWORD_RESET_SECRET || passwordResetJwt.secret,
+            expiresIn: passwordResetJwt.expiresIn
         }
     },
     db: {

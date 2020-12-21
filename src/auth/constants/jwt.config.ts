@@ -10,6 +10,11 @@ export const refreshJwtConfig: JwtConfig = {
     expiresIn: appConfig.jwt.refreshToken.expiresIn,
 }
 
+export const resetPasswordJwtConfig: JwtConfig = {
+    secret: appConfig.jwt.passwordResetToken.secret,
+    expiresIn: appConfig.jwt.passwordResetToken.expiresIn,
+}
+
 export class JwtConfig {
     secret: string;
     expiresIn: string;

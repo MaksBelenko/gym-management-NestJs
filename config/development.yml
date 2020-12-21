@@ -5,7 +5,10 @@ db:
   synchronize: true
 
 refreshjwt: 
-  secret: 'Development_Access_Tokent_Secret'
+  secret: 'Development_Access_Token_Secret'
 
 accessjwt:
-  secret: 'Development_Refresh_Tokent_Secret'
+  secret: 'Development_Refresh_Token_Secret'
+
+passwordResetJwt:
+  secret: 'Development_Password_Reset_Token_Secret'

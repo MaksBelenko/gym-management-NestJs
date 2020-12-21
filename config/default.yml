@@ -11,3 +11,6 @@ refreshjwt:
 
 accessjwt:
   expiresIn: '5m'
+
+passwordResetJwt:
+  expiresIn: '60m'
