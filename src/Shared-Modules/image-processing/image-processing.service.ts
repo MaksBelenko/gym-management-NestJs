@@ -15,7 +15,7 @@ export class ImageProcessingService {
     ];
 
     /**
-     * Resizes the image and outputs and new imae buffer
+     * Resizes the image and outputs and new image buffer
      * @param file Image file to be resized
      */
     async resizeImage(file: Express.Multer.File): Promise<ImageBuffers[]> {
@@ -41,6 +41,4 @@ export class ImageProcessingService {
 
         return imageBuffers;
     }
-
-    private;
 }

@@ -34,6 +34,14 @@ export class AuthService {
         return this.tokenService.generateAllTokens(payload);
     }
 
+    async confirmAccount(registerCredentialsDto: RegisterCredentialsDto): Promise<TokensResponseDto> {
+        const user = await this.userRepository.register(registerCredentialsDto);
+
+        const { email } = user;
+        const payload: JwtPayload = { email };
+        return this.tokenService.generateAllTokens(payload);
+    }
+
 
     async login(loginCredentialsDto: LoginCredentialsDto): Promise<TokensResponseDto> {
         const email = await this.userRepository.validateUserPassword(loginCredentialsDto);

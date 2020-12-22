@@ -13,4 +13,11 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     database: appConfig.db.database,
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
     synchronize: appConfig.db.synchronize,
+    migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+    migrationsTableName: appConfig.db.database,
+    migrationsRun: true,
+    // cli: {
+    //     migrationsDir: './migrations'
+    // },
 };
+

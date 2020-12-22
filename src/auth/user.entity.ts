@@ -17,4 +17,7 @@ export class User extends BaseEntity {
 
     @Column()
     salt: string;
+
+    @Column()
+    confirmed: boolean = false;
 }

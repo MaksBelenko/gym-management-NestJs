@@ -32,7 +32,7 @@ export class MailSenderService {
     async sendConfirmationEmail(toEmail: string, customerName: string, confirmationCode: string): Promise<void> {
 
         try {
-            const data: ConfirmationQueueData = { email: toEmail, confirmationCode };
+            const data: ConfirmationQueueData = { email: toEmail, customerName, confirmationCode };
             await this.mailQueue.add(confirmationEmailQueueName, data);
 
             this.logger.log(`Added confirmation email sending action to queue for ${toEmail} with confirmation code ${confirmationCode}`)

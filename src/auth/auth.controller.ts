@@ -11,6 +11,7 @@ import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { GetBearerToken } from './decorators/get-bearer-token.decorator';
 import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
 import { PasswordResetDto } from './dto/password-reset.dto';
+import { MailSenderService } from '../Shared-Modules/mail-sender/mail-sender.service';
 
 @Controller('/auth')
 export class AuthController {
@@ -66,16 +67,16 @@ export class AuthController {
     }
 
 
-    @Get('send-email')
-    sendEmail() {
-        // this.mailSenderService.sendConfirmationEmail('maksim.belenko@gmail.com', 'Maksim Belenko', '1234')
+    // @Get('send-email')
+    // sendEmail() {
+    //     this.mailSenderService.sendConfirmationEmail('maksim.belenko@gmail.com', 'Maksim Belenko', '169734')
 
-        // this.mailSenderService.sendPasswordResetEmail(
-        //     'maksim.belenko@gmail.com',
-        //     'Maksim Belenko', 
-        //     'https://google.com'
-        // );
-    }
+    //     // this.mailSenderService.sendPasswordResetEmail(
+    //     //     'maksim.belenko@gmail.com',
+    //     //     'Maksim Belenko', 
+    //     //     'https://google.com'
+    //     // );
+    // }
 
     @Post('/test')
     @UseGuards(AccessJwtGuard)
