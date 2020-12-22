@@ -1,10 +1,9 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtPayload } from 'src/auth/jwt-payload.interface';
-import { JwtConfig, accessJwtConfig, refreshJwtConfig } from '../../auth/constants/jwt.config';
-import { TokensResponseDto } from '../../auth/dto/tokens-response.dto';
-import { JwtTokensRepository } from './token.repository';
+import { JwtPayload } from 'src/End-Points/auth/jwt-payload.interface';
+import { JwtConfig, accessJwtConfig, refreshJwtConfig } from '../../End-Points/auth/constants/jwt.config';
+import { TokensResponseDto } from '../../End-Points/auth/dto/tokens-response.dto';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 @Injectable()
@@ -18,8 +17,6 @@ export class TokensService {
     constructor (
         private redisCacheService: RedisCacheService,
         private jwtService: JwtService,
-        @InjectRepository(JwtTokensRepository)
-        private tokenRepository: JwtTokensRepository,
     ) {}
 
 
