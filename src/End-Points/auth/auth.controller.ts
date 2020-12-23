@@ -11,6 +11,7 @@ import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { GetBearerToken } from './decorators/get-bearer-token.decorator';
 import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
 import { PasswordResetDto } from './dto/password-reset.dto';
+import { ConfirmEmailDto } from './dto/confirm-email.dto';
 
 @Controller('/auth')
 export class AuthController {
@@ -23,9 +24,18 @@ export class AuthController {
     @UseFilters(new QueryFailedExceptionFilter())
     register(
         @Body(ValidationPipe) registerCredentialsDto: RegisterCredentialsDto,
-    ): Promise<TokensResponseDto> {
+    ): Promise<void> {
         return this.authService.register(registerCredentialsDto);
     }
+
+
+    @Post('/confirm-email')
+    confirmEmail(
+        @Body(ValidationPipe) confirmEmailDto: ConfirmEmailDto,
+    ): Promise<TokensResponseDto> {
+        return this.authService.confirmAccount(confirmEmailDto);
+    }
+
 
     @Post('/signin')
     login(
@@ -33,6 +43,7 @@ export class AuthController {
     ): Promise<TokensResponseDto>  {
         return this.authService.login(loginCredentialsDto);
     }
+
 
     @Post('/token-refresh')
     @UseGuards(RenewTokensGuard)
@@ -43,18 +54,13 @@ export class AuthController {
     }
 
 
-    @Post('/confirm-email')
-    confirmEmail() {
-
-    }
-
-
     @Post('/password-reset-request')
     requestPasswordChange(
         @Body(ValidationPipe) passwordResetDto: PasswordResetDto,
     ): Promise<void> {
         return this.authService.requestPasswordChange(passwordResetDto);
     }
+    
 
     @Post('/reset-password')
     @UseGuards(AccessJwtGuard)
@@ -65,17 +71,6 @@ export class AuthController {
         return this.authService.resetPassword(user, newPassword);
     }
 
-
-    // @Get('send-email')
-    // sendEmail() {
-    //     this.mailSenderService.sendConfirmationEmail('maksim.belenko@gmail.com', 'Maksim Belenko', '169734')
-
-    //     // this.mailSenderService.sendPasswordResetEmail(
-    //     //     'maksim.belenko@gmail.com',
-    //     //     'Maksim Belenko', 
-    //     //     'https://google.com'
-    //     // );
-    // }
 
     @Post('/test')
     @UseGuards(AccessJwtGuard)

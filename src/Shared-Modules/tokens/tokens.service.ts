@@ -28,7 +28,7 @@ export class TokensService {
     }
 
     async renewTokens(payload: JwtPayload, refreshToken: string): Promise<TokensResponseDto> {
-        const currentAccessToken = await this.redisCacheService.get(refreshToken);
+        const currentAccessToken = await this.redisCacheService.get<any>(refreshToken);
         
         await this.redisCacheService.del(currentAccessToken.accessToken);
         await this.redisCacheService.del(refreshToken);

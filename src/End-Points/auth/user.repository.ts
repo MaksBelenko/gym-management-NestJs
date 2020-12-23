@@ -3,21 +3,38 @@ import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
 import { RegisterCredentialsDto } from './dto/register-credential.dto';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
+import { NotFoundException } from '@nestjs/common';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
     
-    async register(registerCredentialsDto: RegisterCredentialsDto): Promise<User> {
-    const { fullName, email, password } = registerCredentialsDto;
+    async registerUnconfirmedUser(registerCredentialsDto: RegisterCredentialsDto): Promise<User> {
+        const { fullName, email, password } = registerCredentialsDto;
 
-        const user = new User();
+        const user = this.create();
         user.fullName = fullName;
         user.email = email.toLowerCase();
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(password, user.salt);
+        
+        user.confirmed = false;
+        user.confirmationTries = 0;
+        user.initialRegisterTryTime = new Date();
 
         return user.save();
     }
+
+    async setUserConfirmed(email: string): Promise<User> {
+        const user = await this.findOne({ email });
+
+        if (!user) {
+            throw new NotFoundException();
+        }
+
+        user.confirmed = true;
+        return user.save();
+    }
+
 
     async changePassword(user: User, newPassword: string): Promise<User> {
         user.salt = await bcrypt.genSalt();

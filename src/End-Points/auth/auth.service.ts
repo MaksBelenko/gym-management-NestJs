@@ -2,15 +2,17 @@ import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from './jwt-payload.interface';
+import { User } from './user.entity';
 import { UserRepository } from './user.repository';
+import { TokensService } from '../../Shared-Modules/tokens/tokens.service';
+import { MailSenderService } from '../../Shared-Modules/mail-sender/mail-sender.service';
 import { RegisterCredentialsDto } from './dto/register-credential.dto';
 import { TokensResponseDto } from './dto/tokens-response.dto';
-import { TokensService } from '../../Shared-Modules/tokens/tokens.service';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
-import { User } from './user.entity';
 import { PasswordResetDto } from './dto/password-reset.dto';
-import { MailSenderService } from '../../Shared-Modules/mail-sender/mail-sender.service';
+import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { resetPasswordJwtConfig } from './constants/jwt.config';
+import { EmailConfirmationCodeService } from '../../Shared-Modules/mail-sender/email-confirmation-codes.service';
 
 @Injectable()
 export class AuthService {
@@ -23,21 +25,30 @@ export class AuthService {
         private tokenService: TokensService,
         private mailSenderService: MailSenderService,
         private configService: ConfigService,
+        private emailConfirmService: EmailConfirmationCodeService,
     ) {}
 
 
-    async register(registerCredentialsDto: RegisterCredentialsDto): Promise<TokensResponseDto> {
-        const user = await this.userRepository.register(registerCredentialsDto);
+    async register(registerCredentialsDto: RegisterCredentialsDto): Promise<void> {
+        const user = await this.userRepository.registerUnconfirmedUser(registerCredentialsDto);
 
-        const { email } = user;
-        const payload: JwtPayload = { email };
-        return this.tokenService.generateAllTokens(payload);
+        const { email, fullName } = registerCredentialsDto;
+        const confirmationCode = await this.emailConfirmService.generateConfirmationCode(email)
+        await this.mailSenderService.sendConfirmationEmail(email, fullName, confirmationCode);
     }
 
-    async confirmAccount(registerCredentialsDto: RegisterCredentialsDto): Promise<TokensResponseDto> {
-        const user = await this.userRepository.register(registerCredentialsDto);
+    async confirmAccount(confirmEmailDto: ConfirmEmailDto): Promise<TokensResponseDto> {
+        // const user = await this.userRepository.registerUnconfirmedUser(registerCredentialsDto);
 
-        const { email } = user;
+        const { email, code } = confirmEmailDto;
+        const confirmationCodeMatches = await this.emailConfirmService.codeMatches(email, code);
+
+        if (confirmationCodeMatches == false) {
+            throw new UnauthorizedException();
+        }
+
+        await this.userRepository.setUserConfirmed(email);
+
         const payload: JwtPayload = { email };
         return this.tokenService.generateAllTokens(payload);
     }

@@ -20,7 +20,7 @@ export class DateHelper {
 
     getEpochDate(dateObject: IDateObject): number {
         const date = new Date(dateObject.year, dateObject.month, dateObject.day, dateObject.hours, dateObject.minutes);
-        return date.getTime();
+        return 	Math.floor(new Date().getTime()/1000.0);
     }
 
 

@@ -19,5 +19,11 @@ export class User extends BaseEntity {
     salt: string;
 
     @Column()
-    confirmed = false;
+    confirmed: boolean;
+
+    @Column({ default: 0 })
+    confirmationTries: number;
+
+    @Column({ default: new Date() })
+    initialRegisterTryTime: Date;
 }

@@ -5,9 +5,12 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { BullModule, BullModuleOptions } from '@nestjs/bull';
 import { MailSenderService } from './mail-sender.service';
 import { MailProcessor } from './mail.processor';
+import { EmailConfirmationCodeService } from './email-confirmation-codes.service';
+import { RedisCacheModule } from '../redis-cache/redis-cache.module';
 
 @Module({
     imports: [
+        RedisCacheModule,
         MailerModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
@@ -60,7 +63,11 @@ import { MailProcessor } from './mail.processor';
     providers: [
         MailSenderService,
         MailProcessor,
+        EmailConfirmationCodeService,
     ],
-    exports: [MailSenderService],
+    exports: [
+        MailSenderService,
+        EmailConfirmationCodeService
+    ],
 })
 export class MailSenderModule {}

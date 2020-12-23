@@ -24,7 +24,7 @@ export class GymClassRepository extends Repository<GymClass> {
     async createGymClass(createClassDto: CreateGymClassDto): Promise<GymClass> {
         const { name, description } = createClassDto;
 
-        const gymClass = new GymClass();
+        const gymClass = this.create();
         gymClass.name = name;
         gymClass.description = description;
         await gymClass.save();
