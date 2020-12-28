@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PhotosService } from './photos.service';
-import { AwsService } from '../aws/aws.service';
-import { ImageProcessingService } from '../image-processing/image-processing.service';
-import { PhotoRepository } from './photo.repository';
+import { PhotosService } from '../photos.service';
+import { AwsService } from '../../aws/aws.service';
+import { ImageProcessingService } from '../../image-processing/image-processing.service';
+import { PhotoRepository } from '../photo.repository';
 
 const mockAwsService = () => ({
 });

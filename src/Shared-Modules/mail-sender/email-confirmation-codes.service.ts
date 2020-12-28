@@ -10,14 +10,16 @@ interface CodeConfirmationData {
 @Injectable()
 export class EmailConfirmationCodeService {
 
-    private queuePrefix = 'email_validation:';
+    private readonly queuePrefix = 'email_validation:';
 
-    private generateRandomSixDigitNumber = new Promise<number>((resolve, reject) => {
-        const value: number = Math.floor(100000 + Math.random() * 900000);
-        resolve(value)
-    });
+    private readonly generateRandomSixDigitNumber = (min: number, max: number) => {
+        return new Promise<number>((resolve, reject) => {
+            const value: number = Math.floor(Math.random()*(max-min+1)+min);
+            resolve(value)
+        });
+    } 
 
-    private redisMinute = 60;
+    private readonly redisMinute = 60;
 
     constructor(
         private readonly redisCacheService: RedisCacheService,
@@ -48,6 +50,6 @@ export class EmailConfirmationCodeService {
 
 
     private async generateCode(): Promise<string> {
-        return (await this.generateRandomSixDigitNumber).toString();
+        return (await this.generateRandomSixDigitNumber(100_000, 900_000)).toString();
     }
 }

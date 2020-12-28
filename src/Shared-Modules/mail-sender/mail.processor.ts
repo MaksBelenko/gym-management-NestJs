@@ -30,6 +30,8 @@ export class MailProcessor {
 
     @OnQueueCompleted()
     onComplete(job: Job, result: any) {
+        delete result.raw
+
         this.logger.debug(
             `Completed job ${job.id} of type ${job.name}. Result: ${JSON.stringify(result)}`,
         );
@@ -51,7 +53,7 @@ export class MailProcessor {
     async sendAccountConfirmationEmail(
         job: Job<ConfirmationQueueData>,
     ): Promise<any> {
-        this.logger.log(`Sending confirmation email to '${job.data.email}...'`);
+        this.logger.log(`Sending confirmation email to '${job.data.email}'...`);
 
         const { email, customerName, confirmationCode } = job.data;
 

@@ -7,6 +7,7 @@ import { MailSenderService } from './mail-sender.service';
 import { MailProcessor } from './mail.processor';
 import { EmailConfirmationCodeService } from './email-confirmation-codes.service';
 import { RedisCacheModule } from '../redis-cache/redis-cache.module';
+import { SES } from 'aws-sdk';
 
 @Module({
     imports: [
@@ -15,14 +16,19 @@ import { RedisCacheModule } from '../redis-cache/redis-cache.module';
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
                 transport: {
-                    host: configService.get<string>('MAIL_HOST'),
-                    port: configService.get<string>('MAIL_SMTP_PORT'),
-                    secure: false, //configService.get('MAIL_SECURE'),
-                    // tls: { ciphers: 'SSLv3', }, // gmail
-                    auth: {
-                        user: configService.get<string>('MAIL_USER'),
-                        pass: configService.get<string>('MAIL_PASSWORD'),
-                    },
+                    // host: configService.get<string>('MAIL_HOST'),
+                    // port: configService.get<string>('MAIL_SMTP_PORT'),
+                    // secure: false, //configService.get('MAIL_SECURE'),
+                    // // tls: { ciphers: 'SSLv3', }, // gmail
+                    // auth: {
+                    //     user: configService.get<string>('MAIL_USER'),
+                    //     pass: configService.get<string>('MAIL_PASSWORD'),
+                    // },
+                    SES: new SES({
+                        accessKeyId: configService.get('AWS_ACCESS_KEY'),
+                        secretAccessKey: configService.get('AWS_SECRET_KEY'),
+                        region: configService.get('AWS_REGION')
+                    })
                 },
                 defaults: {
                     from: `"${configService.get('MAIL_RESPONSE_NAME',)}" <${configService.get('MAIL_RESPONSE_EMAIL')}>`,

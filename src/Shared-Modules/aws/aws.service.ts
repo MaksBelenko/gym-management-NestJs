@@ -8,9 +8,12 @@ import { ImageSize } from '../../shared/image-size.enum';
 
 @Injectable()
 export class AwsService {
-    private s3 = new S3();
+    // private s3 = new S3();
 
-    constructor(private configService: ConfigService) {}
+    constructor(
+        private readonly configService: ConfigService,
+        private readonly s3: S3,
+    ) {}
 
     /**
      * Uploading multiple images
@@ -67,12 +70,11 @@ export class AwsService {
      * @param nameKey Name of the image to download
      */
     async downloadImage(nameKey: string) {
-        const stream = await this.s3
-            .getObject({
-                Bucket: this.configService.get('AWS_BUCKET_NAME'),
-                Key: nameKey,
-            })
-            .createReadStream();
+        const stream = this.s3.getObject({
+            Bucket: this.configService.get('AWS_BUCKET_NAME'),
+            Key: nameKey,
+        })
+        .createReadStream()
 
         return { stream };
     }

@@ -21,11 +21,11 @@ export class AuthService {
 
     constructor (
         @InjectRepository(UserRepository)
-        private userRepository: UserRepository,
-        private tokenService: TokensService,
-        private mailSenderService: MailSenderService,
-        private configService: ConfigService,
-        private emailConfirmService: EmailConfirmationCodeService,
+        private readonly userRepository: UserRepository,
+        private readonly tokenService: TokensService,
+        private readonly mailSenderService: MailSenderService,
+        private readonly configService: ConfigService,
+        private readonly emailConfirmService: EmailConfirmationCodeService,
     ) {}
 
 
@@ -34,12 +34,11 @@ export class AuthService {
 
         const { email, fullName } = registerCredentialsDto;
         const confirmationCode = await this.emailConfirmService.generateConfirmationCode(email)
+        
         await this.mailSenderService.sendConfirmationEmail(email, fullName, confirmationCode);
     }
 
     async confirmAccount(confirmEmailDto: ConfirmEmailDto): Promise<TokensResponseDto> {
-        // const user = await this.userRepository.registerUnconfirmedUser(registerCredentialsDto);
-
         const { email, code } = confirmEmailDto;
         const confirmationCodeMatches = await this.emailConfirmService.codeMatches(email, code);
 
