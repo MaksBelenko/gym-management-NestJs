@@ -7,10 +7,13 @@ import { UserRepository } from '../user.repository';
 import { User } from '../user.entity';
 import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
 
+
+export const JwtRefreshStrategyName = 'jwt-refresh-strategy';
+
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
     Strategy,
-    'jwt-refresh-strategy',
+    JwtRefreshStrategyName,
 ) {
     constructor(
         private readonly tokenService: TokensService,

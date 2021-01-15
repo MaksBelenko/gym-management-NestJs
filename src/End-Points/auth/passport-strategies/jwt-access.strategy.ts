@@ -8,10 +8,13 @@ import { accessJwtConfig } from '../constants/jwt.config';
 import { User } from '../user.entity';
 import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
 
+export const JwtAccessStrategyName: string = 'jwt-access-strategy';
+
+
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(
     Strategy,
-    'jwt-access-strategy',
+    JwtAccessStrategyName,
 ) {
     constructor(
         private readonly tokenService: TokensService,
