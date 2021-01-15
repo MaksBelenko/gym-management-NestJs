@@ -3,11 +3,13 @@ import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
 import { RegisterCredentialsDto } from './dto/register-credential.dto';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, Logger } from '@nestjs/common';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    
+    private readonly logger = new Logger(this.constructor.name);
+
+
     async registerUnconfirmedUser(registerCredentialsDto: RegisterCredentialsDto): Promise<User> {
         const { fullName, email, password } = registerCredentialsDto;
 
@@ -21,6 +23,8 @@ export class UserRepository extends Repository<User> {
         user.confirmationTries = 0;
         user.initialRegisterTryTime = new Date();
 
+        this.logger.log(`Register request for unconfirmed user ${user}`);
+
         return user.save();
     }
 
@@ -28,9 +32,11 @@ export class UserRepository extends Repository<User> {
         const user = await this.findOne({ email });
 
         if (!user) {
+            this.logger.log(`Unable to find user with email ${email} to confirm the account`);
             throw new NotFoundException();
         }
 
+        this.logger.log(`Setting user with email ${email} as a confirmed account`);
         user.confirmed = true;
         return user.save();
     }
@@ -39,6 +45,8 @@ export class UserRepository extends Repository<User> {
     async changePassword(user: User, newPassword: string): Promise<User> {
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(newPassword, user.salt);
+
+        this.logger.log(`User with email ${user.email} has changed the password`);
 
         return user.save();
     }

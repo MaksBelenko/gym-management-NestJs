@@ -27,7 +27,7 @@ export class RenewTokensStrategy extends PassportStrategy(
     async validate(req: any, payload: any): Promise<{ refreshToken: string, email: string }> {
 
         const header = req.headers.authorization;
-        const refreshToken = await this.tokenService.refreshTokenExists(header);
+        const refreshToken = await this.tokenService.tokenExists(header);
 
         if (!refreshToken) {
             throw new UnauthorizedException();

@@ -12,7 +12,10 @@ import { GetBearerToken } from './decorators/get-bearer-token.decorator';
 import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
+import { IsPublicRoute } from './decorators/public.decorator';
 
+
+@UseFilters(new QueryFailedExceptionFilter())
 @Controller('/auth')
 export class AuthController {
 
@@ -20,8 +23,9 @@ export class AuthController {
         private authService: AuthService,
     ) {} 
 
+
+    @IsPublicRoute()
     @Post('/signup')
-    @UseFilters(new QueryFailedExceptionFilter())
     register(
         @Body(ValidationPipe) registerCredentialsDto: RegisterCredentialsDto,
     ): Promise<void> {
@@ -29,6 +33,7 @@ export class AuthController {
     }
 
 
+    @IsPublicRoute()
     @Post('/confirm-email')
     confirmEmail(
         @Body(ValidationPipe) confirmEmailDto: ConfirmEmailDto,
@@ -37,6 +42,7 @@ export class AuthController {
     }
 
 
+    @IsPublicRoute()
     @Post('/signin')
     login(
         @Body(ValidationPipe) loginCredentialsDto: LoginCredentialsDto,
@@ -45,6 +51,7 @@ export class AuthController {
     }
 
 
+    @IsPublicRoute(false)
     @Post('/token-refresh')
     @UseGuards(RenewTokensGuard)
     renewTokens(
@@ -54,6 +61,7 @@ export class AuthController {
     }
 
 
+    @IsPublicRoute()
     @Post('/password-reset-request')
     requestPasswordChange(
         @Body(ValidationPipe) passwordResetDto: PasswordResetDto,
@@ -63,10 +71,10 @@ export class AuthController {
     
 
     @Post('/reset-password')
-    @UseGuards(AccessJwtGuard)
+    // @UseGuards(AccessJwtGuard)
     resetPassword(
         @GetUser() user: User,
-        @Param('newPassword') newPassword: string,
+        @Body('new-password') newPassword: string,
     ): Promise<void> {
         return this.authService.resetPassword(user, newPassword);
     }

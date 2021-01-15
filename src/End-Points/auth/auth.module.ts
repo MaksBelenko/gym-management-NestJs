@@ -14,6 +14,8 @@ import { GoogleAuthService } from './google-auth/google-auth.service';
 import { GoogleStrategy } from './passport-strategies/google.strategy';
 import { MailSenderModule } from '../../Shared-Modules/mail-sender/mail-sender.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
 
 @Module({
   imports: [
@@ -34,7 +36,11 @@ import { ConfigModule } from '@nestjs/config';
     JwtRefreshStrategy,
     RenewTokensStrategy,
     GoogleAuthService,
-    GoogleStrategy
+    GoogleStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: AccessJwtGuard, // SETS GLOBAL GUARD AS ACCESS TOKEN
+    }    
   ],
   exports: [
     JwtAccessStrategy,

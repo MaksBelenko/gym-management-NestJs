@@ -8,8 +8,8 @@ import {
     Processor,
 } from '@nestjs/bull';
 import { Job } from 'bull';
-import { ConfirmationQueueData } from './interfaces/confirm-data.interface';
 import { plainToClass } from 'class-transformer';
+import { ConfirmationQueueData } from './interfaces/confirm-data.interface';
 import { PasswordResetData } from './interfaces/password-reset-data.interface';
 import { confirmationEmailQueueName, resetPasswordQueueName } from './email.consts';
 

@@ -20,7 +20,7 @@ export class TokensService {
     ) {}
 
 
-    async refreshTokenExists(bearerHeader: string): Promise<string> {
+    async tokenExists(bearerHeader: string): Promise<string> {
         const receivedToken = this.getTokenFromBearerHeader(bearerHeader)
         const value = this.redisCacheService.get(receivedToken);
 

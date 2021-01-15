@@ -7,7 +7,7 @@ export class LoginCredentialsDto {
 
     @IsString()
     @MinLength(8)
-    @MaxLength(20)
+    @MaxLength(30)
     @Matches(PasswordRegex, { message: 'Weak password'})
     password: string;
 }
