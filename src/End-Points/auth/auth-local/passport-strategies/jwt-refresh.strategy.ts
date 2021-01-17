@@ -2,18 +2,18 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { refreshJwtConfig } from '../constants/jwt.config';
-import { UserRepository } from '../user.repository';
-import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
+import { refreshJwtConfig } from '../../constants/jwt.config';
+import { UserRepository } from '../../user.repository';
+import { User } from '../../user.entity';
+import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
 
 
-export const RenewTokensStrategyName = 'no-user-refresh-strategy';
-
+export const JwtRefreshStrategyName = 'jwt-refresh-strategy';
 
 @Injectable()
-export class RenewTokensStrategy extends PassportStrategy(
+export class JwtRefreshStrategy extends PassportStrategy(
     Strategy,
-    RenewTokensStrategyName,
+    JwtRefreshStrategyName,
 ) {
     constructor(
         private readonly tokenService: TokensService,
@@ -28,16 +28,22 @@ export class RenewTokensStrategy extends PassportStrategy(
         });
     }
 
-    async validate(req: any, payload: any): Promise<{ refreshToken: string, email: string }> {
+    async validate(req: any, payload: any): Promise<User> {
 
         const header = req.headers.authorization;
-        const refreshToken = await this.tokenService.tokenExists(header);
+        const existingToken = await this.tokenService.tokenExists(header);
 
-        if (!refreshToken) {
+        if (!existingToken) {
             throw new UnauthorizedException();
         }
 
         const { email } = payload;
-        return { refreshToken, email };
+        const user = await this.userRepository.findOne({ email });
+
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+
+        return user;
     }
 }

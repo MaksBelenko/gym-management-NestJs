@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtPayload } from 'src/End-Points/auth/jwt-payload.interface';
 import { JwtConfig, accessJwtConfig, refreshJwtConfig } from '../../End-Points/auth/constants/jwt.config';
-import { TokensResponseDto } from '../../End-Points/auth/dto/tokens-response.dto';
+import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 
 @Injectable()

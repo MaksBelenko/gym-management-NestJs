@@ -1,26 +1,26 @@
 import { Body, Controller, Param, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
-import { RegisterCredentialsDto } from './dto/register-credential.dto';
-import { AuthService } from './auth.service';
-import { GetUser } from './decorators/get-user.decorator';
-import { User } from './user.entity';
+import { RegisterCredentialsDto } from './dto/register-credentials.dto';
+import { LocalAuthService } from './local-auth.service';
+import { GetUser } from '../decorators/get-user.decorator';
+import { User } from '../user.entity';
 import { TokensResponseDto } from './dto/tokens-response.dto';
-import { QueryFailedExceptionFilter } from '../../Exception-filters/query-failed-exception.filter';
+import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
 import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
 import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
-import { GetBearerToken } from './decorators/get-bearer-token.decorator';
+import { GetBearerToken } from '../decorators/get-bearer-token.decorator';
 import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-import { IsPublicRoute } from './decorators/public.decorator';
+import { IsPublicRoute } from '../decorators/public.decorator';
 
 
 @UseFilters(new QueryFailedExceptionFilter())
-@Controller('/auth')
-export class AuthController {
+@Controller('/auth/local')
+export class LocalAuthController {
 
     constructor(
-        private authService: AuthService,
+        private localAuthService: LocalAuthService,
     ) {} 
 
 
@@ -29,7 +29,7 @@ export class AuthController {
     register(
         @Body(ValidationPipe) registerCredentialsDto: RegisterCredentialsDto,
     ): Promise<void> {
-        return this.authService.register(registerCredentialsDto);
+        return this.localAuthService.register(registerCredentialsDto);
     }
 
 
@@ -38,7 +38,7 @@ export class AuthController {
     confirmEmail(
         @Body(ValidationPipe) confirmEmailDto: ConfirmEmailDto,
     ): Promise<TokensResponseDto> {
-        return this.authService.confirmAccount(confirmEmailDto);
+        return this.localAuthService.confirmAccount(confirmEmailDto);
     }
 
 
@@ -47,7 +47,7 @@ export class AuthController {
     login(
         @Body(ValidationPipe) loginCredentialsDto: LoginCredentialsDto,
     ): Promise<TokensResponseDto>  {
-        return this.authService.login(loginCredentialsDto);
+        return this.localAuthService.login(loginCredentialsDto);
     }
 
 
@@ -57,7 +57,7 @@ export class AuthController {
     renewTokens(
         @GetBearerToken() refreshObject: { refreshToken: string, email: string },
     ): Promise<TokensResponseDto> {
-        return this.authService.renewTokens(refreshObject);
+        return this.localAuthService.renewTokens(refreshObject);
     }
 
 
@@ -66,17 +66,17 @@ export class AuthController {
     requestPasswordChange(
         @Body(ValidationPipe) passwordResetDto: PasswordResetDto,
     ): Promise<void> {
-        return this.authService.requestPasswordChange(passwordResetDto);
+        return this.localAuthService.requestPasswordChange(passwordResetDto);
     }
     
 
     @Post('/reset-password')
-    // @UseGuards(AccessJwtGuard)
+    @UseGuards(AccessJwtGuard)
     resetPassword(
         @GetUser() user: User,
         @Body('new-password') newPassword: string,
     ): Promise<void> {
-        return this.authService.resetPassword(user, newPassword);
+        return this.localAuthService.resetPassword(user, newPassword);
     }
 
 

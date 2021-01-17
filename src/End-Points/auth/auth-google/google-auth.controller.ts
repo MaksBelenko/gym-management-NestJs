@@ -1,16 +1,14 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
-import { GoogleAuthGuard } from '../auth-guards/google.authguard';
+import { GoogleAuthGuard } from './auth-guards/google.authguard';
 import { GoogleAuthService } from './google-auth.service';
-import GoogleUser from '../Models/google-user.model';
+import GoogleUser from './models/google-user.model';
 import { GetUser } from '../decorators/get-user.decorator';
-import { AuthService } from '../auth.service';
 
-@Controller('google')
+@Controller('/auth/google')
 export class GoogleAuthController {
 
   constructor(
     private readonly googleService: GoogleAuthService,
-    private authService: AuthService,
   ) {}
 
   @Get()

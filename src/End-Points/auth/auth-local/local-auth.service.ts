@@ -1,21 +1,21 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './jwt-payload.interface';
-import { User } from './user.entity';
-import { UserRepository } from './user.repository';
-import { TokensService } from '../../Shared-Modules/tokens/tokens.service';
-import { MailSenderService } from '../../Shared-Modules/mail-sender/mail-sender.service';
-import { RegisterCredentialsDto } from './dto/register-credential.dto';
+import { JwtPayload } from '../jwt-payload.interface';
+import { User } from '../user.entity';
+import { UserRepository } from '../user.repository';
+import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
+import { MailSenderService } from '../../../Shared-Modules/mail-sender/mail-sender.service';
+import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-import { resetPasswordJwtConfig } from './constants/jwt.config';
-import { EmailConfirmationCodeService } from '../../Shared-Modules/mail-sender/email-confirmation-codes.service';
+import { resetPasswordJwtConfig } from '../constants/jwt.config';
+import { EmailConfirmationCodeService } from '../../../Shared-Modules/mail-sender/email-confirmation-codes.service';
 
 @Injectable()
-export class AuthService {
+export class LocalAuthService {
 
     private readonly logger = new Logger(this.constructor.name);
 

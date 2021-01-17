@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { config } from 'dotenv';
-import GoogleUser from '../Models/google-user.model';
+import GoogleUser from '../models/google-user.model';
 
 // config();
 

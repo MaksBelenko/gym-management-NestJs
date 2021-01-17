@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
-import { RegisterCredentialsDto } from './dto/register-credential.dto';
-import { LoginCredentialsDto } from './dto/login-credentials.dto';
+import { RegisterCredentialsDto } from './auth-local/dto/register-credentials.dto';
+import { LoginCredentialsDto } from './auth-local/dto/login-credentials.dto';
 import { NotFoundException, Logger } from '@nestjs/common';
 
 @EntityRepository(User)
@@ -43,7 +43,8 @@ export class UserRepository extends Repository<User> {
 
 
     async changePassword(user: User, newPassword: string): Promise<User> {
-        user.salt = await bcrypt.genSalt();
+        const salt = await bcrypt.genSalt();
+        user.salt = salt;
         user.password = await this.hashPassword(newPassword, user.salt);
 
         this.logger.log(`User with email ${user.email} has changed the password`);
