@@ -10,6 +10,8 @@ import { RenewTokensStrategy } from './passport-strategies/renew-tokens.strategy
 import { MailSenderModule } from 'src/Shared-Modules/mail-sender/mail-sender.module';
 import { TokensModule } from 'src/Shared-Modules/tokens/tokens.module';
 import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
+import { AccessJwtGuard } from './guards/access-jwt.guard';
+import { RolesGuard } from '../RBAC/roles.guard';
 
 @Module({
     imports: [
@@ -37,6 +39,8 @@ import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
         JwtAccessStrategy,
         JwtRefreshStrategy,
         RenewTokensStrategy,
+        AccessJwtGuard,
+        RolesGuard
     ],
     exports: [
         JwtAccessStrategy,

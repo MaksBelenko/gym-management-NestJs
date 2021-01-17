@@ -1,19 +1,20 @@
-import { Body, Controller, Param, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { LocalAuthService } from './local-auth.service';
 import { GetUser } from '../decorators/get-user.decorator';
 import { User } from '../user.entity';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
-import { AccessJwtGuard } from './auth-guards/access-jwt.authguard';
-import { RefreshJwtGuard } from './auth-guards/refresh-jwt.authguard';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { GetBearerToken } from '../decorators/get-bearer-token.decorator';
-import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
+import { RenewTokensGuard } from './guards/tokens-renew.guard';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { IsPublicRoute } from '../decorators/public.decorator';
-import { ResetPasswordJwtGuard } from './auth-guards/reset-password-jwt.authguard';
+import { ResetPasswordJwtGuard } from './guards/reset-password-jwt.guard';
+import { Roles } from '../RBAC/roles.decorator';
+import { Role } from '../RBAC/role.enum';
+import { UserAuthGuard } from './guards/user-auth.guard';
 
 
 @UseFilters(new QueryFailedExceptionFilter())
@@ -82,7 +83,10 @@ export class LocalAuthController {
 
 
     @Post('/test')
-    @UseGuards(AccessJwtGuard)
+    @Roles(Role.Admin)
+    @UseGuards(UserAuthGuard)
+    // @UseGuards(RolesGuard)
+    // @UseGuards(AccessJwtGuard)
     test(@GetUser() user: User) {
         return user;
     }
