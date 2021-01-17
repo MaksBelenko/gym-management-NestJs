@@ -13,6 +13,7 @@ import { RenewTokensGuard } from './auth-guards/tokens-renew.authguard';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { IsPublicRoute } from '../decorators/public.decorator';
+import { ResetPasswordJwtGuard } from './auth-guards/reset-password-jwt.authguard';
 
 
 @UseFilters(new QueryFailedExceptionFilter())
@@ -71,7 +72,7 @@ export class LocalAuthController {
     
 
     @Post('/reset-password')
-    @UseGuards(AccessJwtGuard)
+    @UseGuards(ResetPasswordJwtGuard)
     resetPassword(
         @GetUser() user: User,
         @Body('new-password') newPassword: string,
@@ -83,6 +84,6 @@ export class LocalAuthController {
     @Post('/test')
     @UseGuards(AccessJwtGuard)
     test(@GetUser() user: User) {
-        console.log(user);
+        return user;
     }
 }
