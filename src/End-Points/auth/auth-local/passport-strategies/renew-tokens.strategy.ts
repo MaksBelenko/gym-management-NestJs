@@ -5,6 +5,7 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { refreshJwtConfig } from '../../constants/jwt.config';
 import { UserRepository } from '../../user.repository';
 import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
+import { JwtPayload } from '../../../../Shared-Modules/tokens/jwt-payload.interface';
 
 
 export const RenewTokensStrategyName = 'no-user-refresh-strategy';
@@ -28,7 +29,7 @@ export class RenewTokensStrategy extends PassportStrategy(
         });
     }
 
-    async validate(req: any, payload: any): Promise<{ refreshToken: string, email: string }> {
+    async validate(req: any, payload: JwtPayload): Promise<{ refreshToken: string, payload: JwtPayload }> {
 
         const header = req.headers.authorization;
         const refreshToken = await this.tokenService.tokenExists(header);
@@ -37,7 +38,6 @@ export class RenewTokensStrategy extends PassportStrategy(
             throw new UnauthorizedException();
         }
 
-        const { email } = payload;
-        return { refreshToken, email };
+        return { refreshToken, payload };
     }
 }

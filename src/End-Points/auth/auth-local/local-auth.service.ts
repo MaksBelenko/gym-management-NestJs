@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from '../jwt-payload.interface';
+import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
 import { User } from '../user.entity';
 import { UserRepository } from '../user.repository';
 import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
@@ -35,6 +35,7 @@ export class LocalAuthService {
         const { email, fullName } = registerCredentialsDto;
         const confirmationCode = await this.emailConfirmService.generateConfirmationCode(email)
         
+        // TODO: Remove await as there is no need to wait sending email (AND CHECK)
         await this.mailSenderService.sendConfirmationEmail(email, fullName, confirmationCode);
     }
 
@@ -42,50 +43,47 @@ export class LocalAuthService {
         const { email, code } = confirmEmailDto;
         const confirmationCodeMatches = await this.emailConfirmService.codeMatches(email, code);
 
+        // TODO: Add logic for only 3 tries
         if (confirmationCodeMatches == false) {
             throw new UnauthorizedException();
         }
 
-        await this.userRepository.setUserConfirmed(email);
+        const user = await this.userRepository.setUserConfirmed(email);
 
-        const payload: JwtPayload = { email };
-        return this.tokenService.generateAllTokens(payload);
+        return this.getTokensFor(user);
     }
 
 
     async login(loginCredentialsDto: LoginCredentialsDto): Promise<TokensResponseDto> {
-        const email = await this.userRepository.validateUserPassword(loginCredentialsDto);
+        const user = await this.userRepository.validateUserPassword(loginCredentialsDto);
 
-        if (!email) {
+        if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const payload: JwtPayload = { email };
-        return this.tokenService.generateAllTokens(payload);
+        return this.getTokensFor(user);
     }
 
-    async renewTokens(refreshObject: { refreshToken: string, email: string }): Promise<TokensResponseDto> {
-        const { email } = refreshObject;
-        const payload: JwtPayload = { email };
+    async renewTokens(refreshObject: { refreshToken: string, payload: JwtPayload }): Promise<TokensResponseDto> {
+        const { payload, refreshToken} = refreshObject;
 
-        return this.tokenService.renewTokens(payload, refreshObject.refreshToken);
+        return this.tokenService.renewTokens(payload, refreshToken);
     }
 
 
     async requestPasswordChange(passwordResetDto: PasswordResetDto): Promise<void> {
         const { email } = passwordResetDto;
-
-        const user = await this.userRepository.findOne({
-            where: { email }
-        });
+        const user = await this.userRepository.findUserByEmail(email);
 
         if (!user) {
             this.logger.log(`User with email ${email} not found from users therefore no password email reset is sent`);
             return;
         }
 
-        const { fullName } = user;
-        const payload: JwtPayload = { email };
+        const { fullName, role } = user;
+
+        // TODO: Add interface for just email payload
+        const payload: JwtPayload = { email, role };
 
         const passwordResetAccessToken = await this.tokenService.generateToken(payload, resetPasswordJwtConfig);
         const baseUrl = this.configService.get('BASE_URL_NO_PORT');
@@ -99,7 +97,21 @@ export class LocalAuthService {
         );
     }
 
-    async resetPassword(user: User, newPassword: string): Promise<void> {
+    async resetPassword(jwtPayload: JwtPayload, newPassword: string): Promise<void> {
+        const { email } = jwtPayload;
+        const user = await this.userRepository.findUserByEmail(email);
+
         await this.userRepository.changePassword(user, newPassword);
     }
+
+
+    //#region Private Methods 
+    private getTokensFor(user: User): Promise<TokensResponseDto> {
+        const { email, role } = user;
+        const payload: JwtPayload = { email, role };
+        
+        return this.tokenService.generateAllTokens(payload);
+    }
+
+    //#endregion
 }

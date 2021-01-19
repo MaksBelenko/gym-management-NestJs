@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Role } from './RBAC/role.enum';
 
 @Entity()
 @Unique(['email'])
@@ -7,10 +8,13 @@ export class User extends BaseEntity {
     id: string;
 
     @Column()
-    fullName: string;
+    email: string;
 
     @Column()
-    email: string;
+    fullName: string;
+
+    @Column({ default: Role.User })
+    role: Role;
 
     @Column()
     password: string;

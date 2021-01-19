@@ -8,7 +8,9 @@ import { RedisCacheModule } from '../redis-cache/redis-cache.module';
     JwtModule.register({}),
     RedisCacheModule,
   ],
-  providers: [TokensService],
+  providers: [
+    TokensService,
+  ],
   exports: [TokensService]
 })
 export class TokensModule {}

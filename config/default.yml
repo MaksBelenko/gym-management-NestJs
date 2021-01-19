@@ -10,7 +10,7 @@ refreshjwt:
   expiresIn: '30d'
 
 accessjwt:
-  expiresIn: '5m'
+  expiresIn: '20m'
 
 passwordResetJwt:
   expiresIn: '60m'

@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { RegisterCredentialsDto } from './auth-local/dto/register-credentials.dto';
 import { LoginCredentialsDto } from './auth-local/dto/login-credentials.dto';
 import { NotFoundException, Logger } from '@nestjs/common';
+import { Role } from './RBAC/role.enum';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -14,8 +15,9 @@ export class UserRepository extends Repository<User> {
         const { fullName, email, password } = registerCredentialsDto;
 
         const user = this.create();
-        user.fullName = fullName;
         user.email = email.toLowerCase();
+        user.fullName = fullName;
+        user.role = Role.User;
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(password, user.salt);
         
@@ -36,7 +38,7 @@ export class UserRepository extends Repository<User> {
             throw new NotFoundException();
         }
 
-        this.logger.log(`Setting user with email ${email} as a confirmed account`);
+        this.logger.log(`Account has been confirmed for email ${email}`);
         user.confirmed = true;
         return user.save();
     }
@@ -52,12 +54,12 @@ export class UserRepository extends Repository<User> {
         return user.save();
     }
 
-    async validateUserPassword(loginCredentialsDto: LoginCredentialsDto): Promise<string> {
+    async validateUserPassword(loginCredentialsDto: LoginCredentialsDto): Promise<User> {
         const { email, password } = loginCredentialsDto;
         const user = await this.findOne({ email });
 
         if (user && await this.validatePassword(user, password)) {
-            return user.email;
+            return user;
         }
 
         return null;
@@ -68,7 +70,18 @@ export class UserRepository extends Repository<User> {
         return hashedPassword == user.password;
     }
 
+
+    async findUserByEmail(email: string): Promise<User> {
+        return this.findOne({
+            where: { email }
+        });
+    }
+
+
+    //#region Private Methods
     private hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);
     }
+
+    //#endregion
 }

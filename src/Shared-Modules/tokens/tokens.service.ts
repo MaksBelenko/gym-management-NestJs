@@ -1,23 +1,28 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { JwtPayload } from 'src/End-Points/auth/jwt-payload.interface';
+import { JwtService } from '@nestjs/jwt'
+import { JwtPayload } from 'src/Shared-Modules/tokens/jwt-payload.interface';
 import { JwtConfig, accessJwtConfig, refreshJwtConfig } from '../../End-Points/auth/constants/jwt.config';
 import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
+import { appConfig } from '../../enviroment.consts';
+import * as convertToMilliseconds from 'ms';
 
 @Injectable()
 export class TokensService {
 
-    private oneDay: number = 60 * 60 * 24; // 1 day for Redis
-    private oneMinute = 60; // 60s for Redis
+    private accessTokenTTL: number;
+    private refreshTokenTTL: number;
 
-    private readonly logger = new Logger(TokensService.name);
+    private readonly logger = new Logger(this.constructor.name);
 
     constructor (
         private redisCacheService: RedisCacheService,
         private jwtService: JwtService,
-    ) {}
+    ) {
+        // PassportJs uses "ms" for convertion of string to number
+        this.accessTokenTTL = convertToMilliseconds(appConfig.jwt.accessToken.expiresIn) / 1000;
+        this.refreshTokenTTL = convertToMilliseconds(appConfig.jwt.refreshToken.expiresIn) / 1000;
+    }
 
 
     async tokenExists(bearerHeader: string): Promise<string> {
@@ -43,8 +48,8 @@ export class TokensService {
 
         const tokensDto = new TokensResponseDto(accessToken, refreshToken);
 
-        await this.redisCacheService.set(accessToken, true ,  this.oneMinute);
-        await this.redisCacheService.set(refreshToken, { accessToken }, 30 * this.oneDay);
+        await this.redisCacheService.set(accessToken, true ,  this.accessTokenTTL);
+        await this.redisCacheService.set(refreshToken, { accessToken }, this.refreshTokenTTL);
 
         return tokensDto;
     }
