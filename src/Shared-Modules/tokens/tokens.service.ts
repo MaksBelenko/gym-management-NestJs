@@ -10,8 +10,8 @@ import * as convertToMilliseconds from 'ms';
 @Injectable()
 export class TokensService {
 
-    private accessTokenTTL: number;
-    private refreshTokenTTL: number;
+    private readonly accessTokenTTL: number;
+    private readonly refreshTokenTTL: number;
 
     private readonly logger = new Logger(this.constructor.name);
 
