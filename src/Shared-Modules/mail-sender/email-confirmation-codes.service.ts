@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
+import { ACCOUNT_CONFIRM_TIMEOUT } from './email.consts';
 
 
 interface CodeConfirmationData {
@@ -19,10 +21,9 @@ export class EmailConfirmationCodeService {
         });
     } 
 
-    private readonly redisMinute = 60;
-
     constructor(
         private readonly redisCacheService: RedisCacheService,
+        @Inject(ACCOUNT_CONFIRM_TIMEOUT) private readonly confirmCodeTimeoutSeconds: number,
     ) {}
 
 
@@ -30,14 +31,14 @@ export class EmailConfirmationCodeService {
         const code = await this.generateCode();
         const data: CodeConfirmationData = { code };
 
-        const key = this.queuePrefix + email;
-        await this.redisCacheService.set(key, data, 10 * this.redisMinute);
+        const key = this.getRedisKeyFor(email);
+        await this.redisCacheService.set(key, data, this.confirmCodeTimeoutSeconds);
         
         return code;
     }
 
     async codeMatches(email: string, confirmationCode: string): Promise<boolean> {
-        const key = this.queuePrefix + email;
+        const key = this.getRedisKeyFor(email);
         const data = await this.redisCacheService.get<CodeConfirmationData>(key);
         
         if (!data) return false;
@@ -50,6 +51,10 @@ export class EmailConfirmationCodeService {
 
 
     private async generateCode(): Promise<string> {
-        return (await this.generateRandomSixDigitNumber(100_000, 900_000)).toString();
+        return (await this.generateRandomSixDigitNumber(100_000, 999_999)).toString();
+    }
+
+    private getRedisKeyFor(email: string): string {
+        return this.queuePrefix + email;
     }
 }

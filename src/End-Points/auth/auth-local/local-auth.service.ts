@@ -39,6 +39,7 @@ export class LocalAuthService {
         await this.mailSenderService.sendConfirmationEmail(email, fullName, confirmationCode);
     }
 
+
     async confirmAccount(confirmEmailDto: ConfirmEmailDto): Promise<TokensResponseDto> {
         const { email, code } = confirmEmailDto;
         const confirmationCodeMatches = await this.emailConfirmService.codeMatches(email, code);
@@ -46,6 +47,8 @@ export class LocalAuthService {
         // TODO: Add logic for only 3 tries
         if (confirmationCodeMatches == false) {
             throw new UnauthorizedException();
+        } else {
+            await this.userRepository.increaseConfirmationCount(email);
         }
 
         const user = await this.userRepository.setUserConfirmed(email);

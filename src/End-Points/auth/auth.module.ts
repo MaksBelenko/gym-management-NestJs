@@ -9,7 +9,7 @@ import { GoogleAuthModule } from './auth-google/google-auth.module';
   imports: [
     LocalAuthModule,
     GoogleAuthModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }), 
+    PassportModule.register({}), 
   ],
   providers: [
     // {

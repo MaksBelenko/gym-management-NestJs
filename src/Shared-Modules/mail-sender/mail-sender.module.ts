@@ -3,11 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { BullModule, BullModuleOptions } from '@nestjs/bull';
+import { SES } from 'aws-sdk';
 import { MailSenderService } from './mail-sender.service';
 import { MailProcessor } from './mail.processor';
 import { EmailConfirmationCodeService } from './email-confirmation-codes.service';
 import { RedisCacheModule } from '../redis-cache/redis-cache.module';
-import { SES } from 'aws-sdk';
+import { ACCOUNT_CONFIRM_TIMEOUT } from './email.consts';
 
 @Module({
     imports: [
@@ -16,14 +17,6 @@ import { SES } from 'aws-sdk';
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
                 transport: {
-                    // host: configService.get<string>('MAIL_HOST'),
-                    // port: configService.get<string>('MAIL_SMTP_PORT'),
-                    // secure: false, //configService.get('MAIL_SECURE'),
-                    // // tls: { ciphers: 'SSLv3', }, // gmail
-                    // auth: {
-                    //     user: configService.get<string>('MAIL_USER'),
-                    //     pass: configService.get<string>('MAIL_PASSWORD'),
-                    // },
                     SES: new SES({
                         accessKeyId: configService.get('AWS_ACCESS_KEY'),
                         secretAccessKey: configService.get('AWS_SECRET_KEY'),
@@ -67,6 +60,13 @@ import { SES } from 'aws-sdk';
         }),
     ],
     providers: [
+        {
+            provide: ACCOUNT_CONFIRM_TIMEOUT,
+            useFactory: async (configService: ConfigService): Promise<number> => {
+                return configService.get<number>('CONFIRM_ACCOUNT_TIMEOUT_SECONDS');
+            },
+            inject: [ConfigService],
+        },
         MailSenderService,
         MailProcessor,
         EmailConfirmationCodeService,
