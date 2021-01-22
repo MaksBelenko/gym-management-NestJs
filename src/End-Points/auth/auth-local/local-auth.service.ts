@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
 import { User } from '../user.entity';
 import { UserRepository } from '../user.repository';
@@ -13,6 +13,7 @@ import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { resetPasswordJwtConfig } from '../constants/jwt.config';
 import { EmailConfirmationCodeService } from '../../../Shared-Modules/mail-sender/email-confirmation-codes.service';
+import serverConfiguration from 'src/config/server.config';
 
 @Injectable()
 export class LocalAuthService {
@@ -24,8 +25,8 @@ export class LocalAuthService {
         private readonly userRepository: UserRepository,
         private readonly tokenService: TokensService,
         private readonly mailSenderService: MailSenderService,
-        private readonly configService: ConfigService,
         private readonly emailConfirmService: EmailConfirmationCodeService,
+        @Inject(serverConfiguration.KEY) private readonly serverConfig: ConfigType<typeof serverConfiguration>,
     ) {}
 
 
@@ -46,9 +47,8 @@ export class LocalAuthService {
 
         // TODO: Add logic for only 3 tries
         if (confirmationCodeMatches == false) {
-            throw new UnauthorizedException();
-        } else {
             await this.userRepository.increaseConfirmationCount(email);
+            throw new UnauthorizedException();
         }
 
         const user = await this.userRepository.setUserConfirmed(email);
@@ -89,8 +89,8 @@ export class LocalAuthService {
         const payload: JwtPayload = { email, role };
 
         const passwordResetAccessToken = await this.tokenService.generateToken(payload, resetPasswordJwtConfig);
-        const baseUrl = this.configService.get('BASE_URL_NO_PORT');
-        const serverPort = this.configService.get('PORT');
+        const baseUrl = this.serverConfig.baseUrl;
+        const serverPort = this.serverConfig.port;
 
 
         this.mailSenderService.sendPasswordResetEmail(

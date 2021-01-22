@@ -12,10 +12,12 @@ import { TokensModule } from 'src/Shared-Modules/tokens/tokens.module';
 import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
 import { AccessJwtGuard } from './guards/access-jwt.guard';
 import { RolesGuard } from '../RBAC/roles.guard';
+import serverConfig from 'src/config/server.config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
-        // PassportModule.register({ defaultStrategy: 'jwt' }), 
+        ConfigModule.forFeature(serverConfig),
         JwtModule.register({}),
         TypeOrmModule.forFeature([UserRepository]),
         TokensModule,
@@ -26,21 +28,9 @@ import { RolesGuard } from '../RBAC/roles.guard';
     ],
     providers: [
         LocalAuthService,
-        // {
-        //     provide: JwtAccessStrategy,
-        //     useFactory: async (tokensService: TokensService, userRepository: UserRepository) => {
-        //         return new JwtAccessStrategy(tokensService, userRepository);
-        //     },
-        //     inject : [
-        //         TokensService,
-        //         UserRepository
-        //     ]
-        // },
         JwtAccessStrategy,
         JwtRefreshStrategy,
         RenewTokensStrategy,
-        AccessJwtGuard,
-        RolesGuard
     ],
     exports: [
         JwtAccessStrategy,

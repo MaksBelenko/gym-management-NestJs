@@ -1,9 +1,11 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { config } from 'dotenv';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import { Strategy } from 'passport-google-oauth20';
 import GoogleUser from '../models/google-user.model';
+import googleConfiguration from 'src/config/google.config';
+import serverConfiguration from 'src/config/server.config';
+import { GoogleAuthController } from '../google-auth.controller';
 
 // config();
 
@@ -11,14 +13,15 @@ import GoogleUser from '../models/google-user.model';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   constructor(
-    private configService: ConfigService
+    @Inject(googleConfiguration.KEY) private readonly googleConfig: ConfigType<typeof googleConfiguration>,
+    @Inject(serverConfiguration.KEY) private readonly serverConfig: ConfigType<typeof serverConfiguration>,
   ) {
     super({
-      clientID: configService.get('GOOGLE_CLIENT_ID'),
-      clientSecret: configService.get('GOOGLE_SECRET'),
-      callbackURL: `${configService.get('BASE_URL_NO_PORT')}:${configService.get('PORT')}/api/google/redirect`,
+      clientID: googleConfig.clientId,
+      clientSecret: googleConfig.secret,
+      callbackURL: `${serverConfig.baseUrl}:${serverConfig.port}/api/google/redirect`,
       scope: ['email', 'profile'],
-    });
+    }); 
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {

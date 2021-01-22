@@ -8,10 +8,11 @@ import { MailSenderService } from './mail-sender.service';
 import { MailProcessor } from './mail.processor';
 import { EmailConfirmationCodeService } from './email-confirmation-codes.service';
 import { RedisCacheModule } from '../redis-cache/redis-cache.module';
-import { ACCOUNT_CONFIRM_TIMEOUT } from './email.consts';
+import mailConfig from '../../config/mail.config';
 
 @Module({
     imports: [
+        ConfigModule.forFeature(mailConfig),
         RedisCacheModule,
         MailerModule.forRootAsync({
             imports: [ConfigModule],
@@ -60,13 +61,6 @@ import { ACCOUNT_CONFIRM_TIMEOUT } from './email.consts';
         }),
     ],
     providers: [
-        {
-            provide: ACCOUNT_CONFIRM_TIMEOUT,
-            useFactory: async (configService: ConfigService): Promise<number> => {
-                return configService.get<number>('CONFIRM_ACCOUNT_TIMEOUT_SECONDS');
-            },
-            inject: [ConfigService],
-        },
         MailSenderService,
         MailProcessor,
         EmailConfirmationCodeService,

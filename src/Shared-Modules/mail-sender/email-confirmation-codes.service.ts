@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
+import mailConfiguration from 'src/config/mail.config';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
-import { ACCOUNT_CONFIRM_TIMEOUT } from './email.consts';
 
 
 interface CodeConfirmationData {
@@ -23,7 +23,7 @@ export class EmailConfirmationCodeService {
 
     constructor(
         private readonly redisCacheService: RedisCacheService,
-        @Inject(ACCOUNT_CONFIRM_TIMEOUT) private readonly confirmCodeTimeoutSeconds: number,
+        @Inject(mailConfiguration.KEY) private readonly mailConfig: ConfigType<typeof mailConfiguration>,
     ) {}
 
 
@@ -32,7 +32,7 @@ export class EmailConfirmationCodeService {
         const data: CodeConfirmationData = { code };
 
         const key = this.getRedisKeyFor(email);
-        await this.redisCacheService.set(key, data, this.confirmCodeTimeoutSeconds);
+        await this.redisCacheService.set(key, data,  this.mailConfig.confirmTimeoutSeconds);
         
         return code;
     }
@@ -41,12 +41,13 @@ export class EmailConfirmationCodeService {
         const key = this.getRedisKeyFor(email);
         const data = await this.redisCacheService.get<CodeConfirmationData>(key);
         
-        if (!data) return false;
-        if (!data.code) return false;
+        if (!data || !data.code || data.code != confirmationCode) {
+            return false;
+        }
 
         await this.redisCacheService.del(key);
         
-        return (data.code == confirmationCode) ? true : false;
+        return true;
     }
 
 

@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { S3 } from 'aws-sdk';
 import { ImageBuffers } from '../../shared/image-buffers.interface';
 import { Dictionary } from 'lodash';
 import { ImageSize } from '../../shared/image-size.enum';
+import awsConnectionConfig from '../../config/aws.config';
 
 @Injectable()
 export class AwsService {
-    // private s3 = new S3();
 
     constructor(
-        private readonly configService: ConfigService,
+        @Inject(awsConnectionConfig.KEY) private readonly awsConsts: ConfigType<typeof awsConnectionConfig>,
         private readonly s3: S3,
     ) {}
 
@@ -58,7 +58,7 @@ export class AwsService {
 
         return this.s3
             .upload({
-                Bucket: this.configService.get('AWS_BUCKET_NAME'),
+                Bucket: this.awsConsts.photosBucketName,
                 Body: buffer,
                 Key: keyName,
             })
@@ -71,7 +71,7 @@ export class AwsService {
      */
     async downloadImage(nameKey: string) {
         const stream = this.s3.getObject({
-            Bucket: this.configService.get('AWS_BUCKET_NAME'),
+            Bucket: this.awsConsts.photosBucketName,
             Key: nameKey,
         })
         .createReadStream()
@@ -92,7 +92,7 @@ export class AwsService {
 
     async deleteSingleImage(key: string): Promise<void> {
         await this.s3.deleteObject({
-            Bucket: this.configService.get('AWS_BUCKET_NAME'),
+            Bucket: this.awsConsts.photosBucketName,
             Key: key,
         })
         .promise();

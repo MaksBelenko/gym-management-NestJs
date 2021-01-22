@@ -8,7 +8,7 @@ import { confirmationEmailQueueName, resetPasswordQueueName } from './email.cons
 @Injectable()
 export class MailSenderService {
 
-    private logger = new Logger(MailSenderService.name);
+    private logger = new Logger(this.constructor.name);
 
     constructor(
         @InjectQueue('emails-queue')

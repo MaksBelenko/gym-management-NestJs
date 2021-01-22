@@ -1,6 +1,7 @@
+import * as Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, registerAs } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { GymClassesModule } from './End-Points/gym-classes/gym-classes.module';
 import { TrainersModule } from './End-Points/trainers/trainers.module';
@@ -11,7 +12,11 @@ import { typeOrmConfig } from './config/typeorm.config';
 @Module({
     imports: [
         ConfigModule.forRoot({
-            isGlobal: true
+            validationSchema: Joi.object({
+                PORT: Joi.number().positive().required(),
+                BASE_URL: Joi.string().required(),
+            }),
+            // isGlobal: true
         }),
         TypeOrmModule.forRoot(typeOrmConfig),
         ScheduleModule.forRoot(),
