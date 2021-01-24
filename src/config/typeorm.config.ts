@@ -1,20 +1,16 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import * as config from 'config';
-import { appConfig } from '../enviroment.consts';
-
-const dbConfig = config.get('db');
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
-    type: dbConfig.type,
-    host: appConfig.db.host,
-    port: appConfig.db.port,
-    username: appConfig.db.username,
-    password: appConfig.db.password,
-    database: appConfig.db.database,
+    type: process.env.DATABASE_TYPE as any,
+    host: process.env.RDS_HOSTNAME,
+    port: +process.env.RDS_PORT,
+    username: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+    database: process.env.RDS_DB_NAME,
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
-    synchronize: appConfig.db.synchronize,
+    synchronize: (process.env.TYPEORM_SYNC == 'true'),
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-    migrationsTableName: appConfig.db.database,
+    migrationsTableName: process.env.RDS_DB_NAME,
     migrationsRun: true,
     // cli: {
     //     migrationsDir: './migrations'

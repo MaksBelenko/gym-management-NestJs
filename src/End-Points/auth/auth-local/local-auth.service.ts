@@ -11,8 +11,9 @@ import { TokensResponseDto } from './dto/tokens-response.dto';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-import { resetPasswordJwtConfig } from '../constants/jwt.config';
+// import { resetPasswordJwtConfig } from '../constants/jwt.config';
 import { EmailConfirmationCodeService } from '../../../Shared-Modules/mail-sender/email-confirmation-codes.service';
+import { JwtType } from '../../../Shared-Modules/tokens/jwt-type.enum';//'src/Shared-Modules/tokens/jwt-type.enum';
 import serverConfiguration from 'src/config/server.config';
 
 @Injectable()
@@ -67,9 +68,7 @@ export class LocalAuthService {
         return this.getTokensFor(user);
     }
 
-    async renewTokens(refreshObject: { refreshToken: string, payload: JwtPayload }): Promise<TokensResponseDto> {
-        const { payload, refreshToken} = refreshObject;
-
+    async renewTokens(refreshToken: string, payload: JwtPayload ): Promise<TokensResponseDto> {
         return this.tokenService.renewTokens(payload, refreshToken);
     }
 
@@ -88,7 +87,7 @@ export class LocalAuthService {
         // TODO: Add interface for just email payload
         const payload: JwtPayload = { email, role };
 
-        const passwordResetAccessToken = await this.tokenService.generateToken(payload, resetPasswordJwtConfig);
+        const passwordResetAccessToken = await this.tokenService.generateToken(payload, JwtType.PASSORD_RESET);
         const baseUrl = this.serverConfig.baseUrl;
         const serverPort = this.serverConfig.port;
 

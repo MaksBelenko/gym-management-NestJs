@@ -1,11 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { refreshJwtConfig } from '../../constants/jwt.config';
 import { UserRepository } from '../../user.repository';
 import { User } from '../../user.entity';
 import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
+import jwtConfiguration from '../../../../config/jwt.config';
+import { JwtPayload } from 'src/Shared-Modules/tokens/jwt-payload.interface';
 
 
 export const JwtRefreshStrategyName = 'jwt-refresh-strategy';
@@ -17,33 +19,28 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
     constructor(
         private readonly tokenService: TokensService,
-        @InjectRepository(UserRepository)
-        private userRepository: UserRepository,
+        @InjectRepository(UserRepository) private userRepository: UserRepository,
+        @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {
         super({
             passReqToCallback: true,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: refreshJwtConfig.secret, // gets secret from environment variables
+            secretOrKey: jwtConfig.refreshJwt.secret, // gets secret from environment variables
         });
     }
 
-    async validate(req: any, payload: any): Promise<User> {
+    async validate(req: any, payload: JwtPayload): Promise<JwtPayload> {
 
-        const header = req.headers.authorization;
-        const existingToken = await this.tokenService.tokenExists(header);
+        const authHeader = req.headers.authorization;
+        const refreshToken = await this.tokenService.tokenExists(authHeader);
 
-        if (!existingToken) {
+        if (!refreshToken) {
             throw new UnauthorizedException();
         }
 
-        const { email } = payload;
-        const user = await this.userRepository.findOne({ email });
+        req.jwtRefreshToken = refreshToken;
 
-        if (!user) {
-            throw new UnauthorizedException();
-        }
-
-        return user;
+        return payload;
     }
 }

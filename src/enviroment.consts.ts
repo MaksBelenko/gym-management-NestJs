@@ -5,28 +5,28 @@ const refreshConfig = config.get('refreshjwt');
 const accessConfig = config.get('accessjwt');
 const passwordResetJwt = config.get('passwordResetJwt');
 const dbConfig = config.get('db');
-export const appConfig = {
-    serverPort: process.env.PORT || serverConfig.port,
-    jwt: {
-        accessToken: {
-            secret: process.env.JWT_ACCESS_SECRET || accessConfig.secret,
-            expiresIn: accessConfig.expiresIn
-        },
-        refreshToken: {
-            secret: process.env.JWT_REFRESH_SECRET || refreshConfig.secret,
-            expiresIn: refreshConfig.expiresIn
-        },
-        passwordResetToken: {
-            secret: process.env.JWT_PASSWORD_RESET_SECRET || passwordResetJwt.secret,
-            expiresIn: passwordResetJwt.expiresIn
-        }
-    },
-    db: {
-        host: process.env.RDS_HOSTNAME || dbConfig.host,
-        port: process.env.RDS_PORT || dbConfig.port,
-        username: process.env.RDS_USERNAME || dbConfig.username,
-        password: process.env.RDS_PASSWORD || dbConfig.password,
-        database: process.env.RDS_DB_NAME || dbConfig.database,
-        synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
-    }
-};
+// export const appConfig = {
+//     // serverPort: process.env.PORT || serverConfig.port,
+//     jwt: {
+//         accessToken: {
+//             secret: process.env.JWT_ACCESS_SECRET || accessConfig.secret,
+//             expiresIn: accessConfig.expiresIn
+//         },
+//         refreshToken: {
+//             secret: process.env.JWT_REFRESH_SECRET || refreshConfig.secret,
+//             expiresIn: refreshConfig.expiresIn
+//         },
+//         passwordResetToken: {
+//             secret: process.env.JWT_PASSWORD_RESET_SECRET || passwordResetJwt.secret,
+//             expiresIn: passwordResetJwt.expiresIn
+//         }
+//     },
+//     // db: {
+//     //     host: process.env.RDS_HOSTNAME || dbConfig.host,
+//     //     port: process.env.RDS_PORT || dbConfig.port,
+//     //     username: process.env.RDS_USERNAME || dbConfig.username,
+//     //     password: process.env.RDS_PASSWORD || dbConfig.password,
+//     //     database: process.env.RDS_DB_NAME || dbConfig.database,
+//     //     synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
+//     // }
+// };

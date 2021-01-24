@@ -2,21 +2,18 @@ import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@
 import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { LocalAuthService } from './local-auth.service';
 import { GetJwtPayload } from '../decorators/get-user.decorator';
-import { User } from '../user.entity';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
-import { GetBearerToken } from '../decorators/get-bearer-token.decorator';
-import { RenewTokensGuard } from './guards/tokens-renew.guard';
+import { GetRefreshToken } from '../decorators/get-bearer-token.decorator';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-import { IsPublicRoute } from '../decorators/public.decorator';
 import { ResetPasswordJwtGuard } from './guards/reset-password-jwt.guard';
 import { Roles } from '../RBAC/roles.decorator';
 import { Role } from '../RBAC/role.enum';
-import { UserAuthGuard } from './guards/user-auth.guard';
 import { AuthPolicy, Auth } from '../decorators/auth.guard';
 import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
+import { RefreshJwtGuard } from './guards/refresh-jwt.guard';
 
 
 // @Auth(AuthPolicy.Local)
@@ -54,11 +51,12 @@ export class LocalAuthController {
 
 
     @Post('/token-refresh')
-    @UseGuards(RenewTokensGuard)
+    @UseGuards(RefreshJwtGuard)
     renewTokens(
-        @GetBearerToken() refreshObject: { refreshToken: string, payload: JwtPayload },
+        @GetRefreshToken() refreshToken: string,
+        @GetJwtPayload() payload: JwtPayload,
     ): Promise<TokensResponseDto> {
-        return this.localAuthService.renewTokens(refreshObject);
+        return this.localAuthService.renewTokens(refreshToken, payload);
     }
 
 

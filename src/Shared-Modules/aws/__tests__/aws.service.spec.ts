@@ -11,10 +11,10 @@ const mockConfigService = () => ({
 const mockS3 = () => ({
 
 });
-
 const awsConf = registerAs('awsConnectionConfig', () => ({
   photosBucketName: 'test-bucket-name',
 }));
+
 
 describe('AwsService', () => {
   let service: AwsService;

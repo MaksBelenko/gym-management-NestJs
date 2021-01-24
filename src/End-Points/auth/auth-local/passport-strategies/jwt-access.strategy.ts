@@ -1,11 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigType } from '@nestjs/config';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { JwtPayload } from '../../../../Shared-Modules/tokens/jwt-payload.interface';
 import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service'
 import { UserRepository } from '../../user.repository';
-import { accessJwtConfig } from '../../constants/jwt.config';
+import jwtConfiguration from '../../../../config/jwt.config';
 
 export const JwtAccessStrategyName: string = 'jwt-access-strategy';
 
@@ -19,12 +20,13 @@ export class JwtAccessStrategy extends PassportStrategy(
     constructor(
         private readonly tokenService: TokensService,
         @InjectRepository(UserRepository) private userRepository: UserRepository,
+        @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {
         super({
             passReqToCallback: true,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: accessJwtConfig.secret,
+            secretOrKey: jwtConfig.accessJwt.secret,
         });
     }
 

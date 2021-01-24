@@ -1,12 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { JwtPayload } from '../../../../Shared-Modules/tokens/jwt-payload.interface';
 import { UserRepository } from '../../user.repository';
-import { accessJwtConfig, resetPasswordJwtConfig } from '../../constants/jwt.config';
 import { User } from '../../user.entity';
-import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
+import jwtConfiguration from '../../../../config/jwt.config';
 
 export const JwtResetPasswordStrategyName: string = 'jwt-reset-password';
 
@@ -18,14 +18,14 @@ export class JwtResetPasswordStrategy extends PassportStrategy(
 ) {
 
     constructor(
-        @InjectRepository(UserRepository)
-        private userRepository: UserRepository,
+        @InjectRepository(UserRepository) private userRepository: UserRepository,
+        @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {
         super({
             passReqToCallback: true,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: resetPasswordJwtConfig.secret,
+            secretOrKey: jwtConfig.passwordResetJwt.secret,
         });
     }
 

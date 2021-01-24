@@ -1,11 +1,12 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt'
-import { JwtPayload } from 'src/Shared-Modules/tokens/jwt-payload.interface';
-import { JwtConfig, accessJwtConfig, refreshJwtConfig } from '../../End-Points/auth/constants/jwt.config';
+import { JwtPayload } from './jwt-payload.interface';
+import { JwtType } from './jwt-type.enum';
 import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
-import { appConfig } from '../../enviroment.consts';
 import * as convertToMilliseconds from 'ms';
+import jwtConfiguration, { JwtConfig } from '../../config/jwt.config';
 
 @Injectable()
 export class TokensService {
@@ -13,15 +14,20 @@ export class TokensService {
     private readonly accessTokenTTL: number;
     private readonly refreshTokenTTL: number;
 
+    private jwtConfigRecord: Record<JwtType, JwtConfig>;
+
     private readonly logger = new Logger(this.constructor.name);
 
     constructor (
         private redisCacheService: RedisCacheService,
         private jwtService: JwtService,
+        @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {
         // PassportJs uses "ms" for convertion of string to number
-        this.accessTokenTTL = convertToMilliseconds(appConfig.jwt.accessToken.expiresIn) / 1000;
-        this.refreshTokenTTL = convertToMilliseconds(appConfig.jwt.refreshToken.expiresIn) / 1000;
+        this.accessTokenTTL = convertToMilliseconds(jwtConfig.accessJwt.expiresIn) / 1000;
+        this.refreshTokenTTL = convertToMilliseconds(jwtConfig.refreshJwt.expiresIn) / 1000;
+
+        this.configureJwtConfigRecord();
     }
 
 
@@ -43,8 +49,8 @@ export class TokensService {
 
 
     async generateAllTokens(payload: JwtPayload): Promise<TokensResponseDto> {
-        const accessToken = await this.generateToken(payload, accessJwtConfig);
-        const refreshToken = await this.generateToken(payload, refreshJwtConfig);
+        const accessToken = await this.generateToken(payload,  JwtType.ACCESS);
+        const refreshToken = await this.generateToken(payload, JwtType.REFRESH);
 
         const tokensDto = new TokensResponseDto(accessToken, refreshToken);
 
@@ -54,11 +60,28 @@ export class TokensService {
         return tokensDto;
     }
 
-    async generateToken(payload: JwtPayload, config: JwtConfig): Promise<string> {
+    async generateToken(payload: JwtPayload, jwtType: JwtType): Promise<string> {
+        const config = this.getJwtConfigFor(jwtType);
+
         return this.jwtService.sign(payload, {
             secret: config.secret,
             expiresIn: config.expiresIn
         });
+    }
+
+
+    //#region Private Methods
+
+    private configureJwtConfigRecord() {
+        this.jwtConfigRecord = {
+            [JwtType.ACCESS]: this.jwtConfig.accessJwt,
+            [JwtType.REFRESH]: this.jwtConfig.refreshJwt,
+            [JwtType.PASSORD_RESET]: this.jwtConfig.passwordResetJwt,
+        }
+    }
+
+    private getJwtConfigFor(jwtType: JwtType): JwtConfig {
+        return this.jwtConfigRecord[jwtType];
     }
 
     private getTokenFromBearerHeader(header: string): string {
@@ -68,5 +91,7 @@ export class TokensService {
 
         return header.replace('Bearer ', '');
     }
+
+    //#endregion
 
 }

@@ -1,4 +1,4 @@
-import { registerAs } from "@nestjs/config";
+import { registerAs } from '@nestjs/config';
 
 export default registerAs('awsConnectionConfig', () => ({
     // process.env.AWS_ACCESS_KEY_ID,

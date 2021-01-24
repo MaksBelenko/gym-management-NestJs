@@ -26,7 +26,7 @@ async function bootstrap() {
         transform: true,            // transorm request json to match types (dto, param, body etc) [slight performance tradeoff]
     }));
 
-    const port = configService.get('PORT');
+    const port = process.env.PORT;
     await api.listen(port);
     logger.log(`Application started listening on port ${port}`);
 }
