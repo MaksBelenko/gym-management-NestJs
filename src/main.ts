@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
+import { getConnection } from 'typeorm';
 
 async function bootstrap() {
     const logger = new Logger('bootstrap');
@@ -25,6 +26,10 @@ async function bootstrap() {
         forbidNonWhitelisted: true, // if json doesn't match dto exactly then fobid request
         transform: true,            // transorm request json to match types (dto, param, body etc) [slight performance tradeoff]
     }));
+
+    // const driver = getConnection().driver as any;
+    // driver.postgres.defaults.parseInputDatesAsUTC = true;
+    // driver.postgres.types.setTypeParser(1114, (str: any) => new Date(str + 'Z'));
 
     const port = process.env.PORT;
     await api.listen(port);

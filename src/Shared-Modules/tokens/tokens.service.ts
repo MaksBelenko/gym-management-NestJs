@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/commo
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt'
 import { JwtPayload } from './jwt-payload.interface';
-import { JwtType } from './jwt-type.enum';
+import { JwtType } from '../../shared/jwt-type.enum';
 import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
 import { RedisCacheService } from '../redis-cache/redis-cache.service';
 import * as convertToMilliseconds from 'ms';

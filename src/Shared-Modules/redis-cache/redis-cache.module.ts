@@ -7,12 +7,6 @@ import * as Joi from '@hapi/joi';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        REDIS_HOST: Joi.string().required(),
-        REDIS_PORT: Joi.number().positive().integer().required(),
-      })
-    }),
     CacheModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

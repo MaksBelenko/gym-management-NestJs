@@ -23,7 +23,6 @@ export class UserRepository extends Repository<User> {
         
         user.confirmed = false;
         user.confirmationTries = 0;
-        user.initialRegisterTryTime = new Date();
 
         this.logger.log(`Register request for unconfirmed user ${user}`);
 

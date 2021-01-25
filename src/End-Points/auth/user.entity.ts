@@ -1,4 +1,6 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { type } from 'os';
+import { LocalAuthToken } from 'src/Shared-Modules/token-storage/local-auth-token.entity';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Role } from './RBAC/role.enum';
 
 @Entity()
@@ -28,6 +30,9 @@ export class User extends BaseEntity {
     @Column({ default: 0 })
     confirmationTries: number;
 
-    @Column({ default: new Date() })
-    initialRegisterTryTime: Date;
+    @OneToMany(type => LocalAuthToken, token => token.user, { eager: false })
+    tokens: LocalAuthToken[];
+
+    @CreateDateColumn()
+    createdAt: Date;
 }

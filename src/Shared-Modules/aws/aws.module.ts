@@ -8,15 +8,7 @@ import awsConnectionConfig from '../../config/aws.config'
 // @Global()
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [awsConnectionConfig],
-      validationSchema: Joi.object({
-        AWS_ACCESS_KEY_ID: Joi.required(),
-        AWS_SECRET_ACCESS_KEY: Joi.required(),
-        AWS_REGION: Joi.required(),
-        AWS_PHOTOS_BUCKET_NAME: Joi.required(),
-      })
-    }),
+    ConfigModule.forFeature(awsConnectionConfig),
   ],
   providers: [
     S3,

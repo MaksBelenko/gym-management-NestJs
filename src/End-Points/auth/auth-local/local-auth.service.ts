@@ -13,7 +13,7 @@ import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 // import { resetPasswordJwtConfig } from '../constants/jwt.config';
 import { EmailConfirmationCodeService } from '../../../Shared-Modules/mail-sender/email-confirmation-codes.service';
-import { JwtType } from '../../../Shared-Modules/tokens/jwt-type.enum';//'src/Shared-Modules/tokens/jwt-type.enum';
+import { JwtType } from '../../../shared/jwt-type.enum';//'src/Shared-Modules/tokens/jwt-type.enum';
 import serverConfiguration from 'src/config/server.config';
 
 @Injectable()
