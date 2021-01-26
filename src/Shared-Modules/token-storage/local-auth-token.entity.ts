@@ -4,26 +4,34 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    JoinTable,
     ManyToOne,
     OneToOne,
     PrimaryColumn,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { JwtType } from '../../shared/jwt-type.enum';
+import { AuthTokenType } from './auth-token.enum';
+import { ManyToMany } from 'typeorm';
 
 @Entity()
 export class LocalAuthToken extends BaseEntity {
-    // @PrimaryGeneratedColumn() //automatically generated and incremented
-    // id: string;
-
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('uuid') //automatically generated and incremented
     token: string;
 
-    @Column({ type: 'enum', enum: JwtType})
-    tokenType: JwtType;
+    // @PrimaryColumn()
+    // token: string;
 
-    @OneToOne(type => LocalAuthToken, token => token.token)
-    referenceToken: string;
+    @Column({ type: 'enum', enum: AuthTokenType})
+    tokenType: AuthTokenType;
+
+    @Column({ nullable: true })
+    public relatedReferenceTokenId?: string;
+
+
+    @ManyToOne(type => LocalAuthToken, tokenEntity => tokenEntity.token)
+    @JoinTable({ name: 'relatedReferenceTokenId' })
+    // @OneToOne(type => LocalAuthToken, tokenEntity => tokenEntity.token)
+    referenceToken: LocalAuthToken;
 
     @CreateDateColumn()
     creationDate: Date;

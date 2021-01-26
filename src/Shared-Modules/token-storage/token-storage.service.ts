@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { LocalAuthToken } from './local-auth-token.entity';
 import { LocalAuthTokenRepository } from './local-auth-token.repository';
-import { JwtType } from '../../shared/jwt-type.enum';
 import { User } from '../../End-Points/auth/user.entity';
+import { AuthTokenType } from './auth-token.enum';
+import { LocalAuthToken } from './local-auth-token.entity';
 
 @Injectable()
 export class TokenStorageService {
@@ -11,7 +11,7 @@ export class TokenStorageService {
         private readonly tokenRepository: LocalAuthTokenRepository,
     ) {}
 
-    async createToken(token: string, tokenType: JwtType, user: User): Promise<LocalAuthToken> {
+    async createToken(token: string, tokenType: AuthTokenType, user: User): Promise<LocalAuthToken> {
         return this.tokenRepository.createToken(token, tokenType, user);
     }
 

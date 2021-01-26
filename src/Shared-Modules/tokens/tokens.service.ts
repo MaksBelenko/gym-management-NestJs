@@ -7,6 +7,8 @@ import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-r
 import * as convertToMilliseconds from 'ms';
 import jwtConfiguration, { JwtConfig } from '../../config/jwt.config';
 import { TokenStorageService } from '../token-storage/token-storage.service';
+import { AuthTokenType } from '../token-storage/auth-token.enum';
+import { User } from '../../End-Points/auth/user.entity';
 
 @Injectable()
 export class TokensService {
@@ -43,26 +45,26 @@ export class TokensService {
         // await this.redisCacheService.del(currentAccessToken.accessToken);
         // await this.redisCacheService.del(refreshToken);
 
-        return this.generateAllTokens(payload);
+        return undefined;// this.generateAllTokens(payload);
     }
 
 
-    async generateAllTokens(payload: JwtPayload): Promise<TokensResponseDto> {
-        const accessToken = await this.generateToken(payload,  JwtType.ACCESS);
-        const refreshToken = await this.generateToken(payload, JwtType.REFRESH);
+    async generateAllTokens(user: User): Promise<TokensResponseDto> {
+        // const accessToken = await this.generateJwtToken(payload,  JwtType.ACCESS);
+        // const refreshToken = await this.generateJwtToken(payload, JwtType.REFRESH);
 
-        const tokensDto = new TokensResponseDto(accessToken, refreshToken);
+        // const tokensDto = new TokensResponseDto(accessToken, refreshToken);
 
-        // const accessTokenEntity = await this.tokenStorageService.createToken(accessToken, JwtType.ACCESS, user);
-        // const refreshTokenEntity = await this.tokenStorageService.createToken(refreshToken, JwtType.REFRESH, user);
+        // const accessTokenEntity = await this.tokenStorageService.createToken(accessToken, AuthTokenType.ACCESS, user);
+        // const refreshTokenEntity = await this.tokenStorageService.createToken(refreshToken, AuthTokenType.REFRESH, user);
 
         // await this.redisCacheService.set(accessToken, true ,  this.accessTokenTTL);
         // await this.redisCacheService.set(refreshToken, { accessToken }, this.refreshTokenTTL);
 
-        return tokensDto;
+        return undefined;// tokensDto;
     }
 
-    async generateToken(payload: JwtPayload, jwtType: JwtType): Promise<string> {
+    async generateJwtToken(payload: JwtPayload, jwtType: JwtType): Promise<string> {
         const config = this.getJwtConfigFor(jwtType);
 
         return this.jwtService.sign(payload, {

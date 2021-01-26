@@ -87,7 +87,7 @@ export class LocalAuthService {
         // TODO: Add interface for just email payload
         const payload: JwtPayload = { email, role };
 
-        const passwordResetAccessToken = await this.tokenService.generateToken(payload, JwtType.PASSORD_RESET);
+        const passwordResetAccessToken = await this.tokenService.generateJwtToken(payload, JwtType.PASSORD_RESET);
         const baseUrl = this.serverConfig.baseUrl;
         const serverPort = this.serverConfig.port;
 
@@ -109,10 +109,9 @@ export class LocalAuthService {
 
     //#region Private Methods 
     private async getTokensFor(user: User): Promise<TokensResponseDto> {
-        const { email, role } = user;
-        const payload: JwtPayload = { email, role };
-        
-        return this.tokenService.generateAllTokens(payload);
+        // const { email, role } = user;
+        // const payload: JwtPayload = { email, role };
+        return this.tokenService.generateAllTokens(user);
     }
 
     //#endregion
