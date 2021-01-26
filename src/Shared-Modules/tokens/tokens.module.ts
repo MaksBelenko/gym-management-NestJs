@@ -4,12 +4,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { TokensService } from './tokens.service';
 import { RedisCacheModule } from '../redis-cache/redis-cache.module';
 import jwtConfig from '../../config/jwt.config';
+import { TokenStorageModule } from '../token-storage/token-storage.module';
 
 @Module({
   imports: [
     ConfigModule.forFeature(jwtConfig),
     JwtModule.register({}),
-    RedisCacheModule,
+    TokenStorageModule
+    // RedisCacheModule,
   ],
   providers: [
     TokensService,

@@ -108,7 +108,7 @@ export class LocalAuthService {
 
 
     //#region Private Methods 
-    private getTokensFor(user: User): Promise<TokensResponseDto> {
+    private async getTokensFor(user: User): Promise<TokensResponseDto> {
         const { email, role } = user;
         const payload: JwtPayload = { email, role };
         

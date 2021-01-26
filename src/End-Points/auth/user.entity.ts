@@ -1,7 +1,6 @@
-import { type } from 'os';
-import { LocalAuthToken } from 'src/Shared-Modules/token-storage/local-auth-token.entity';
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Role } from './RBAC/role.enum';
+import { LocalAuthToken } from '../../Shared-Modules/token-storage/local-auth-token.entity';
 
 @Entity()
 @Unique(['email'])

@@ -4,22 +4,21 @@ import { JwtService } from '@nestjs/jwt'
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtType } from '../../shared/jwt-type.enum';
 import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
-import { RedisCacheService } from '../redis-cache/redis-cache.service';
 import * as convertToMilliseconds from 'ms';
 import jwtConfiguration, { JwtConfig } from '../../config/jwt.config';
+import { TokenStorageService } from '../token-storage/token-storage.service';
 
 @Injectable()
 export class TokensService {
 
     private readonly accessTokenTTL: number;
     private readonly refreshTokenTTL: number;
-
     private jwtConfigRecord: Record<JwtType, JwtConfig>;
 
     private readonly logger = new Logger(this.constructor.name);
 
     constructor (
-        private redisCacheService: RedisCacheService,
+        private readonly tokenStorageService: TokenStorageService,
         private jwtService: JwtService,
         @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {
@@ -33,16 +32,16 @@ export class TokensService {
 
     async tokenExists(bearerHeader: string): Promise<string> {
         const receivedToken = this.getTokenFromBearerHeader(bearerHeader)
-        const value = this.redisCacheService.get(receivedToken);
+        const tokenExists = await this.tokenStorageService.tokenExists(receivedToken);
 
-        return (value) ? receivedToken : null;
+        return (tokenExists) ? receivedToken : null;
     }
 
     async renewTokens(payload: JwtPayload, refreshToken: string): Promise<TokensResponseDto> {
-        const currentAccessToken = await this.redisCacheService.get<any>(refreshToken);
+        // const currentAccessToken = await this.redisCacheService.get<any>(refreshToken);
         
-        await this.redisCacheService.del(currentAccessToken.accessToken);
-        await this.redisCacheService.del(refreshToken);
+        // await this.redisCacheService.del(currentAccessToken.accessToken);
+        // await this.redisCacheService.del(refreshToken);
 
         return this.generateAllTokens(payload);
     }
@@ -54,8 +53,11 @@ export class TokensService {
 
         const tokensDto = new TokensResponseDto(accessToken, refreshToken);
 
-        await this.redisCacheService.set(accessToken, true ,  this.accessTokenTTL);
-        await this.redisCacheService.set(refreshToken, { accessToken }, this.refreshTokenTTL);
+        // const accessTokenEntity = await this.tokenStorageService.createToken(accessToken, JwtType.ACCESS, user);
+        // const refreshTokenEntity = await this.tokenStorageService.createToken(refreshToken, JwtType.REFRESH, user);
+
+        // await this.redisCacheService.set(accessToken, true ,  this.accessTokenTTL);
+        // await this.redisCacheService.set(refreshToken, { accessToken }, this.refreshTokenTTL);
 
         return tokensDto;
     }
