@@ -1,6 +1,7 @@
 import { User } from '../../End-Points/auth/user.entity';
 import {
     BaseEntity,
+    BeforeRemove,
     Column,
     CreateDateColumn,
     Entity,
@@ -22,11 +23,15 @@ export class LocalAuthToken extends BaseEntity {
     @Column({ type: 'enum', enum: AuthTokenType})
     tokenType: AuthTokenType;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true})
     public relatedReferenceTokenId?: string;
 
 
-    @ManyToOne(type => LocalAuthToken, tokenEntity =>  tokenEntity.token )
+    @ManyToOne(
+        type => LocalAuthToken, 
+        tokenEntity =>  tokenEntity.token, 
+        { onDelete: 'SET NULL' } 
+    )
     @JoinColumn({ name: 'relatedReferenceTokenId' })
     referenceToken: LocalAuthToken;
 

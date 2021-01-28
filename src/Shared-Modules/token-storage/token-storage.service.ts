@@ -15,8 +15,8 @@ export class TokenStorageService extends TokenStorage {
 
     private readonly logger = new Logger(this.constructor.name);
     private readonly tokenRepository: LocalAuthTokenRepository;
-    private readonly accessTokenTTL: number;
-    private readonly refreshTokenTTL: number;
+    private readonly accessTokenTTLMillisec: number;
+    private readonly refreshTokenTTLMillisec: number;
 
     constructor(
         private readonly connection: Connection,
@@ -26,16 +26,22 @@ export class TokenStorageService extends TokenStorage {
         // Workaround for issue with "findOne" throwing error
         this.tokenRepository = this.connection.getCustomRepository(LocalAuthTokenRepository);
 
-        this.accessTokenTTL = convertToMilliseconds(localTokenConfig.accessToken.expiresIn) / 1000;
-        this.refreshTokenTTL = convertToMilliseconds(localTokenConfig.refreshToken.expiresIn) / 1000;
+        this.accessTokenTTLMillisec = convertToMilliseconds(localTokenConfig.accessToken.expiresIn);
+        this.refreshTokenTTLMillisec = convertToMilliseconds(localTokenConfig.refreshToken.expiresIn);
     }
-    
+
 
     @Cron(CronExpression.EVERY_MINUTE, {
         name: 'clear-expired-token-from-db',
     })
-    private triggerClearExpiredTokens() {
-        this.logger.log('KMK-MLK-MLK-LMM-KLM-LKM-LKM-LKM-LKM')
+    private async triggerClearExpiredTokens() {
+        this.logger.log(`CRON_JOB: Clearing expired tokens from DB started...`);
+
+        const accessTokenExpireBefore = new Date(Date.now() - this.accessTokenTTLMillisec);
+        await this.tokenRepository.deleteAllTokensExpiredBefore(AuthTokenType.ACCESS, accessTokenExpireBefore)
+
+        const refreshTokenExpireBefore = new Date(Date.now() - this.refreshTokenTTLMillisec);
+        await this.tokenRepository.deleteAllTokensExpiredBefore(AuthTokenType.REFRESH, refreshTokenExpireBefore)
     }
 
 
