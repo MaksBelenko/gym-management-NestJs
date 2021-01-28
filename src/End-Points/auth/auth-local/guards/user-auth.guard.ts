@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { AccessJwtGuard } from './access-jwt.guard';
+import { AccessTokenGuard } from './access-jwt.guard';
 import { RolesGuard } from '../../RBAC/roles.guard';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class UserAuthGuard implements CanActivate {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly accessJwtGuard: AccessJwtGuard,
+    private readonly accessJwtGuard: AccessTokenGuard,
     private readonly rolesGuard: RolesGuard,
   ) {}
 

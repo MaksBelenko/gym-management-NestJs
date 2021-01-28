@@ -1,16 +1,17 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
-import { JwtAccessStrategyName } from '../passport-strategies/jwt-access.strategy';
+import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
+import { AuthTokenType } from '../../../../Shared-Modules/token-storage/auth-token.enum';
 
 @Injectable()
-export class AccessJwtGuard extends AuthGuard(JwtAccessStrategyName) {
-    constructor(private reflector: Reflector) {
-        super();
-    }
+export class AccessTokenGuard implements CanActivate {
+    constructor(
+        private reflector: Reflector,
+        private readonly tokenService: TokensService,
+    ) {}
 
-    canActivate(context: ExecutionContext) {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const isPublic = this.reflector.getAllAndOverride<boolean>(
             IS_PUBLIC_KEY,
             [context.getHandler(), context.getClass()],
@@ -20,6 +21,15 @@ export class AccessJwtGuard extends AuthGuard(JwtAccessStrategyName) {
             return true;
         }
         
-        return super.canActivate(context);
+        const req = context.switchToHttp().getRequest();
+        const authHeader = req.headers.authorization;
+
+        const accessAuthToken = await this.tokenService.getTokenData(authHeader);
+
+        if (!accessAuthToken || accessAuthToken.tokenType != AuthTokenType.ACCESS) {
+            return false;
+        }
+
+        return true;
     }
 }

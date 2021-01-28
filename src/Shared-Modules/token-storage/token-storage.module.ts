@@ -11,7 +11,8 @@ const tokenStorageService: ClassProvider<TokenStorage> = {
 
 @Module({
     providers: [
-        LocalAuthTokenRepository, 
+        LocalAuthTokenRepository,
+        TokenStorageService, 
         tokenStorageService,
     ],
     exports: [tokenStorageService],

@@ -2,7 +2,7 @@ import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { GoogleAuthGuard } from './guards/google.guard';
 import { GoogleAuthService } from './google-auth.service';
 import GoogleUser from './models/google-user.model';
-import { GetJwtPayload } from '../decorators/get-user.decorator';
+import { GetUser } from '../decorators/get-user.decorator';
 
 @Controller('/auth/google')
 export class GoogleAuthController {
@@ -20,7 +20,7 @@ export class GoogleAuthController {
   @Get('/redirect')
   @UseGuards(GoogleAuthGuard)
   googleAuthRedirect(
-    @GetJwtPayload() user: GoogleUser,
+    @GetUser() user: GoogleUser,
     @Res() res,
   ) {
     // return this.authService.register(registerCredentialsDto);

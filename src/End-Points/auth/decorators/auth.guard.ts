@@ -3,7 +3,7 @@ import {
     SetMetadata,
     UseGuards,
 } from '@nestjs/common';
-import { AccessJwtGuard } from '../auth-local/guards/access-jwt.guard';
+import { AccessTokenGuard } from '../auth-local/guards/access-jwt.guard';
 import { RolesGuard } from '../RBAC/roles.guard';
 import { IsPublicRoute } from './public.decorator';
 
@@ -25,7 +25,7 @@ export function Auth(authPolicy: AuthPolicy) {
 
     return applyDecorators(
         IsPublicRoute(publicRoute),
-        UseGuards(AccessJwtGuard, RolesGuard),
+        UseGuards(AccessTokenGuard, RolesGuard),
         // ApiBearerAuth(),
         // ApiUnauthorizedResponse({ description: 'Unauthorized' }),
     );

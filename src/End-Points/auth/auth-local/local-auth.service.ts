@@ -54,7 +54,8 @@ export class LocalAuthService {
 
         const user = await this.userRepository.setUserConfirmed(email);
 
-        return this.getTokensFor(user);
+        const tokens = await this.tokenService.generateAllTokens(user);
+        return tokens;
     }
 
 
@@ -65,11 +66,11 @@ export class LocalAuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        return this.getTokensFor(user);
+        return this.tokenService.generateAllTokens(user);
     }
 
-    async renewTokens(refreshToken: string, payload: JwtPayload ): Promise<TokensResponseDto> {
-        return this.tokenService.renewTokens(payload, refreshToken);
+    async renewTokens(refreshToken: string, user: User ): Promise<TokensResponseDto> {
+        return this.tokenService.renewTokens(user, refreshToken);
     }
 
 
@@ -105,14 +106,4 @@ export class LocalAuthService {
 
         await this.userRepository.changePassword(user, newPassword);
     }
-
-
-    //#region Private Methods 
-    private async getTokensFor(user: User): Promise<TokensResponseDto> {
-        // const { email, role } = user;
-        // const payload: JwtPayload = { email, role };
-        return this.tokenService.generateAllTokens(user);
-    }
-
-    //#endregion
 }

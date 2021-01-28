@@ -9,7 +9,7 @@ export class LocalAuthTokenRepository extends Repository<LocalAuthToken> {
     
     private readonly logger = new Logger(this.constructor.name);
 
-    async createToken(token: string, tokenType: AuthTokenType, user: User): Promise<LocalAuthToken> {
+    async createToken(tokenType: AuthTokenType, user: User): Promise<LocalAuthToken> {
         const tokenEntity = new LocalAuthToken();
         tokenEntity.tokenType = tokenType;
         tokenEntity.user = user;

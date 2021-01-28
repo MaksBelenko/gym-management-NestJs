@@ -10,59 +10,49 @@ import { TokenStorageService } from '../token-storage/token-storage.service';
 import { AuthTokenType } from '../token-storage/auth-token.enum';
 import { User } from '../../End-Points/auth/user.entity';
 import { TokenStorage } from './token-storage.abstract';
+import { LocalAuthToken } from '../token-storage/local-auth-token.entity';
 
 @Injectable()
 export class TokensService {
 
-    private readonly accessTokenTTL: number;
-    private readonly refreshTokenTTL: number;
     private jwtConfigRecord: Record<JwtType, JwtConfig>;
-
     private readonly logger = new Logger(this.constructor.name);
 
     constructor (
-        @Inject(TokenStorage) private readonly tokenStorageService: TokenStorage,
+        @Inject(TokenStorage) private readonly tokenStorage: TokenStorage,
         private jwtService: JwtService,
         @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {
-        // PassportJs uses "ms" for convertion of string to number
-        this.accessTokenTTL = convertToMilliseconds(jwtConfig.accessJwt.expiresIn) / 1000;
-        this.refreshTokenTTL = convertToMilliseconds(jwtConfig.refreshJwt.expiresIn) / 1000;
-
         this.configureJwtConfigRecord();
     }
 
 
-    async tokenExists(bearerHeader: string): Promise<string> {
-        const receivedToken = this.getTokenFromBearerHeader(bearerHeader)
-        const tokenExists = await this.tokenStorageService.tokenExists(receivedToken);
+    async getTokenData(bearerHeader: string): Promise<LocalAuthToken> {
+        const receivedToken = this.getTokenFromBearerHeader(bearerHeader);
 
-        return (tokenExists) ? receivedToken : null;
+        return this.tokenStorage.getToken(receivedToken);
     }
 
-    async renewTokens(payload: JwtPayload, refreshToken: string): Promise<TokensResponseDto> {
-        // const currentAccessToken = await this.redisCacheService.get<any>(refreshToken);
-        
-        // await this.redisCacheService.del(currentAccessToken.accessToken);
-        // await this.redisCacheService.del(refreshToken);
+    async renewTokens(user: User, refreshToken: string): Promise<TokensResponseDto> {
+        const currentAccessTokenEntity = await this.tokenStorage.getReferenceTokenFor(refreshToken);
 
-        return undefined;// this.generateAllTokens(payload);
+        await this.tokenStorage.deleteToken(refreshToken);
+        await this.tokenStorage.deleteToken(currentAccessTokenEntity.token);
+
+        return this.generateAllTokens(user);
     }
 
 
     async generateAllTokens(user: User): Promise<TokensResponseDto> {
-        // const accessToken = await this.generateJwtToken(payload,  JwtType.ACCESS);
-        // const refreshToken = await this.generateJwtToken(payload, JwtType.REFRESH);
+        const accessTokenEntity = await this.tokenStorage.createToken(AuthTokenType.ACCESS, user);
+        const refreshTokenEntity = await this.tokenStorage.createToken(AuthTokenType.REFRESH, user);
 
-        // const tokensDto = new TokensResponseDto(accessToken, refreshToken);
+        refreshTokenEntity.referenceToken = accessTokenEntity;
+        await refreshTokenEntity.save();
+        
+        const tokensDto = new TokensResponseDto(accessTokenEntity.token, refreshTokenEntity.token);
 
-        // const accessTokenEntity = await this.tokenStorageService.createToken(accessToken, AuthTokenType.ACCESS, user);
-        // const refreshTokenEntity = await this.tokenStorageService.createToken(refreshToken, AuthTokenType.REFRESH, user);
-
-        // await this.redisCacheService.set(accessToken, true ,  this.accessTokenTTL);
-        // await this.redisCacheService.set(refreshToken, { accessToken }, this.refreshTokenTTL);
-
-        return undefined;// tokensDto;
+        return tokensDto;
     }
 
     async generateJwtToken(payload: JwtPayload, jwtType: JwtType): Promise<string> {

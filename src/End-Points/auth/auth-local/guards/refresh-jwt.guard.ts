@@ -1,6 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { JwtRefreshStrategyName } from '../passport-strategies/jwt-refresh.strategy';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { AuthTokenType } from '../../../../Shared-Modules/token-storage/auth-token.enum';
+import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
 
 @Injectable()
-export class RefreshJwtGuard extends AuthGuard(JwtRefreshStrategyName) {}
+export class RefreshTokenGuard implements CanActivate {
+
+    constructor(
+        private readonly tokenService: TokensService,
+    ) {}
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const req = context.switchToHttp().getRequest();
+        const authHeader = req.headers.authorization;
+
+        const refreshAuthToken = await this.tokenService.getTokenData(authHeader);
+
+        if (!refreshAuthToken || refreshAuthToken.tokenType != AuthTokenType.REFRESH) {
+            return false;
+        }
+
+        req.refreshToken = refreshAuthToken.token;
+
+        return true;
+    }
+}

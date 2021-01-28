@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { LocalAuthService } from './local-auth.service';
-import { GetJwtPayload } from '../decorators/get-user.decorator';
+import { GetUser } from '../decorators/get-user.decorator';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
@@ -13,7 +13,8 @@ import { Roles } from '../RBAC/roles.decorator';
 import { Role } from '../RBAC/role.enum';
 import { AuthPolicy, Auth } from '../decorators/auth.guard';
 import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
-import { RefreshJwtGuard } from './guards/refresh-jwt.guard';
+import { RefreshTokenGuard } from './guards/refresh-jwt.guard';
+import { User } from '../user.entity';
 
 
 // @Auth(AuthPolicy.Local)
@@ -51,12 +52,12 @@ export class LocalAuthController {
 
 
     @Post('/token-refresh')
-    @UseGuards(RefreshJwtGuard)
+    @UseGuards(RefreshTokenGuard)
     renewTokens(
         @GetRefreshToken() refreshToken: string,
-        @GetJwtPayload() payload: JwtPayload,
+        @GetUser() user: User,
     ): Promise<TokensResponseDto> {
-        return this.localAuthService.renewTokens(refreshToken, payload);
+        return this.localAuthService.renewTokens(refreshToken, user);
     }
 
 
@@ -71,7 +72,7 @@ export class LocalAuthController {
     @Post('/reset-password/:token')
     @UseGuards(ResetPasswordJwtGuard)
     resetPassword(
-        @GetJwtPayload() jwtPayload: JwtPayload,
+        @GetUser() jwtPayload: JwtPayload,
         @Body('new-password') newPassword: string,
     ): Promise<void> {
         return this.localAuthService.resetPassword(jwtPayload, newPassword);
@@ -82,7 +83,10 @@ export class LocalAuthController {
     @Roles(Role.User)
     @Auth(AuthPolicy.Local)
     // @UseGuards(UserAuthGuard)
-    test(@GetJwtPayload() jwtPayload: JwtPayload) {
-        return jwtPayload;
+    test() {
+        return {message: 'test successfully completed'};
     }
+    // test(@GetUser() jwtPayload: JwtPayload) {
+    //     return jwtPayload;
+    // }
 }

@@ -33,7 +33,7 @@ export class JwtAccessStrategy extends PassportStrategy(
     async validate(req: any, payload: any): Promise<JwtPayload> {
 
         const header = req.headers.authorization;
-        const existingToken = await this.tokenService.tokenExists(header);
+        const existingToken = await this.tokenService.getTokenData(header);
 
         if (!existingToken) {
             throw new UnauthorizedException();

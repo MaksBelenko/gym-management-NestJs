@@ -24,13 +24,12 @@ export class LocalAuthToken extends BaseEntity {
     @Column({ type: 'enum', enum: AuthTokenType})
     tokenType: AuthTokenType;
 
-    @Column({ nullable: true })
-    public relatedReferenceTokenId?: string;
+    // @Column({ nullable: true })
+    // public relatedReferenceTokenId?: LocalAuthToken;
 
 
-    @ManyToOne(type => LocalAuthToken, tokenEntity => tokenEntity.token)
-    @JoinTable({ name: 'relatedReferenceTokenId' })
-    // @OneToOne(type => LocalAuthToken, tokenEntity => tokenEntity.token)
+    @ManyToMany(type => LocalAuthToken, { eager: true })
+    @JoinTable()
     referenceToken: LocalAuthToken;
 
     @CreateDateColumn()
