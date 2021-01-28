@@ -10,7 +10,7 @@ import { TokenStorageModule } from '../token-storage/token-storage.module';
   imports: [
     ConfigModule.forFeature(jwtConfig),
     JwtModule.register({}),
-    TokenStorageModule
+    TokenStorageModule,
     // RedisCacheModule,
   ],
   providers: [

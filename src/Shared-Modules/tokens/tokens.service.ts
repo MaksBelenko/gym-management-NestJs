@@ -9,6 +9,7 @@ import jwtConfiguration, { JwtConfig } from '../../config/jwt.config';
 import { TokenStorageService } from '../token-storage/token-storage.service';
 import { AuthTokenType } from '../token-storage/auth-token.enum';
 import { User } from '../../End-Points/auth/user.entity';
+import { TokenStorage } from './token-storage.abstract';
 
 @Injectable()
 export class TokensService {
@@ -20,7 +21,7 @@ export class TokensService {
     private readonly logger = new Logger(this.constructor.name);
 
     constructor (
-        private readonly tokenStorageService: TokenStorageService,
+        @Inject(TokenStorage) private readonly tokenStorageService: TokenStorage,
         private jwtService: JwtService,
         @Inject(jwtConfiguration.KEY) private readonly jwtConfig: ConfigType<typeof jwtConfiguration>,
     ) {

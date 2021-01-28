@@ -3,13 +3,16 @@ import { LocalAuthTokenRepository } from './local-auth-token.repository';
 import { User } from '../../End-Points/auth/user.entity';
 import { AuthTokenType } from './auth-token.enum';
 import { LocalAuthToken } from './local-auth-token.entity';
+import { TokenStorage } from '../tokens/token-storage.abstract';
 
 @Injectable()
-export class TokenStorageService {
+export class TokenStorageService extends TokenStorage {
 
     constructor(
         private readonly tokenRepository: LocalAuthTokenRepository,
-    ) {}
+    ) {
+        super();
+    }
 
     async createToken(token: string, tokenType: AuthTokenType, user: User): Promise<LocalAuthToken> {
         return this.tokenRepository.createToken(token, tokenType, user);
