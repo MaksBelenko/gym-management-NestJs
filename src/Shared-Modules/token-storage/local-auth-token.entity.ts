@@ -4,10 +4,8 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    JoinTable,
+    JoinColumn,
     ManyToOne,
-    OneToOne,
-    PrimaryColumn,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AuthTokenType } from './auth-token.enum';
@@ -24,12 +22,12 @@ export class LocalAuthToken extends BaseEntity {
     @Column({ type: 'enum', enum: AuthTokenType})
     tokenType: AuthTokenType;
 
-    // @Column({ nullable: true })
-    // public relatedReferenceTokenId?: LocalAuthToken;
+    @Column({ nullable: true })
+    public relatedReferenceTokenId?: string;
 
 
-    @ManyToMany(type => LocalAuthToken, { eager: true })
-    @JoinTable()
+    @ManyToOne(type => LocalAuthToken, tokenEntity =>  tokenEntity.token )
+    @JoinColumn({ name: 'relatedReferenceTokenId' })
     referenceToken: LocalAuthToken;
 
     @CreateDateColumn()

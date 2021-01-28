@@ -21,7 +21,7 @@ export class LocalAuthTokenRepository extends Repository<LocalAuthToken> {
         try {
             const t = await this.delete(token);
         } catch (error) {
-            this.logger.error(`Error deleting from database token ${token}; error = ${error}`);
+            this.logger.log(`Error deleting from database token ${token}; error = ${error}`);
         }
     }
 }

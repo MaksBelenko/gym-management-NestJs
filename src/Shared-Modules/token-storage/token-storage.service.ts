@@ -35,13 +35,13 @@ export class TokenStorageService extends TokenStorage {
         }
     }
 
-    async getReferenceTokenFor(token: string): Promise<LocalAuthToken> {
+    async getReferenceTokenFor(token: string): Promise<string> {
         const foundToken = await this.tokenRepository.findOne(token);
 
         if (!foundToken) {
             throw new NotFoundException();
         }
         
-        return foundToken.referenceToken;
+        return foundToken.relatedReferenceTokenId;
     }
 }

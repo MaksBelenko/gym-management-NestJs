@@ -34,10 +34,10 @@ export class TokensService {
     }
 
     async renewTokens(user: User, refreshToken: string): Promise<TokensResponseDto> {
-        const currentAccessTokenEntity = await this.tokenStorage.getReferenceTokenFor(refreshToken);
+        const currentAccessToken = await this.tokenStorage.getReferenceTokenFor(refreshToken);
 
         await this.tokenStorage.deleteToken(refreshToken);
-        await this.tokenStorage.deleteToken(currentAccessTokenEntity.token);
+        await this.tokenStorage.deleteToken(currentAccessToken);
 
         return this.generateAllTokens(user);
     }
