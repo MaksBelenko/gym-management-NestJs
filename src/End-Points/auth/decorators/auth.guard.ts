@@ -3,7 +3,7 @@ import {
     SetMetadata,
     UseGuards,
 } from '@nestjs/common';
-import { AccessTokenGuard } from '../auth-local/guards/access-jwt.guard';
+import { AccessTokenGuard } from '../auth-local/guards/access-token.guard';
 import { RolesGuard } from '../RBAC/roles.guard';
 import { IsPublicRoute } from './public.decorator';
 

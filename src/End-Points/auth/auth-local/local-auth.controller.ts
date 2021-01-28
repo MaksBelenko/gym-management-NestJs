@@ -13,7 +13,7 @@ import { Roles } from '../RBAC/roles.decorator';
 import { Role } from '../RBAC/role.enum';
 import { AuthPolicy, Auth } from '../decorators/auth.guard';
 import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
-import { RefreshTokenGuard } from './guards/refresh-jwt.guard';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { User } from '../user.entity';
 
 

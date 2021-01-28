@@ -5,8 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LocalAuthController } from './local-auth.controller';
 import { LocalAuthService } from './local-auth.service';
 import { UserRepository } from '../user.repository';
-import { JwtAccessStrategy } from './passport-strategies/jwt-access.strategy';
-import { JwtRefreshStrategy } from './passport-strategies/jwt-refresh.strategy';
 import { JwtResetPasswordStrategy } from './passport-strategies/jwt-reset-password.strategy';
 import { MailSenderModule } from '../../../Shared-Modules/mail-sender/mail-sender.module';
 import { TokensModule } from '../../../Shared-Modules/tokens/tokens.module';
@@ -29,12 +27,10 @@ import jwtConfig from '../../../config/jwt.config';
     ],
     providers: [
         LocalAuthService,
-        JwtAccessStrategy,
-        JwtRefreshStrategy,
         JwtResetPasswordStrategy
     ],
     exports: [
-        JwtAccessStrategy,
+        // JwtAccessStrategy,
     ]
 })
 export class LocalAuthModule {}

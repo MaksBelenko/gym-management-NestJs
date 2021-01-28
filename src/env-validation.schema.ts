@@ -20,10 +20,8 @@ export const JoiValidationSchema = Joi.object({
     REDIS_PORT: Joi.number().positive().integer().required(),
 
     //# LOCAL AUTH
-    JWT_ACCESS_SECRET: Joi.string().required(),
-    JWT_ACCESS_EXPIRES_IN: Joi.string().required(),
-    JWT_REFRESH_SECRET: Joi.string().required(),
-    JWT_REFRESH_EXPIRES_IN: Joi.string().required(),
+    ACCESS_TOKEN_EXPIRES_IN: Joi.string().required(),
+    REFRESH_TOKEN_EXPIRES_IN: Joi.string().required(),
     JWT_PASSWORD_RESET_SECRET: Joi.string().required(),
     JWT_PASSWORD_RESET_EXPIRES_IN: Joi.string().required(),
 

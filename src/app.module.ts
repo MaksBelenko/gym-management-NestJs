@@ -7,7 +7,6 @@ import { TrainersModule } from './End-Points/trainers/trainers.module';
 import { AuthModule } from './End-Points/auth/auth.module';
 import { GymSessionsModule } from './End-Points/gym-sessions/gym-sessions.module';
 import { typeOrmConfig } from './config/typeorm.config';
-import { TokenStorageModule } from './Shared-Modules/token-storage/token-storage.module';
 import { JoiValidationSchema } from './env-validation.schema';
 
 @Module({
@@ -21,7 +20,7 @@ import { JoiValidationSchema } from './env-validation.schema';
         GymClassesModule, 
         TrainersModule, 
         GymSessionsModule, 
-        AuthModule, TokenStorageModule,
+        AuthModule, 
     ],
 })
 export class AppModule {}

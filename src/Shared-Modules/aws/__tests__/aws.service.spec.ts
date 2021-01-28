@@ -29,7 +29,7 @@ describe('AwsService', () => {
       providers: [
         AwsService,
         {
-          provide: ConfigModule,
+          provide: ConfigService,
           useFactory: mockConfigService,
         },
         {

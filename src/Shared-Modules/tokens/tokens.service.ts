@@ -4,17 +4,15 @@ import { JwtService } from '@nestjs/jwt'
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtType } from '../../shared/jwt-type.enum';
 import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
-import * as convertToMilliseconds from 'ms';
 import jwtConfiguration, { JwtConfig } from '../../config/jwt.config';
-import { TokenStorageService } from '../token-storage/token-storage.service';
 import { AuthTokenType } from '../token-storage/auth-token.enum';
 import { User } from '../../End-Points/auth/user.entity';
 import { TokenStorage } from './token-storage.abstract';
 import { LocalAuthToken } from '../token-storage/local-auth-token.entity';
 
+
 @Injectable()
 export class TokensService {
-
     private jwtConfigRecord: Record<JwtType, JwtConfig>;
     private readonly logger = new Logger(this.constructor.name);
 
@@ -69,8 +67,8 @@ export class TokensService {
 
     private configureJwtConfigRecord() {
         this.jwtConfigRecord = {
-            [JwtType.ACCESS]: this.jwtConfig.accessJwt,
-            [JwtType.REFRESH]: this.jwtConfig.refreshJwt,
+            // [JwtType.ACCESS]: this.jwtConfig.accessJwt,
+            // [JwtType.REFRESH]: this.jwtConfig.refreshJwt,
             [JwtType.PASSORD_RESET]: this.jwtConfig.passwordResetJwt,
         }
     }

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { AccessTokenGuard } from './access-jwt.guard';
+import { AccessTokenGuard } from './access-token.guard';
 import { RolesGuard } from '../../RBAC/roles.guard';
 
 @Injectable()
