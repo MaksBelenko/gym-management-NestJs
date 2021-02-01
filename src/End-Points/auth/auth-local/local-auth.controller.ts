@@ -15,6 +15,7 @@ import { AuthPolicy, Auth } from '../decorators/auth.guard';
 import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { User } from '../user.entity';
+import { RateLimit } from 'nestjs-rate-limiter';
 
 
 // @Auth(AuthPolicy.Local)
@@ -43,6 +44,11 @@ export class LocalAuthController {
     }
 
 
+    @RateLimit({ 
+        keyPrefix: 'sign-up', 
+        points: 1, 
+        duration: 10, 
+        errorMessage: 'Accounts cannot signin more than once in per minute' })
     @Post('/signin')
     login(
         @Body(ValidationPipe) loginCredentialsDto: LoginCredentialsDto,

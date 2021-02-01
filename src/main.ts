@@ -3,12 +3,12 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
-import { getConnection } from 'typeorm';
 
 async function bootstrap() {
-    const logger = new Logger('bootstrap');
+    const logger = new Logger('bootstrap');    
 
     const api = await NestFactory.create(AppModule);
+
 
     api.setGlobalPrefix('/api');
     // app.useGlobalInterceptors(new ResponseTimeInterceptor());
