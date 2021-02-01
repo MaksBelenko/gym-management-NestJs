@@ -1,3 +1,4 @@
+import * as helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
@@ -8,6 +9,11 @@ async function bootstrap() {
     const logger = new Logger('bootstrap');    
 
     const api = await NestFactory.create(AppModule);
+
+    if (process.env.NODE_ENV !== 'dev') {
+        api.use(helmet());
+        api.enableCors();
+    }
 
 
     api.setGlobalPrefix('/api');
@@ -27,9 +33,6 @@ async function bootstrap() {
         transform: true,            // transorm request json to match types (dto, param, body etc) [slight performance tradeoff]
     }));
 
-    // const driver = getConnection().driver as any;
-    // driver.postgres.defaults.parseInputDatesAsUTC = true;
-    // driver.postgres.types.setTypeParser(1114, (str: any) => new Date(str + 'Z'));
 
     const port = process.env.PORT;
     await api.listen(port);

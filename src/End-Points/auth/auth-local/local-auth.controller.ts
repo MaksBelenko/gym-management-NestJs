@@ -1,21 +1,20 @@
 import { Body, Controller, HttpCode, ParseUUIDPipe, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
-import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { LocalAuthService } from './local-auth.service';
-import { GetUser } from '../decorators/get-user.decorator';
-import { TokensResponseDto } from './dto/tokens-response.dto';
+import { User } from '../user.entity';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
-import { LoginCredentialsDto } from './dto/login-credentials.dto';
+import { ResetPasswordJwtGuard } from './guards/reset-password-jwt.guard';
+import { GetUser } from '../decorators/get-user.decorator';
 import { GetRefreshToken } from '../decorators/get-bearer-token.decorator';
+import { AuthPolicy, Auth } from '../decorators/auth.guard';
+import { RegisterCredentialsDto } from './dto/register-credentials.dto';
+import { LoginCredentialsDto } from './dto/login-credentials.dto';
+import { TokensResponseDto } from './dto/tokens-response.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-import { ResetPasswordJwtGuard } from './guards/reset-password-jwt.guard';
 import { Roles } from '../RBAC/roles.decorator';
 import { Role } from '../RBAC/role.enum';
-import { AuthPolicy, Auth } from '../decorators/auth.guard';
 import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
-import { User } from '../user.entity';
-import { RateLimit } from 'nestjs-rate-limiter';
 
 
 // @Auth(AuthPolicy.Local)
@@ -44,11 +43,6 @@ export class LocalAuthController {
     }
 
 
-    @RateLimit({ 
-        keyPrefix: 'sign-up', 
-        points: 1, 
-        duration: 10, 
-        errorMessage: 'Accounts cannot signin more than once in per minute' })
     @Post('/signin')
     login(
         @Body(ValidationPipe) loginCredentialsDto: LoginCredentialsDto,
