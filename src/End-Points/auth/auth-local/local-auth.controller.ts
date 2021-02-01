@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpCode, ParseUUIDPipe, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { LocalAuthService } from './local-auth.service';
 import { GetUser } from '../decorators/get-user.decorator';
@@ -50,11 +50,20 @@ export class LocalAuthController {
         return this.localAuthService.login(loginCredentialsDto);
     }
 
+    @Post('/logout')
+    @HttpCode(200)
+    @UseGuards(RefreshTokenGuard)
+    logout(
+        @GetRefreshToken(ParseUUIDPipe) refreshToken: string,
+    ): Promise<void> {
+        return this.localAuthService.logout(refreshToken);
+    }
+
 
     @Post('/token-refresh')
     @UseGuards(RefreshTokenGuard)
     renewTokens(
-        @GetRefreshToken() refreshToken: string,
+        @GetRefreshToken(ParseUUIDPipe) refreshToken: string,
         @GetUser() user: User,
     ): Promise<TokensResponseDto> {
         return this.localAuthService.renewTokens(refreshToken, user);

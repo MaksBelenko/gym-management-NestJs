@@ -6,5 +6,6 @@ export abstract class TokenStorage {
     abstract createToken(tokenType: AuthTokenType, user: User): Promise<LocalAuthToken>;
     abstract deleteToken(token: string): Promise<void>;
     abstract getToken(token: string): Promise<LocalAuthToken>;
+    abstract getTokenThrows(token: string): Promise<LocalAuthToken>;
     abstract getReferenceTokenFor(token: string): Promise<string>;
 }

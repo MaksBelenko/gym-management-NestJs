@@ -31,12 +31,15 @@ export class TokensService {
         return this.tokenStorage.getToken(receivedToken);
     }
 
-    async renewTokens(user: User, refreshToken: string): Promise<TokensResponseDto> {
+    async removeAllTokens(refreshToken: string): Promise<void> {
         const currentAccessToken = await this.tokenStorage.getReferenceTokenFor(refreshToken);
 
         await this.tokenStorage.deleteToken(refreshToken);
         await this.tokenStorage.deleteToken(currentAccessToken);
+    }
 
+    async renewTokens(user: User, refreshToken: string): Promise<TokensResponseDto> {
+        await this.removeAllTokens(refreshToken);
         return this.generateAllTokens(user);
     }
 
@@ -61,6 +64,8 @@ export class TokensService {
             expiresIn: config.expiresIn
         });
     }
+
+
 
 
     //#region Private Methods

@@ -69,6 +69,12 @@ export class LocalAuthService {
         return this.tokenService.generateAllTokens(user);
     }
 
+
+    async logout(refreshToken: string): Promise<void> {
+        return await this.tokenService.removeAllTokens(refreshToken);
+    }
+
+
     async renewTokens(refreshToken: string, user: User ): Promise<TokensResponseDto> {
         return this.tokenService.renewTokens(user, refreshToken);
     }

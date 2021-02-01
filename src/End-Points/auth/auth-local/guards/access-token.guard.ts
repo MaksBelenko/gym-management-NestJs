@@ -30,6 +30,12 @@ export class AccessTokenGuard implements CanActivate {
             return false;
         }
 
+        if (!accessAuthToken.user) {
+            return false;
+        }
+
+        req.user = accessAuthToken.user;
+
         return true;
     }
 }

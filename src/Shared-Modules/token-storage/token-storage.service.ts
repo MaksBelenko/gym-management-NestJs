@@ -63,6 +63,11 @@ export class TokenStorageService extends TokenStorage {
         }
     }
 
+    async getTokenThrows(token: string): Promise<LocalAuthToken> {
+        return this.tokenRepository.findOne(token);
+    }
+
+    
     async getReferenceTokenFor(token: string): Promise<string> {
         const foundToken = await this.tokenRepository.findOne(token);
 
