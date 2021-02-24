@@ -24,7 +24,7 @@ import { Response } from 'express';
 import { Photo } from '../../Shared-Modules/photos/photo.entity';
 
 @Controller('gym-classes')
-@UseInterceptors(TransformInterceptor)
+// @UseInterceptors(TransformInterceptor)
 export class GymClassesController {
     constructor(private gymClassesService: GymClassesService) {}
 
@@ -59,7 +59,7 @@ export class GymClassesController {
 
     @Post('/image/upload/:id')
     @UseInterceptors(FileInterceptor('image', imageMulterOptions))
-    async uploadModel(
+    async uploadPhoto(
         @Param('id', ParseUUIDPipe) id: string,
         @UploadedFile() imageFile: Express.Multer.File,
     ): Promise<Photo> {

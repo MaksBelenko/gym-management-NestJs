@@ -27,5 +27,5 @@ export class GymSession extends BaseEntity {
     startDate: Date;
 
     @Column()
-    finishDate: Date;
+    durationMins: number;
 }

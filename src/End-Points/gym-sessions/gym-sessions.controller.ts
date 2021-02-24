@@ -20,7 +20,7 @@ import { TransformInterceptor } from '../../Interceptors/transform.interceptor';
 import { UpdateSessionDto } from './dto/update-session.dto';
 
 @Controller('gym-sessions')
-@UseInterceptors(TransformInterceptor)
+// @UseInterceptors(TransformInterceptor)
 export class GymSessionsController {
     constructor(private sessionService: GymSessionsService) {}
 

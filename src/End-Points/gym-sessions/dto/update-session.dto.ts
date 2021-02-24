@@ -1,4 +1,5 @@
-import { IsDateString, IsEnum, IsIn, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsDateString, IsEnum, IsIn, IsInt, IsOptional, IsPositive, IsString } from "class-validator";
 import { GymSessionStatus } from '../gymsession-status.enum';
 
 export class UpdateSessionDto {
@@ -12,8 +13,10 @@ export class UpdateSessionDto {
     startDate: string;
 
     @IsOptional()
-    @IsDateString()
-    finishDate: string;
+    @Type(() => Number)
+    @IsInt()
+    @IsPositive()
+    durationMins: number;
 
 
     @IsOptional()

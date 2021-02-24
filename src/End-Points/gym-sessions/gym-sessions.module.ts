@@ -4,12 +4,14 @@ import { GymSessionsService } from './gym-sessions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GymSessionRepository } from './gym-session.repository';
 import { GymClassRepository } from '../gym-classes/gym-class.repository';
+import { TrainerRepository } from '../trainers/trainer.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       GymSessionRepository,
-      GymClassRepository
+      GymClassRepository,
+      TrainerRepository,
     ]),
   ],
   controllers: [GymSessionsController],

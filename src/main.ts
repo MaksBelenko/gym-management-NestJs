@@ -28,9 +28,9 @@ async function bootstrap() {
     });
 
     api.useGlobalPipes(new ValidationPipe({
+        transform: true,            // transorm request json to match types (dto, param, body etc) [slight performance tradeoff]
         whitelist: true,            // strip request json to match dto (remove access properties)
         forbidNonWhitelisted: true, // if json doesn't match dto exactly then fobid request
-        transform: true,            // transorm request json to match types (dto, param, body etc) [slight performance tradeoff]
     }));
 
 
