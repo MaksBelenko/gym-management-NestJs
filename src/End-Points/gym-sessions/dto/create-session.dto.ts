@@ -15,4 +15,9 @@ export class CreateSessionDto {
     @IsInt()
     @IsPositive()
     durationMins: number;
+
+    @Type(() => Number)
+    @IsInt()
+    @IsPositive()
+    maxNumberOfPlaces: number;
 }

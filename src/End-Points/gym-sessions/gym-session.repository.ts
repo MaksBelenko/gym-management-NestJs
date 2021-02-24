@@ -1,8 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { GymSession } from './gym-session.entity';
-import { GymClass } from 'src/End-Points/gym-classes/gym-class.entity';
-import { GymSessionStatus } from 'src/End-Points/gym-sessions/gymsession-status.enum';
+import { GymClass } from '../gym-classes/gym-class.entity';
 import { DateHelper } from '../../helpers/date.helper';
 import { GetSessionsFilterDto } from './dto/get-sessions-filter.dto';
 import { CreateSessionDto } from './dto/create-session.dto';
@@ -52,18 +51,17 @@ export class GymSessionRepository extends Repository<GymSession> {
 
 
     async createSession(createSessionDto: CreateSessionDto, gymClass: GymClass, trainer: Trainer): Promise<GymSession> {
-        const { startDate, durationMins } = createSessionDto;
+        const { startDate, durationMins, maxNumberOfPlaces } = createSessionDto;
 
         const dateHelper = new DateHelper();
 
         const newSession = new GymSession();
-        newSession.status = GymSessionStatus.PLACES_AVAILABLE;
-        
-        newSession.gymClass = gymClass;
-        newSession.trainer = trainer;
-
+        newSession.maxNumberOfPlaces = maxNumberOfPlaces;
+        newSession.bookedPlaces = 0;
         newSession.startDate = dateHelper.convertToUtc(startDate);
         newSession.durationMins = durationMins;
+        newSession.gymClass = gymClass;
+        newSession.trainer = trainer;
         await newSession.save();
 
         // Set to return the current UTC ISO date
@@ -82,10 +80,9 @@ export class GymSessionRepository extends Repository<GymSession> {
         }
 
         const dateHelper = new DateHelper();
-        const { startDate, durationMins, status } = updateSessionDto;
+        const { startDate, durationMins } = updateSessionDto;
 
         if (gymClass) session.gymClass = gymClass;
-        if (status) session.status = status;
         if (startDate) session.startDate = dateHelper.convertToUtc(startDate);
         if (durationMins) session.durationMins;
 
