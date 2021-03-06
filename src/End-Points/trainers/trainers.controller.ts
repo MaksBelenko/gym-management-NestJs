@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe, Body, Delete, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe, Post, Query, ValidationPipe, Body, Delete, Patch, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { TrainersService } from './trainers.service';
 import { GetTrainersFilterDto } from './dto/get-trainers-filter.dto';
 import { Trainer } from './trainer.entity';
@@ -7,6 +7,7 @@ import { UpdateTrainerDto } from './dto/update-trainer.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageMulterOptions } from '../../shared/image-file.filter';
 import { Photo } from '../../Shared-Modules/photos/photo.entity';
+import { Response } from 'express';
 
 @Controller('trainers')
 export class TrainersController {
@@ -56,6 +57,15 @@ export class TrainersController {
         @UploadedFile() imageFile: Express.Multer.File,
     ): Promise<Photo> {
         return this.trainerService.uploadAdditionalImage(id, imageFile);
+    }
+
+    @Get('/image/download/:name')
+    async getPrivateFile(
+        @Param('name') name: string,
+        @Res() res: Response,
+    ) {
+        const file = await this.trainerService.downloadImage(name);
+        file.stream.pipe(res);
     }
 
 

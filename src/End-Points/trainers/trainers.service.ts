@@ -73,6 +73,10 @@ export class TrainersService {
         return photo;   
     }
 
+    async downloadImage(name: string) {
+        return this.photoService.downloadImage(name);
+    }
+
 
     async deletePhoto(imageId: string): Promise<void> {
         await this.photoService.deletePhotoById(imageId);
