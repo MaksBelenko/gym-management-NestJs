@@ -65,6 +65,7 @@ export class TrainersController {
         @Res() res: Response,
     ) {
         const file = await this.trainerService.downloadImage(name);
+        // TODO: Set Content-Type header
         file.stream.pipe(res);
     }
 

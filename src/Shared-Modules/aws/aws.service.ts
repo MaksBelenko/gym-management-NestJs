@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
 import { S3 } from 'aws-sdk';
@@ -6,12 +6,15 @@ import { ImageBuffers } from '../../shared/image-buffers.interface';
 import { Dictionary } from 'lodash';
 import { ImageSize } from '../../shared/image-size.enum';
 import awsConnectionConfig from '../../config/aws.config';
+import internal from 'stream';
 
 @Injectable()
 export class AwsService {
 
+    private readonly logger = new Logger(this.constructor.name);
+
     constructor(
-        @Inject(awsConnectionConfig.KEY) private readonly awsConsts: ConfigType<typeof awsConnectionConfig>,
+        @Inject(awsConnectionConfig.KEY) private readonly awsConfig: ConfigType<typeof awsConnectionConfig>,
         private readonly s3: S3,
     ) {}
 
@@ -58,7 +61,7 @@ export class AwsService {
 
         return this.s3
             .upload({
-                Bucket: this.awsConsts.photosBucketName,
+                Bucket: this.awsConfig.photosBucketName,
                 Body: buffer,
                 Key: keyName,
             })
@@ -69,14 +72,33 @@ export class AwsService {
      * Download an image from S3
      * @param nameKey Name of the image to download
      */
-    async downloadImage(nameKey: string) {
-        const stream = this.s3.getObject({
-            Bucket: this.awsConsts.photosBucketName,
+    async downloadImage(nameKey: string): Promise<{ stream: internal.Readable, contentLength: number }> {
+        const object = this.s3.getObject({
+            Bucket: this.awsConfig.photosBucketName,
             Key: nameKey,
-        })
-        .createReadStream()
+        });
 
-        return { stream };
+        const params = { 
+            Bucket: this.awsConfig.photosBucketName,
+            Key: nameKey
+        }
+
+        let contentLength = 0;
+
+        try { 
+            const headCode = await this.s3.headObject(params).promise();
+            contentLength = headCode.ContentLength
+            const signedUrl = await this.s3.getSignedUrlPromise('getObject', params);
+            const r = 5
+            // Do something with signedUrl
+          } catch (headErr) {
+            this.logger.error(`Image with key: ${nameKey} could not be found; Error message = ${headErr.message}`);
+            throw new NotFoundException(`Image with key: ${nameKey} could not be found`)
+          }
+
+        const stream = object.createReadStream()
+        
+        return { stream, contentLength };
     }
 
 
@@ -92,7 +114,7 @@ export class AwsService {
 
     async deleteSingleImage(key: string): Promise<void> {
         await this.s3.deleteObject({
-            Bucket: this.awsConsts.photosBucketName,
+            Bucket: this.awsConfig.photosBucketName,
             Key: key,
         })
         .promise();
