@@ -4,8 +4,8 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
-import { PinoLoggerService } from './shared-modules/pino-logger/pino-logger.service';
-import { ASYNC_STORAGE } from './shared-modules/pino-logger/logger.constants';
+import { PinoLoggerService } from './Shared-Modules/pino-logger/pino-logger.service';
+import { ASYNC_STORAGE } from './Shared-Modules/pino-logger/logger.constants';
 import { v4 as uuidv4} from 'uuid';
 
 async function bootstrap() {
