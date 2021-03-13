@@ -9,6 +9,7 @@ import { AuthModule } from './End-Points/auth/auth.module';
 import { GymSessionsModule } from './End-Points/gym-sessions/gym-sessions.module';
 import { typeOrmConfig } from './config/typeorm.config';
 import { JoiValidationSchema } from './env-validation.schema';
+import { PinoLoggerModule } from './shared-modules/pino-logger/pino-logger.module';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -21,6 +22,7 @@ import { JoiValidationSchema } from './env-validation.schema';
         TrainersModule, 
         GymSessionsModule, 
         AuthModule, 
+        PinoLoggerModule, 
     ],
 })
 export class AppModule {}

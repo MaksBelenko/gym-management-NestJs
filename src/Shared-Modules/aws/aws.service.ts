@@ -92,7 +92,7 @@ export class AwsService {
             const r = 5
             // Do something with signedUrl
           } catch (headErr) {
-            this.logger.error(`Image with key: ${nameKey} could not be found; Error message = ${headErr.message}`);
+            this.logger.error(`Image with key: ${nameKey} could not be found; Error message = ${headErr.message}`, headErr);
             throw new NotFoundException(`Image with key: ${nameKey} could not be found`)
           }
 
