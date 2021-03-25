@@ -51,6 +51,7 @@ export class TokensService {
         refreshTokenEntity.referenceToken = accessTokenEntity;
         await refreshTokenEntity.save();
         
+        this.logger.log(`Generated new tokens for ${user.email}`);
         const tokensDto = new TokensResponseDto(accessTokenEntity.token, refreshTokenEntity.token);
 
         return tokensDto;

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
@@ -10,6 +10,8 @@ import { GymClassRepository } from './gym-class.repository';
 @Injectable()
 export class GymClassesService {
     
+    private readonly logger = new Logger(this.constructor.name);
+
     constructor(
         private photoService: PhotosService,
         @InjectRepository(GymClassRepository)
@@ -67,6 +69,7 @@ export class GymClassesService {
     ): Promise<Photo> {
 
         if (!imageFile) {
+            this.logger.error(`(BadRequestException): - No image passed as a parameter`)
             throw new BadRequestException(`No image passed as a parameter`);
         }
 

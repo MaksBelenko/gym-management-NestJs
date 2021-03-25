@@ -16,3 +16,14 @@ const asyncLocalStorage = new AsyncLocalStorage();
   exports: [PinoLoggerService],
 })
 export class PinoLoggerModule {}
+
+// ----- Usage in main.ts -------------
+// app.use((req, res, next) => {
+//   const asyncLocalStorage = app.get(ASYNC_STORAGE);
+//   const traceId = req.headers['x-request-id'] || uuidv4();
+//   const store = new Map().set('traceId', traceId);
+//   asyncLocalStorage.run(store, () => {
+//       next();
+//   })
+// })
+// app.useLogger(app.get(PinoLoggerService));

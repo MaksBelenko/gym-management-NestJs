@@ -60,9 +60,11 @@ export class LocalAuthService {
 
 
     async login(loginCredentialsDto: LoginCredentialsDto): Promise<TokensResponseDto> {
+        this.logger.log(`User with email ${loginCredentialsDto.email} is trying to signin...`)
         const user = await this.userRepository.validateUserPassword(loginCredentialsDto);
 
         if (!user) {
+            this.logger.error(`Sending Unauthorized exception back`)
             throw new UnauthorizedException('Invalid credentials');
         }
 

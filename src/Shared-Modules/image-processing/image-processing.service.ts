@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as sharp from 'sharp';
 import * as fs from 'fs';
 import * as util from 'util';
@@ -7,6 +7,7 @@ import { ImageBuffers } from '../../shared/image-buffers.interface';
 
 @Injectable()
 export class ImageProcessingService {
+    private readonly logger = new Logger(this.constructor.name);
     private readFileAsync = util.promisify(fs.readFile);
     private sizes = [
         { type: ImageSize.LARGE, numericSize: 1024 },
@@ -22,6 +23,8 @@ export class ImageProcessingService {
         const imageBuffers: ImageBuffers[] = [];
 
         const imageBuffer = await this.readFileAsync(file.path);
+
+        this.logger.log(`Generating images... Filepath = ${file.path}`)
 
         await Promise.all(
             this.sizes.map(async size => {

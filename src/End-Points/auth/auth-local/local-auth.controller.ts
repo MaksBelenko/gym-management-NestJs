@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, ParseUUIDPipe, Post, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpCode, ParseUUIDPipe, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { LocalAuthService } from './local-auth.service';
 import { User } from '../user.entity';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';

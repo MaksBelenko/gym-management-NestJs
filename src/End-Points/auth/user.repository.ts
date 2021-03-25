@@ -46,14 +46,27 @@ export class UserRepository extends Repository<User> {
     }
 
     async validateUserPassword(loginCredentialsDto: LoginCredentialsDto): Promise<User> {
-        const { email, password } = loginCredentialsDto;
-        const user = await this.findOne({ email });
+        const email = loginCredentialsDto.email.toLowerCase();
+        const password = loginCredentialsDto.password;
+        
+        const user = await this.findUserByEmail(email);
 
-        if (user && await this.validatePassword(user, password)) {
-            return user;
+        if (!user) {
+            this.logger.error(`User with email ${email} not registered`);
+            return null;
         }
 
-        return null;
+        if (user.confirmed === false) {
+            this.logger.error(`User with email ${email} did not confirm account/email`);
+            return null;
+        }
+
+        if (await this.validatePassword(user, password) === false) {
+            this.logger.error(`User with email ${email} inserted incorrect password`);
+            return null;
+        }
+
+        return user;
     }
 
     async validatePassword(user: User, passwordToValidate: string): Promise<boolean> {

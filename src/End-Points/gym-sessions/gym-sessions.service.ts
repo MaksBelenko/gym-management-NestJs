@@ -24,6 +24,7 @@ export class GymSessionsService {
      * @param filterDto Filter DTO with query parameters
      */
     async getSessions(filterDto: GetSessionsFilterDto): Promise<GymSession[]> {
+        this.logger.log(`Getting sessions...`)
         return this.sessionRepository.getSessions(filterDto);
     }
     

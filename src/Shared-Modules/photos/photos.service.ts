@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Dictionary } from 'lodash';
 import { PhotoRepository } from './photo.repository';
@@ -8,6 +8,8 @@ import { ImageProcessingService } from '../image-processing/image-processing.ser
 
 @Injectable()
 export class PhotosService {
+
+    private readonly logger = new Logger(this.constructor.name);
 
     constructor(
         private awsService: AwsService,
@@ -34,6 +36,7 @@ export class PhotosService {
 
 
     async downloadImage(name: string) {
+        this.logger.log(`Download image with key name = "${name}"`);
         return this.awsService.downloadImage(name);
     }
 

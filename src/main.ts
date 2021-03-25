@@ -4,9 +4,9 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
-import { PinoLoggerService } from './Shared-Modules/pino-logger/pino-logger.service';
-import { ASYNC_STORAGE } from './Shared-Modules/pino-logger/logger.constants';
 import { v4 as uuidv4} from 'uuid';
+import * as httpContext from 'express-http-context'
+import { TraceLoggerService } from './Shared-Modules/trace-logger/trace-logger.service';
 
 async function bootstrap() {
     const logger = new Logger('bootstrap');    
@@ -15,15 +15,13 @@ async function bootstrap() {
         logger: true,
     });
 
+    app.use(httpContext.middleware)
     app.use((req, res, next) => {
-        const asyncLocalStorage = app.get(ASYNC_STORAGE);
-        const traceId = req.headers['x-request-id'] || uuidv4();
-        const store = new Map().set('traceId', traceId);
-        asyncLocalStorage.run(store, () => {
-            next();
-        })
+        httpContext.set('traceId', uuidv4());
+        next();
     })
-    app.useLogger(app.get(PinoLoggerService));
+
+    app.useLogger(app.get(TraceLoggerService));
 
     if (process.env.NODE_ENV !== 'dev') {
         app.use(helmet());
