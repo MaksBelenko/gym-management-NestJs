@@ -12,7 +12,7 @@ export class TraceLoggerService extends Logger {
 
     log(message: any, context?: string) {
         const formattedMessage = this.formatMessage(message)
-        super.log(formattedMessage, context);
+        super.log(formattedMessage, `${context}`);
     }
     error(message: any, trace?: string, context?: string) {
         const formattedMessage = this.formatMessage(message)

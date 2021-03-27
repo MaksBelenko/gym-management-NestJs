@@ -31,15 +31,21 @@ export class TokensService {
         return this.tokenStorage.getToken(receivedToken);
     }
 
-    async removeAllTokens(refreshToken: string): Promise<void> {
+    async removeTokensAssociatedTo(refreshToken: string): Promise<void> {
         const currentAccessToken = await this.tokenStorage.getReferenceTokenFor(refreshToken);
 
         await this.tokenStorage.deleteToken(refreshToken);
         await this.tokenStorage.deleteToken(currentAccessToken);
     }
 
-    async renewTokens(user: User, refreshToken: string): Promise<TokensResponseDto> {
-        await this.removeAllTokens(refreshToken);
+    async renewTokens(refreshTokenValue: string): Promise<TokensResponseDto> {
+        const { user } = await this.tokenStorage.getToken(refreshTokenValue);
+
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+
+        await this.removeTokensAssociatedTo(refreshTokenValue);
         return this.generateAllTokens(user);
     }
 
@@ -84,7 +90,7 @@ export class TokensService {
     }
 
     private getTokenFromBearerHeader(header: string): string {
-        if (header.includes('Bearer') == false) {
+        if (!header || header.includes('Bearer') == false) {
            throw new UnauthorizedException(); 
         }
 

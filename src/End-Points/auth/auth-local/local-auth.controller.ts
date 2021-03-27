@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, ParseUUIDPipe, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Logger, ParseUUIDPipe, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { LocalAuthService } from './local-auth.service';
 import { User } from '../user.entity';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
@@ -21,6 +21,7 @@ import { RefreshTokenGuard } from './guards/refresh-token.guard';
 @UseFilters(new QueryFailedExceptionFilter())
 @Controller('/auth/local')
 export class LocalAuthController {
+    private readonly logger = new Logger(this.constructor.name);
 
     constructor(
         private localAuthService: LocalAuthService,
@@ -64,9 +65,8 @@ export class LocalAuthController {
     @UseGuards(RefreshTokenGuard)
     renewTokens(
         @GetRefreshToken(ParseUUIDPipe) refreshToken: string,
-        @GetUser() user: User,
     ): Promise<TokensResponseDto> {
-        return this.localAuthService.renewTokens(refreshToken, user);
+        return this.localAuthService.renewTokens(refreshToken);
     }
 
 
@@ -88,14 +88,13 @@ export class LocalAuthController {
     }
 
 
-    @Post('/test')
+    @Get('/test')
     @Roles(Role.User)
     @Auth(AuthPolicy.Local)
-    // @UseGuards(UserAuthGuard)
-    test() {
-        return {message: 'test successfully completed'};
+    test(
+        @Req() req: any
+    ) {
+        this.logger.log(`Received test request...`)
+        return {message: 'HERE sent from server'};
     }
-    // test(@GetUser() jwtPayload: JwtPayload) {
-    //     return jwtPayload;
-    // }
 }
