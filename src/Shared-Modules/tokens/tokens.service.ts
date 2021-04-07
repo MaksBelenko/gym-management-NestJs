@@ -41,11 +41,12 @@ export class TokensService {
     async renewTokens(refreshTokenValue: string): Promise<TokensResponseDto> {
         const { user } = await this.tokenStorage.getToken(refreshTokenValue);
 
+        await this.removeTokensAssociatedTo(refreshTokenValue);
+        
         if (!user) {
             throw new UnauthorizedException();
         }
 
-        await this.removeTokensAssociatedTo(refreshTokenValue);
         return this.generateAllTokens(user);
     }
 

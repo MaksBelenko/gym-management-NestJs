@@ -25,12 +25,10 @@ export class GymSessionRepository extends Repository<GymSession> {
 
         if (start) {
             query.andWhere('gymSession.startDate >= :start', { start });
-            query.andWhere('gymSession.finishDate >= :start', { start });
         }
 
         if (end) {
             query.andWhere('gymSession.startDate <= :end', { end });
-            query.andWhere('gymSession.finishDate <= :end', { end });
         }
 
         const fetchedSessions = await query.getMany();
