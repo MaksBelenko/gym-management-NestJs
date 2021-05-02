@@ -15,6 +15,7 @@ async function bootstrap() {
         logger: true,
     });
 
+    /* Adding request identifier to logger */
     app.use(httpContext.middleware)
     app.use((req, res, next) => {
         httpContext.set('traceId', uuidv4());
@@ -23,6 +24,7 @@ async function bootstrap() {
 
     app.useLogger(app.get(TraceLoggerService));
 
+    /* Helmet and Cors */
     if (process.env.NODE_ENV !== 'dev') {
         app.use(helmet());
         app.enableCors();
