@@ -1,7 +1,7 @@
 import { EntityRepository, LessThanOrEqual, Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import { LocalAuthToken } from './local-auth-token.entity';
-import { User } from '../../End-Points/auth/user.entity';
+import { User } from '../../end-points/auth/user.entity';
 import { AuthTokenType } from './auth-token.enum';
 
 @EntityRepository(LocalAuthToken)

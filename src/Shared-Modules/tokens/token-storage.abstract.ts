@@ -1,5 +1,5 @@
 import { AuthTokenType } from '../token-storage/auth-token.enum';
-import { User } from '../../End-Points/auth/user.entity';
+import { User } from '../../end-points/auth/user.entity';
 import { LocalAuthToken } from '../token-storage/local-auth-token.entity';
 
 export abstract class TokenStorage {

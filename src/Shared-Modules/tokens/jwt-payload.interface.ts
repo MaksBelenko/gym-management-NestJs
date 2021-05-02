@@ -1,4 +1,4 @@
-import { Role } from '../../End-Points/auth/RBAC/role.enum';
+import { Role } from '../../end-points/auth/RBAC/role.enum';
 
 export interface JwtPayload {
     email: string;

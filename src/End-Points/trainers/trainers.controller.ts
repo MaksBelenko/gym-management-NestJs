@@ -6,7 +6,7 @@ import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageMulterOptions } from '../../shared/image-file.filter';
-import { Photo } from '../../Shared-Modules/photos/photo.entity';
+import { Photo } from '../../shared-modules/photos/photo.entity';
 import { Response } from 'express';
 
 @Controller('trainers')

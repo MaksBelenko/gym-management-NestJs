@@ -1,6 +1,6 @@
 import { BaseEntity, BeforeRemove, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GymSession } from '../gym-sessions/gym-session.entity';
-import { Photo } from '../../Shared-Modules/photos/photo.entity';
+import { Photo } from '../../shared-modules/photos/photo.entity';
 import { TrainerType } from './trainer-type.enum';
 
 @Entity()

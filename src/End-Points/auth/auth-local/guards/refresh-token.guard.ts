@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthTokenType } from '../../../../Shared-Modules/token-storage/auth-token.enum';
-import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
+import { AuthTokenType } from '../../../../shared-modules/token-storage/auth-token.enum';
+import { TokensService } from '../../../../shared-modules/tokens/tokens.service';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {

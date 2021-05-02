@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PhotosService } from '../../Shared-Modules/photos/photos.service';
+import { PhotosService } from '../../shared-modules/photos/photos.service';
 import { TrainerRepository } from './trainer.repository';
 import { GetTrainersFilterDto } from './dto/get-trainers-filter.dto';
 import { Trainer } from './trainer.entity';
 import { CreateTrainerDto } from './dto/create-trainer.dto';
 import { UpdateTrainerDto } from './dto/update-trainer.dto';
-import { Photo } from '../../Shared-Modules/photos/photo.entity';
+import { Photo } from '../../shared-modules/photos/photo.entity';
 
 @Injectable()
 export class TrainersService {

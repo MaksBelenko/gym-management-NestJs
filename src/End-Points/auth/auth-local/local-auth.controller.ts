@@ -13,7 +13,7 @@ import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 import { Roles } from '../RBAC/roles.decorator';
 import { Role } from '../RBAC/role.enum';
-import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
+import { JwtPayload } from '../../../shared-modules/tokens/jwt-payload.interface';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 

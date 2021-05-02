@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { GymClassesService } from '../gym-classes.service';
 import { GymClassRepository } from '../gym-class.repository';
 import { GetFilteredGymClassesDto } from '../dto/get-filtered-gym-classes.dto';
-import { PhotosService } from '../../../Shared-Modules/photos/photos.service';
+import { PhotosService } from '../../../shared-modules/photos/photos.service';
 
 const mockGymClassRepository = () => ({
     getGymClasses: jest.fn(),

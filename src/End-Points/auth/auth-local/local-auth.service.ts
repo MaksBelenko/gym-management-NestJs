@@ -1,18 +1,18 @@
 import { Injectable, UnauthorizedException, Logger, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
-import { JwtPayload } from '../../../Shared-Modules/tokens/jwt-payload.interface';
+import { JwtPayload } from '../../../shared-modules/tokens/jwt-payload.interface';
 import { User } from '../user.entity';
 import { UserRepository } from '../user.repository';
-import { TokensService } from '../../../Shared-Modules/tokens/tokens.service';
-import { MailSenderService } from '../../../Shared-Modules/mail-sender/mail-sender.service';
+import { TokensService } from '../../../shared-modules/tokens/tokens.service';
+import { MailSenderService } from '../../../shared-modules/mail-sender/mail-sender.service';
 import { RegisterCredentialsDto } from './dto/register-credentials.dto';
 import { TokensResponseDto } from './dto/tokens-response.dto';
 import { LoginCredentialsDto } from './dto/login-credentials.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
 // import { resetPasswordJwtConfig } from '../constants/jwt.config';
-import { EmailConfirmationCodeService } from '../../../Shared-Modules/mail-sender/email-confirmation-codes.service';
+import { EmailConfirmationCodeService } from '../../../shared-modules/mail-sender/email-confirmation-codes.service';
 import { JwtType } from '../../../shared/jwt-type.enum';//'src/Shared-Modules/tokens/jwt-type.enum';
 import serverConfiguration from 'src/config/server.config';
 

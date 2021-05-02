@@ -6,7 +6,7 @@ import { config as awsConfig } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4} from 'uuid';
 import * as httpContext from 'express-http-context'
-import { TraceLoggerService } from './Shared-Modules/trace-logger/trace-logger.service';
+import { TraceLoggerService } from './shared-modules/trace-logger/trace-logger.service';
 
 async function bootstrap() {
     const logger = new Logger('bootstrap');    

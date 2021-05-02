@@ -4,7 +4,7 @@ import { ConfigType } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as convertToMilliseconds from 'ms';
 import { LocalAuthTokenRepository } from './local-auth-token.repository';
-import { User } from '../../End-Points/auth/user.entity';
+import { User } from '../../end-points/auth/user.entity';
 import { AuthTokenType } from './auth-token.enum';
 import { LocalAuthToken } from './local-auth-token.entity';
 import { TokenStorage } from '../tokens/token-storage.abstract';

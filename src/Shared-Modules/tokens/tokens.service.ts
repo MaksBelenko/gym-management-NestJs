@@ -3,10 +3,10 @@ import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt'
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtType } from '../../shared/jwt-type.enum';
-import { TokensResponseDto } from '../../End-Points/auth/auth-local/dto/tokens-response.dto';
+import { TokensResponseDto } from '../../end-points/auth/auth-local/dto/tokens-response.dto';
 import jwtConfiguration, { JwtConfig } from '../../config/jwt.config';
 import { AuthTokenType } from '../token-storage/auth-token.enum';
-import { User } from '../../End-Points/auth/user.entity';
+import { User } from '../../end-points/auth/user.entity';
 import { TokenStorage } from './token-storage.abstract';
 import { LocalAuthToken } from '../token-storage/local-auth-token.entity';
 

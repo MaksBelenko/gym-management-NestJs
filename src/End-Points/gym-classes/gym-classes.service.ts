@@ -2,8 +2,8 @@ import { Injectable, NotFoundException, BadRequestException, Logger } from '@nes
 import { CreateGymClassDto } from './dto/create-gym-class.dto';
 import { GetFilteredGymClassesDto } from './dto/get-filtered-gym-classes.dto';
 import { GymClass } from './gym-class.entity';
-import { Photo } from '../../Shared-Modules/photos/photo.entity';
-import { PhotosService } from '../../Shared-Modules/photos/photos.service';
+import { Photo } from '../../shared-modules/photos/photo.entity';
+import { PhotosService } from '../../shared-modules/photos/photos.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GymClassRepository } from './gym-class.repository';
 

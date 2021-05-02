@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../../decorators/public.decorator';
-import { TokensService } from '../../../../Shared-Modules/tokens/tokens.service';
-import { AuthTokenType } from '../../../../Shared-Modules/token-storage/auth-token.enum';
+import { TokensService } from '../../../../shared-modules/tokens/tokens.service';
+import { AuthTokenType } from '../../../../shared-modules/token-storage/auth-token.enum';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {

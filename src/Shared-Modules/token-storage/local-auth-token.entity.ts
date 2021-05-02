@@ -1,4 +1,4 @@
-import { User } from '../../End-Points/auth/user.entity';
+import { User } from '../../end-points/auth/user.entity';
 import {
     BaseEntity,
     BeforeRemove,
