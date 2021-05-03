@@ -55,18 +55,17 @@ export class MailProcessor {
     ): Promise<any> {
         this.logger.log(`Sending confirmation email to '${job.data.email}'...`);
 
-        const { email, customerName, confirmationCode } = job.data;
+        const { email, customerName, emailConfirmationUrl } = job.data;
 
-        const url = `https://google.com`;
         // const url = `${config.get('server.origin')}/auth/${job.data.confirmationCode}/confirm`
 
         try {
             const result = await this.mailerService.sendMail({
-                template: 'confirmation',
+                template: './confirmation',
                 context: {
                     //   ...plainToClass(User, job.data.user),
                     customerName,
-                    confirmationCode,
+                    emailConfirmationUrl,
                 },
                 subject: `Подтвердите Ваш электронный адрес для аккаунта Energy Fitness`,
                 to: email,
@@ -91,7 +90,7 @@ export class MailProcessor {
 
             
             const result = await this.mailerService.sendMail({
-                template: 'password-reset',
+                template: './password-reset',
                 context: {
                     customerName,
                     passwordResetUrl,

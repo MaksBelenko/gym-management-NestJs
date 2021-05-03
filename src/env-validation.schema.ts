@@ -25,6 +25,9 @@ export const JoiValidationSchema = Joi.object({
     JWT_PASSWORD_RESET_SECRET: Joi.string().required(),
     JWT_PASSWORD_RESET_EXPIRES_IN: Joi.string().required(),
 
+    JWT_EMAIL_CONFIRM_SECRET: Joi.string().required(),
+    JWT_EMAIL_CONFIRM_EXPIRES_IN: Joi.string().required(),
+
     //# AWS
     AWS_ACCESS_KEY_ID: Joi.required(),
     AWS_SECRET_ACCESS_KEY: Joi.required(),

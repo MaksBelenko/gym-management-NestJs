@@ -82,6 +82,7 @@ export class TokensService {
         this.jwtConfigRecord = {
             // [JwtType.ACCESS]: this.jwtConfig.accessJwt,
             // [JwtType.REFRESH]: this.jwtConfig.refreshJwt,
+            [JwtType.EMAIL_CONFIRMATION]: this.jwtConfig.confirmEmailJwt,
             [JwtType.PASSORD_RESET]: this.jwtConfig.passwordResetJwt,
         }
     }

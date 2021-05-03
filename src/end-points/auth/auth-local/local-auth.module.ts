@@ -11,6 +11,7 @@ import { TokensModule } from '../../../shared-modules/tokens/tokens.module';
 import serverConfig from '../../../config/server.config';
 import awsConfig from '../../../config/aws.config';
 import jwtConfig from '../../../config/jwt.config';
+import { JwtEmailConfirmationStrategy } from './passport-strategies/jwt-email-confirmation.strategy';
 
 @Module({
     imports: [
@@ -27,7 +28,8 @@ import jwtConfig from '../../../config/jwt.config';
     ],
     providers: [
         LocalAuthService,
-        JwtResetPasswordStrategy
+        JwtResetPasswordStrategy,
+        JwtEmailConfirmationStrategy,
     ],
     exports: [
         // JwtAccessStrategy,

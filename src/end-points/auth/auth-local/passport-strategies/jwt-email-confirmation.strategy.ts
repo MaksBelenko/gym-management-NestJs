@@ -8,14 +8,13 @@ import { UserRepository } from '../../user.repository';
 import { User } from '../../user.entity';
 import jwtConfiguration from '../../../../config/jwt.config';
 
-export const JwtResetPasswordStrategyName = 'jwt-reset-password';
-export const JwtPasswordResetQueryParamName = 't';
-
+export const JwtEmailConfirmationStrategyName = 'jwt-email-confirmation';
+export const JwtConfirmEmailQueryParamName = 't';
 
 @Injectable()
-export class JwtResetPasswordStrategy extends PassportStrategy(
+export class JwtEmailConfirmationStrategy extends PassportStrategy(
     Strategy,
-    JwtResetPasswordStrategyName,
+    JwtEmailConfirmationStrategyName,
 ) {
 
     constructor(
@@ -24,9 +23,9 @@ export class JwtResetPasswordStrategy extends PassportStrategy(
     ) {
         super({
             passReqToCallback: true,
-            jwtFromRequest: ExtractJwt.fromUrlQueryParameter(JwtPasswordResetQueryParamName),
+            jwtFromRequest: ExtractJwt.fromUrlQueryParameter(JwtConfirmEmailQueryParamName),
             ignoreExpiration: false,
-            secretOrKey: jwtConfig.passwordResetJwt.secret,
+            secretOrKey: jwtConfig.confirmEmailJwt.secret,
         });
     }
 

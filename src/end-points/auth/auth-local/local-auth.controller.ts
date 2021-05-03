@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Logger, ParseUUIDPipe, Post, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Logger, ParseUUIDPipe, Post, Render, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { LocalAuthService } from './local-auth.service';
 import { User } from '../user.entity';
 import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
@@ -15,6 +15,8 @@ import { Roles } from '../RBAC/roles.decorator';
 import { Role } from '../RBAC/role.enum';
 import { JwtPayload } from '../../../shared-modules/tokens/jwt-payload.interface';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
+import { EmailConfirmationJwtGuard } from '../../../end-points/auth/auth-local/guards/email-confirmation-jwt.guard';
+import { EmailConfirmationData } from './email-confirmation.interface';
 
 
 // @Auth(AuthPolicy.Local)
@@ -28,6 +30,12 @@ export class LocalAuthController {
     ) {} 
 
 
+    @Get()
+    @Render('email-confirmed.hbs')
+    root() {
+        return { customerName: 'Test user' };
+    }
+
     @Post('/signup')
     register(
         @Body(ValidationPipe) registerCredentialsDto: RegisterCredentialsDto,
@@ -36,12 +44,21 @@ export class LocalAuthController {
     }
 
 
-    @Post('/confirm-email')
+    @Get('/confirm-email')
+    @Render('email-confirmed.hbs')
+    @UseGuards(EmailConfirmationJwtGuard)
     confirmEmail(
-        @Body(ValidationPipe) confirmEmailDto: ConfirmEmailDto,
-    ): Promise<TokensResponseDto> {
-        return this.localAuthService.confirmAccount(confirmEmailDto);
+        @GetUser() jwtPayload: JwtPayload,
+    ): Promise<EmailConfirmationData> {
+        return this.localAuthService.confirmAccount(jwtPayload);
     }
+
+    // @Post('/confirm-email')
+    // confirmEmail(
+    //     @Body(ValidationPipe) confirmEmailDto: ConfirmEmailDto,
+    // ): Promise<TokensResponseDto> {
+    //     return this.localAuthService.confirmAccount(confirmEmailDto);
+    // }
 
 
     @Post('/signin')
@@ -78,7 +95,7 @@ export class LocalAuthController {
     }
     
 
-    @Post('/reset-password/:token')
+    @Post('/reset-password')
     @UseGuards(ResetPasswordJwtGuard)
     resetPassword(
         @GetUser() jwtPayload: JwtPayload,

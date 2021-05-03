@@ -90,6 +90,29 @@
         div[style*="margin: 16px 0;"] {
             margin: 0 !important;
         }
+
+        .confirmation-code {
+            display: block;
+            width: 60%;
+            margin: 30px auto 10px auto;
+            background-color: #ddd;
+            border-radius: 40px;
+            padding: 20px;
+            text-align: center;
+            font-size: 36px;
+            font-family: 'Lato';
+            letter-spacing: 10px;
+            box-shadow: 0px 7px 22px 0px rgba(0, 0, 0, .15);
+        }
+
+        .text-verification {
+            font-family: 'Lato';
+            font-style: italic;
+            font-size: 13px;
+            text-align: center;
+            color: #808080;
+            margin: 0px 0px 30px 0px;
+        }
     </style>
 </head>
 
@@ -127,7 +150,7 @@
                     <tr>
                         <td bgcolor="#ffffff" align="center" valign="top"
                             style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 0px; line-height: 48px;">
-                            <h1 style="font-size: 32px; font-weight: 400; margin: 0;">Ваш запрос на изменение пароля
+                            <h1 style="font-size: 32px; font-weight: 400; margin: 0;">Подтвердите Ваш электронный адрес
                             </h1>
                         </td>
                     </tr>
@@ -141,33 +164,24 @@
                     <!-- COPY -->
                     <tr>
                         <td bgcolor="#ffffff" align="left"
-                            style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            style="padding: 20px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                             <p style="margin: 0;">Здравсвуйте, {{ customerName }}!</p>
                             </p>
-                            Для создания аккаунта Energy Fitness, Вам необходимо подтвердить, что данный почтовый
-                            адрес принадлежит именно Вам. Нажмите кнопку "Подтвердить эл. почту", чтобы подтвердить Ваш почтовый адрес.
+                                Для создания аккаунта Energy Fitness, Вам необходимо подтвердить, что данный почтовый
+                                адрес принадлежит именно Вам.
+                                Скопируйте расположенный ниже код и вставьте в приложение для подтверждения.
                             </p>
                         </td>
                     </tr>
                     <!-- BULLETPROOF BUTTON -->
                     <tr>
-                        <td bgcolor="#ffffff" align="left">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                                        <table border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#D61A2C">
-                                                    <a href="{{ emailConfirmationUrl }}" target="_blank"
-                                                        style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #D61A2C; display: inline-block;">
-                                                        Подтвердить эл. почту
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td bgcolor="#ffffff" align="center">
+                            <div class="confirmation-code">
+                                <span>{{ confirmationCode }}</span>
+                            </div>
+                            <div class="text-verification">
+                                <p>Код действителен в течении 10 минут</p>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -182,29 +196,15 @@
                         <td bgcolor="#111111" align="left"
                             style="padding: 40px 30px 20px 30px; color: #ffffff; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                             <h2 style="font-size: 24px; font-weight: 400; margin: 0;">
-                                Не работает кнопка?
-                            </h2>
+                                Не пытались создать аккаунт?</h2>
                         </td>
                     </tr>
                     <!-- COPY -->
                     <tr>
                         <td bgcolor="#111111" align="left"
                             style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">
-                                Нажмите на ссылку, расположенную ниже или скопируйте и вставьте эту
-                                ссылку в любой из удобный Вам браузеров.
-                            </p>
-                        </td>
-                    </tr>
-                    <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#111111" align="left"
-                            style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">
-                                <a href="{{ emailConfirmationUrl }}" target="_blank" style="color: #D61A2C;">
-                                    {{ emailConfirmationUrl }}
-                                </a>
-                            </p>
+                            <p style="margin: 0px 0px 20px 0px;">
+                                Если Вы не пытались создать аккаунт, просим Вас игнорировать данный имейл.</p>
                         </td>
                     </tr>
                 </table>
@@ -218,8 +218,7 @@
                     <tr>
                         <td bgcolor="#f4f4f4" align="left"
                             style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;">
-                            <p style="margin: 10px 0px 0px 0px;">
-                                Фитнес-клуб "Energy Fitness", Коряжма, ул. Дыбцына д.22
+                            <p style="margin: 10px 0px 0px 0px;">Фитнес-клуб "Energy Fitness", Коряжма, ул. Дыбцына д.22
                             </p>
                         </td>
                     </tr>

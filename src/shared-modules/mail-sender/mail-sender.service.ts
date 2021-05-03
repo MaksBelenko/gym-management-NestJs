@@ -11,8 +11,7 @@ export class MailSenderService {
     private logger = new Logger(this.constructor.name);
 
     constructor(
-        @InjectQueue('emails-queue')
-        private mailQueue: Queue,
+        @InjectQueue('emails-queue') private mailQueue: Queue,
     ) {}
 
     async sendPasswordResetEmail(toEmail: string, customerName: string, passwordResetUrl: string): Promise<void> {
@@ -29,16 +28,30 @@ export class MailSenderService {
     }
 
 
-    async sendConfirmationEmail(toEmail: string, customerName: string, confirmationCode: string): Promise<void> {
+
+    async sendConfirmationEmail(toEmail: string, customerName: string, emailConfirmationUrl: string): Promise<void> {
 
         try {
-            const data: ConfirmationQueueData = { email: toEmail, customerName, confirmationCode };
+            const data: ConfirmationQueueData = { email: toEmail, customerName, emailConfirmationUrl };
             await this.mailQueue.add(confirmationEmailQueueName, data);
 
-            this.logger.log(`Added confirmation email sending action to queue for ${toEmail} with confirmation code ${confirmationCode}`)
+            this.logger.log(`Added confirmation email sending action to queue for ${toEmail} with confirmation url ${emailConfirmationUrl}`)
 
         } catch (error) {
             this.logger.error(`Error queueing confirmation email to ${toEmail}`);
         }
     }
+
+    // async sendConfirmationEmail(toEmail: string, customerName: string, confirmationCode: string): Promise<void> {
+
+    //     try {
+    //         const data: ConfirmationQueueData = { email: toEmail, customerName, confirmationCode };
+    //         await this.mailQueue.add(confirmationEmailQueueName, data);
+
+    //         this.logger.log(`Added confirmation email sending action to queue for ${toEmail} with confirmation code ${confirmationCode}`)
+
+    //     } catch (error) {
+    //         this.logger.error(`Error queueing confirmation email to ${toEmail}`);
+    //     }
+    // }
 }
