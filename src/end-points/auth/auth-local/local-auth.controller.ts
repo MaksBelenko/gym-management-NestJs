@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Logger, ParseUUIDPipe, Post, Render, Req, UseFilters, UseGuards, ValidationPipe } from '@nestjs/common';
 import { LocalAuthService } from './local-auth.service';
 import { User } from '../user.entity';
-import { QueryFailedExceptionFilter } from '../../../Exception-filters/query-failed-exception.filter';
+import { QueryFailedExceptionFilter } from '../../../exception-filters/query-failed-exception.filter';
 import { ResetPasswordJwtGuard } from './guards/reset-password-jwt.guard';
 import { GetUser } from '../decorators/get-user.decorator';
 import { GetRefreshToken } from '../decorators/get-bearer-token.decorator';
